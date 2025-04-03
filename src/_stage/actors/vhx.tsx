@@ -1,35 +1,42 @@
 // src/_stage/actors/vhx.tsx
 import { h, JSX, VNode } from 'preact';
 import { render } from 'preact-render-to-string';
-import { C8RO, createRole } from '../../_core';
-import { VHXRedprint } from '../redprints/VHXRedprint';
+import { C8RO, CoreRedprint, createRole } from '../../_core';
+import { VHXService } from '../services/VhxService';
+
+export type VHXRedprint<T = object> = CoreRedprint<T> & {
+	vhx: VHXService;
+};
 
 type JSXElementOrFn<T = JSX.Element> = T | ((c8: C8RO<VHXRedprint>) => T);
 type StringOrFn = string | ((c8: C8RO<VHXRedprint>) => string);
 
 export const createVHXActors = <C8 extends VHXRedprint>() => {
-	const Title = (titleOrFn: StringOrFn) =>
-		createRole<C8>(
-			'VHXActors.Title',
-			'Save the VHXElement into storage',
-		)(c8 => {
-			const title =
-				typeof titleOrFn === 'function'
-					? titleOrFn(c8.utils.readonly)
-					: titleOrFn;
-			c8.vhx.setTitle(title);
+	const StaticTitle = (title: string) => (c8: C8) => {
+		c8.vhx.setTitle(title);
+		return c8;
+	};
+
+	const Title = Object.assign(StaticTitle, {
+		Get: (getKey: string, transform?: (value: string) => string) => (c8: C8) => {
+			let title = c8.var(getKey);
+			if (typeof title !== 'string') {
+				throw new Error(`VHX: Title must be a string: ${getKey}`);
+			}
+			if (transform !== undefined) {
+				title = transform(title);
+			}
+			c8.vhx.setTitle(title as string);
 			return c8;
-		});
+		},
+	});
 
 	const Header = (elementOrFn: JSXElementOrFn) =>
 		createRole<C8>(
 			'VHXActors.Header',
 			'Save the VHXElement into storage',
 		)(c8 => {
-			const header =
-				typeof elementOrFn === 'function'
-					? elementOrFn(c8.utils.readonly)
-					: elementOrFn;
+			const header = typeof elementOrFn === 'function' ? elementOrFn(c8.utils.readonly) : elementOrFn;
 			c8.vhx.setHeader(header);
 			return c8;
 		});
@@ -39,10 +46,7 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 			'VHXActors.Template',
 			'Save the VHXElement into storage',
 		)(c8 => {
-			const template =
-				typeof elementOrFn === 'function'
-					? elementOrFn(c8.utils.readonly)
-					: elementOrFn;
+			const template = typeof elementOrFn === 'function' ? elementOrFn(c8.utils.readonly) : elementOrFn;
 			c8.vhx.setTemplate(template);
 			return c8;
 		});
@@ -52,10 +56,7 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 			'VHXActors.Slot',
 			'Save the VHXElement into storage',
 		)(c8 => {
-			const element =
-				typeof elementOrFn === 'function'
-					? elementOrFn(c8.utils.readonly)
-					: elementOrFn;
+			const element = typeof elementOrFn === 'function' ? elementOrFn(c8.utils.readonly) : elementOrFn;
 			c8.vhx.setSlot(name, element);
 			return c8;
 		});
@@ -78,11 +79,11 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 
 		const result = render(
 			<html lang="en">
-			<head>
-				<title>{title}</title>
-				{header}
-			</head>
-			<body>{replacedTemplate}</body>
+				<head>
+					<title>{title}</title>
+					{header}
+				</head>
+				<body>{replacedTemplate}</body>
 			</html>,
 		);
 
@@ -103,10 +104,7 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
  * Recursively traverses a VNode (or an array of VNodes) to collect all slot names.
  */
 
-function replaceSlots(
-	vnode: VNode | VNode[],
-	getSlot: (name: string) => JSX.Element,
-): VNode | VNode[] {
+function replaceSlots(vnode: VNode | VNode[], getSlot: (name: string) => JSX.Element): VNode | VNode[] {
 	const walk = (node: any): any => {
 		if (node == null || typeof node !== 'object') return node;
 

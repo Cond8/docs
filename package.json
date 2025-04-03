@@ -13,6 +13,7 @@
     "start": "wrangler dev"
   },
   "dependencies": {
+    "@mdx-js/mdx": "^3.1.0",
     "@tailwindcss/cli": "^4.1.1",
     "@tailwindcss/postcss": "^4.1.1",
     "class-variance-authority": "^0.7.1",
@@ -23,7 +24,8 @@
     "miniflare": "^4.20250321.1",
     "preact": "^10.26.4",
     "preact-render-to-string": "^6.5.13",
-    "tailwind-merge": "^3.1.0"
+    "tailwind-merge": "^3.1.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250403.0",

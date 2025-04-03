@@ -1,16 +1,24 @@
 // src/_stage/conduits/AppConduit.ts
-import { CoreRedprint, StrictKVBlueprintSync, StrictObjectKVService } from '../../_core';
-import { createVHXActors } from '../actors/vhx';
-import { VHXRedprint } from '../redprints/VHXRedprint';
+import { Context } from 'hono';
+import { CoreRedprint, StrictObjectKVService } from '../../_core';
+import { createFetcherActors } from '../actors/fetchers';
+import { createGuardActors } from '../actors/guards';
+import { createModelerActors } from '../actors/modelers';
+import { createStylerActors } from '../actors/stylers';
+import { createVHXActors, VHXRedprint } from '../actors/vhx';
 import { VHXService } from '../services/VhxService';
 
-export class AppConduit extends VHXRedprint {
+export class AppConduit extends CoreRedprint<Context> implements VHXRedprint<Context> {
 	public locals = new StrictObjectKVService('locals');
 	public vhx = new VHXService('vhx');
 
-	constructor(body?: object) {
-		super(body);
+	constructor(c: Context) {
+		super(c);
 	}
 }
 
-export const VHXActors = createVHXActors<AppConduit>()
+export const VHXActors = createVHXActors<AppConduit>();
+export const GuardActors = createGuardActors<AppConduit>();
+export const ModelerActors = createModelerActors<AppConduit>();
+export const FetcherActors = createFetcherActors<AppConduit>();
+export const StylingActors = createStylerActors<AppConduit>();

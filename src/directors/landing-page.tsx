@@ -1,4 +1,5 @@
 // src/directors/landing-page.tsx
+import { Context } from 'hono';
 import { createDirector } from '../_core';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { Footer } from '../_stage/components/footer';
@@ -6,8 +7,12 @@ import { TileSection } from '../_stage/components/landing-tiles';
 import { Topbar } from '../_stage/components/topbar';
 import { AppConduit, VHXActors } from '../_stage/conduits/AppConduit';
 
-const LandingPageDirector = createDirector<AppConduit>('landing-page director', 'a static landing page director').init(input => ({
-	conduit: new AppConduit(input),
+const LandingPageDirector = createDirector<AppConduit>(
+	'landing-page director',
+	'a static landing page director',
+	'uses landing-tiles.tsx',
+).init<Context>(c => ({
+	conduit: new AppConduit(c),
 }));
 
 LandingPageDirector(
