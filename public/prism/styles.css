@@ -1,0 +1,308 @@
+/* apps/cond8-docs/public/prism/styles.css  */
+https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+bash+css-extras+dart+diff+graphql+http+javadoclike+jsdoc+js-extras+json+json5+jsonp+jsstacktrace+js-templates+markdown+mongodb+powershell+jsx+tsx+sass+scss+sql+typescript+typoscript+yaml&plugins=line-numbers+autolinker+show-language+jsonp-highlight+command-line+toolbar+copy-to-clipboard+diff-highlight */
+/**
+ * prism.js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/chriskempson/tomorrow-theme
+ * @author Rose Pritchard
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #ccc;
+	background: none;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #2d2d2d;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+/* Mapped IntelliJ Dark Theme Colors to PrismJS Tokens */
+
+/* Comments – using IntelliJ’s TODO_DEFAULT_ATTRIBUTES (FOREGROUND: #8bb33d) */
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8bb33d;
+}
+
+/* Punctuation – no corresponding IntelliJ token, keep original */
+.token.punctuation {
+	color: #ccc;
+}
+
+/* Tags and attribute names – no direct IntelliJ mapping found; retain original */
+.token.tag,
+.token.attr-name,
+.token.namespace {
+	color: #e2777a;
+}
+
+/* Deleted tokens – mapped from IntelliJ DELETED_LINES_COLOR (#868a91) */
+.token.deleted {
+	color: #868a91;
+}
+
+/* Function names – mapped from IntelliJ METHOD_SEPARATORS_COLOR (#43454a) */
+.token.function-name {
+	color: #43454a;
+}
+
+/* Booleans, numbers, functions – mapped from IntelliJ MODIFIED_LINES_COLOR (#375fad) */
+.token.boolean,
+.token.number,
+.token.function {
+	color: #6e97da;
+}
+
+/* Properties, class names, constants, symbols – no clear IntelliJ equivalent; keep original */
+.token.property,
+.token.class-name,
+.token.constant,
+.token.symbol {
+	color: #f8c555;
+}
+
+/* Selectors, important, atrule, keywords, builtins – no direct mapping; keep original */
+.token.selector,
+.token.important,
+.token.atrule,
+.token.keyword,
+.token.builtin {
+	color: #cc99cd;
+}
+
+/* Strings, characters, attribute values, regex, variables – no mapping found; keep original */
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.variable {
+	color: #7ec699;
+}
+
+/* Operators, entities, URLs – no mapping found; keep original */
+.token.operator,
+.token.entity,
+.token.url {
+	color: #67cdcc;
+}
+
+/* Inserted tokens – mapped from IntelliJ ADDED_LINES_COLOR (#549159) */
+.token.inserted {
+	color: #549159;
+}
+
+/* Emphasis */
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+
+
+pre[class*="language-"].line-numbers {
+	position: relative;
+	padding-left: 3.8em;
+	counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+	position: relative;
+	white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+	position: absolute;
+	pointer-events: none;
+	top: 0;
+	font-size: 100%;
+	left: -3.8em;
+	width: 3em; /* works for line-numbers below 1000 lines */
+	letter-spacing: -1px;
+	border-right: 1px solid #999;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+}
+
+	.line-numbers-rows > span {
+		display: block;
+		counter-increment: linenumber;
+	}
+
+		.line-numbers-rows > span:before {
+			content: counter(linenumber);
+			color: #999;
+			display: block;
+			padding-right: 0.8em;
+			text-align: right;
+		}
+
+.token a {
+	color: inherit;
+}
+div.code-toolbar {
+	position: relative;
+}
+
+div.code-toolbar > .toolbar {
+	position: absolute;
+	z-index: 10;
+	top: .3em;
+	right: .2em;
+	transition: opacity 0.3s ease-in-out;
+	opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+	opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+	opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+	display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+	cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+	background: none;
+	border: 0;
+	color: inherit;
+	font: inherit;
+	line-height: normal;
+	overflow: visible;
+	padding: 0;
+	-webkit-user-select: none; /* for button */
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+	color: #bbb;
+	font-size: .8em;
+	padding: 0 .5em;
+	background: #f5f2f0;
+	background: rgba(224, 224, 224, 0.2);
+	box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+	border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+	color: inherit;
+	text-decoration: none;
+}
+
+.command-line-prompt {
+	border-right: 1px solid #999;
+	display: block;
+	float: left;
+	font-size: 100%;
+	letter-spacing: -1px;
+	margin-right: 1em;
+	pointer-events: none;
+	text-align: right;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.command-line-prompt > span:before {
+	opacity: 0.7;
+	content: ' ';
+	display: block;
+	padding-right: 0.8em;
+}
+
+.command-line-prompt > span[data-user]:before {
+	content: "[" attr(data-user) "@" attr(data-host) "] $";
+}
+
+.command-line-prompt > span[data-user="root"]:before {
+	content: "[" attr(data-user) "@" attr(data-host) "] #";
+}
+
+.command-line-prompt > span[data-prompt]:before {
+	content: attr(data-prompt);
+}
+
+.command-line-prompt > span[data-continuation-prompt]:before {
+	content: attr(data-continuation-prompt);
+}
+
+.command-line span.token.output {
+	/* Make shell output lines a bit lighter to distinguish them from shell commands */
+	opacity: 0.7;
+}
+
+pre.diff-highlight > code .token.deleted:not(.prefix),
+pre > code.diff-highlight .token.deleted:not(.prefix) {
+	background-color: rgba(255, 0, 0, .1);
+	color: inherit;
+	display: block;
+}
+
+pre.diff-highlight > code .token.inserted:not(.prefix),
+pre > code.diff-highlight .token.inserted:not(.prefix) {
+	background-color: rgba(0, 255, 128, .1);
+	color: inherit;
+	display: block;
+}
+

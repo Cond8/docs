@@ -1,0 +1,230 @@
+/* src/styles.css  */
+
+/* Import all fonts from the old project – now including all required families */
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+/* Base variables: Colors, spacing, fonts, etc. */
+:root {
+  /* Colors */
+  --background: #141414;
+  --card: #262626;
+  --popover: #000000;
+  --primary: #ffffff;
+  --secondary: #e0e0e0;
+  --muted: #000000;
+  --accent: #ff0000;
+  --destructive: #983224;
+
+  --foreground: #ffffff;
+  --card-foreground: #d4d4d4;
+  --popover-foreground: #ffffff;
+  --primary-foreground: #000000;
+  --secondary-foreground: #000000;
+  --muted-foreground: #a0a0a0;
+  --accent-foreground: #000000;
+  --destructive-foreground: #ffffff;
+
+  /* Admonition Colors */
+  --note: #1e293b;               /* deep slate blue background */
+  --note-foreground: #93c5fd;    /* soft blue text */
+  --note-border: #3b82f6;        /* vivid blue border */
+
+  --caution: #3f2e1f;            /* warm brown/amber background */
+  --caution-foreground: #fde68a; /* yellow-amber text */
+  --caution-border: #facc15;     /* bright yellow border */
+
+  --tip: #042f2e;                /* dark teal/green */
+  --tip-foreground: #6ee7b7;     /* minty green text */
+  --tip-border: #10b981;         /* emerald green border */
+
+  --danger: #2b0e13;             /* deep blood-red background */
+  --danger-foreground: #fca5a5;  /* dusty pink text */
+  --danger-border: #ef4444;      /* bold red border */
+
+  /* Additional Variables from the new project */
+  --border: #a0a0a0;
+  --input: oklch(0.35 0 0);
+  --ring: oklch(0.5 0.05 70);
+
+  /* Global sizing */
+  --radius: 0.625rem;
+
+  /* Font definitions (from the old project) */
+  --font-paragraph: 'IBM Plex Sans', sans-serif;
+  --font-sans: Geist, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --font-logo: 'Alumni Sans', sans-serif;
+  --font-title: 'JetBrains Mono', monospace;
+  --font-subtitle: 'Crimson Pro', serif;
+}
+
+@theme inline {
+  /* Fonts */
+  --font-logo: 'Alumni Sans', sans-serif;
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-paragraph: var(--font-paragraph);
+  --font-title: var(--font-title);
+  --font-subtitle: var(--font-subtitle);
+
+  /* Core colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Admonition colors */
+  --color-note: var(--note);
+  --color-note-foreground: var(--note-foreground);
+  --color-note-border: var(--note-border);
+
+  --color-caution: var(--caution);
+  --color-caution-foreground: var(--caution-foreground);
+  --color-caution-border: var(--caution-border);
+
+  --color-tip: var(--tip);
+  --color-tip-foreground: var(--tip-foreground);
+  --color-tip-border: var(--tip-border);
+
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-border: var(--danger-border);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+
+/* Base resets and global element styles (from the old project) */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html:not(.fonts-loaded) body {
+    visibility: hidden;
+  }
+
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    @apply bg-background text-foreground;
+  }
+
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input, button, textarea, select {
+    font: inherit;
+  }
+
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  #root, #__next {
+    isolation: isolate;
+  }
+}
+
+@font-face {
+  font-family: 'Alumni Sans';
+  src: url('/public/fonts/Alumni_Sans/AlumniSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Alumni Sans';
+  src: url('/public/fonts/Alumni_Sans/AlumniSans-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Crimson Pro';
+  src: url('/public/fonts/Crimson_Pro/CrimsonPro-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Crimson Pro';
+  src: url('/public/fonts/Crimson_Pro/CrimsonPro-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/public/fonts/Geist/Geist-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/public/fonts/Geist_Mono/GeistMono-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/public/fonts/IBM_Plex_Sans/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/public/fonts/IBM_Plex_Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/public/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 800;
+  font-display: swap;
+}

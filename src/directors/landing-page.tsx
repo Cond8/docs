@@ -1,24 +1,21 @@
 // src/directors/landing-page.tsx
 import { createDirector } from '../_core';
-import { AppConduit, VHXActors } from '../_stage/conduits/AppConduit';
 import { DefaultHeaders } from '../_stage/components/default-headers';
-import { Topbar } from '../_stage/components/topbar';
-import { TileSection } from '../_stage/components/landing-tiles';
 import { Footer } from '../_stage/components/footer';
+import { TileSection } from '../_stage/components/landing-tiles';
+import { Topbar } from '../_stage/components/topbar';
+import { AppConduit, VHXActors } from '../_stage/conduits/AppConduit';
 
-const LandingPageDirector = createDirector<AppConduit>(
-	'landing-page director',
-	'a static landing page director'
-).init(input => ({
+const LandingPageDirector = createDirector<AppConduit>('landing-page director', 'a static landing page director').init(input => ({
 	conduit: new AppConduit(input),
-}))
+}));
 
 LandingPageDirector(
 	VHXActors.Title('Cond8 Docs'),
 	VHXActors.Header(<DefaultHeaders />),
 	VHXActors.Template(
 		<div className="bg-card text-card-foreground relative">
-			<div className="absolute inset-0 bg-[url('/public/landing-bg.png')] bg-cover bg-center opacity-30" />
+			<div className="absolute inset-0 bg-[url('/landing-bg.png')] bg-cover bg-center opacity-30" />
 			<div className="relative z-10">
 				{/* Full-screen container for topbar and main */}
 				<div className="h-screen flex flex-col">
@@ -37,12 +34,7 @@ LandingPageDirector(
 									>
 										Cond8
 									</h1>
-									<img
-										src="/public/VHX-Logo.svg"
-										alt="VHX Logo"
-										width={180}
-										className="transform -translate-x-[25px] translate-y-[20px]"
-									/>
+									<img src="/VHX-logo.svg" alt="VHX Logo" width={180} className="transform -translate-x-[25px] translate-y-[20px]" />
 								</div>
 								<div
 									className="h-2 bg-red-600 mt-2"
@@ -75,6 +67,6 @@ LandingPageDirector(
 		</div>,
 	),
 	VHXActors.WrapHtml,
-)
+);
 
 export default LandingPageDirector.fin(c8 => c8.var('html') as string);
