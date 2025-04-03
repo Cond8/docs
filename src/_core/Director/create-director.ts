@@ -6,6 +6,7 @@ import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { filterMetaHooksDirector } from '../Metadata/filter-meta-hooks.js';
 import { MetaHook } from '../Metadata/hooks.js';
 import { Recorder, RecorderEntry } from '../Recorder/create-recorder.js';
+import { Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
 
@@ -58,16 +59,22 @@ export interface Executable<In extends object, Out, C8 extends CoreRedprint = Co
 }
 
 export function createDirector<C8 extends CoreRedprint>(directorName: string, ...metadata: unknown[]): Director<C8> {
+	const vacuum = new Vacuum<C8>({ directorName, metadata });
+
 	let _inputMapper: ((input?: unknown) => CouldPromise<Input<C8>>) | undefined;
 	let _outputMapper: ((readonlyConduit: C8RO<C8>, recording?: RecorderEntry[]) => CouldPromise<unknown>) | undefined;
 
 	const stagedActors: StagedActor<C8>[] = [];
 	const { hooks, inputMock, assertFn } = filterMetaHooksDirector(...metadata);
 
+	vacuum.add({ hooks, input: inputMock, assertFn: fnStringify(assertFn) });
+
 	const inputMapper = (input?: unknown): CouldPromise<Input<C8>> => {
 		if (_inputMapper === undefined) {
 			return Promise.reject(new Error('Director: No input mapper provided'));
 		}
+
+		vacuum.add({ inputMapper: fnStringify(_inputMapper) });
 		return _inputMapper(input);
 	};
 
@@ -75,6 +82,8 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 		if (_outputMapper === undefined) {
 			return Promise.reject(new Error('Director: No output mapper provided'));
 		}
+
+		vacuum.add({ outputMapper: fnStringify(_outputMapper) });
 		return _outputMapper(readonlyConduit, recording);
 	};
 
@@ -92,45 +101,21 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 		const readonly = outputC8.utils.readonly;
 		const output = await outputMapperFn(readonly as C8RO<C8>, recorder?.recording);
 
+		vacuum.add({ isTest, c8: outputC8, output });
+
 		// Run output assertions if provided
 		if (assertFn) {
-			void outputC8.utils.handleEvent('onDirectorAssertStart', {
-				event: 'onDirectorAssertStart',
-				isTest,
-				directorName,
-				c8: outputC8,
-				recorder,
-				output,
-				assertionFn: fnStringify(assertFn),
-				metadata,
-			});
+			void outputC8.utils.handleEvent('onDirectorAssertStart', vacuum.payload);
 			try {
 				assertFn(output);
 
-				void outputC8.utils.handleEvent('onDirectorAssertSuccess', {
-					event: 'onDirectorAssertSuccess',
-					isTest,
-					directorName,
-					c8: outputC8,
-					recorder,
-					output,
-					assertionFn: fnStringify(assertFn),
-					metadata,
-				});
+				void outputC8.utils.handleEvent('onDirectorAssertSuccess', vacuum.payload);
 			} catch (error) {
 				const normalizedError = error instanceof Error ? error : new Error(JSON.stringify(error));
 
-				void outputC8.utils.handleEvent('onDirectorAssertFail', {
-					event: 'onDirectorAssertFail',
-					isTest,
-					directorName,
-					c8: outputC8,
-					recorder,
-					output,
-					error: normalizedError,
-					assertionFn: fnStringify(assertFn),
-					metadata,
-				});
+				vacuum.add({ error: normalizedError });
+
+				void outputC8.utils.handleEvent('onDirectorAssertFail', vacuum.payload);
 
 				if (isTest) {
 					return Promise.reject(normalizedError);
@@ -145,100 +130,78 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 	// TEST RUNNER
 	// --------------------
 	const testDirectorWithRecorder = async (inputC8: C8, recorder: Recorder): Promise<C8> => {
-		let c8 = inputC8;
+		vacuum.add({ c8: inputC8, isTest: true });
 
-		void c8.utils.handleEvent('onDirectorEnter', {
-			c8,
-			event: 'onDirectorEnter',
-			isTest: true,
-			metadata,
-			recorder,
-			directorName,
-		});
+		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.payload);
 
-		for (const actor of stagedActors) {
+		const outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
+			const c8 = await prevC8Promise;
+			if (c8.utils.isClosed) return c8;
+
 			if ('test' in actor && typeof actor.test === 'function') {
-				c8 = await actor.test(recorder, c8);
-			} else {
-				c8 = await actor(c8, recorder);
+				return actor.test(recorder, c8);
 			}
-			if (c8.utils.isClosed) break;
-		}
+			return actor(c8, recorder);
+		}, Promise.resolve(inputC8));
 
-		void c8.utils.handleEvent('onDirectorExit', {
-			c8,
-			event: 'onDirectorExit',
-			isTest: true,
-			metadata,
-			recorder,
-			directorName,
-		});
+		vacuum.add({ c8: outputC8 });
 
-		return c8;
+		void outputC8.utils.handleEvent('onDirectorExit', vacuum.payload);
+
+		return outputC8;
 	};
 
 	// --------------------
 	// ACTOR SCRIPT & DIRECTOR RUNTIME
 	// --------------------
 	const toActorScript: ActorScript<C8> = async (inputC8: C8, recorder?: Recorder) => {
-		let c8 = inputC8;
+		vacuum.add({ c8: inputC8, isTest: false });
 
-		void c8.utils.handleEvent('onDirectorEnter', {
-			event: 'onDirectorEnter',
-			directorName,
-			c8,
-			recorder,
-			metadata,
-		});
+		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.payload);
 
-		for (const actor of stagedActors) {
-			c8 = await actor(c8, recorder);
-			if (c8.utils.isClosed) break;
-		}
+		const outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
+			const c8 = await prevC8Promise;
+			if (c8.utils.isClosed) return c8;
+			return actor(c8, recorder);
+		}, Promise.resolve(inputC8));
 
-		void c8.utils.handleEvent('onDirectorExit', {
-			event: 'onDirectorExit',
-			directorName,
-			c8,
-			recorder,
-			metadata,
-		});
+		vacuum.add({ c8: outputC8 });
 
-		return c8;
+		void outputC8.utils.handleEvent('onDirectorExit', vacuum.payload);
+
+		return outputC8;
 	};
 
 	// --------------------
 	// ASSEMBLE: Common Director properties
 	// --------------------
-	function assemble(): Pick<Director<C8>, 'directorName' | 'metadata' | 'metaHooks' | 'actors' | 'asScript' | 'AsActor'> {
-		return {
-			get directorName() {
-				return directorName;
-			},
-			get metadata() {
-				return Object.freeze([...metadata]);
-			},
-			get metaHooks() {
-				return Object.freeze([...hooks]);
-			},
-			get actors() {
-				return Object.freeze([...stagedActors]);
-			},
-			get asScript() {
-				const base = toActorScript as ActorScriptWithTest<C8>;
-				return Object.assign(base, { test: testDirectorWithRecorder });
-			},
-			get AsActor() {
-				const base = stageActor<C8>(directorName, toActorScript, ...metadata);
-				return Object.assign(base, { test: testDirectorWithRecorder });
-			},
-		};
-	}
+	const assemble = (): Pick<Director<C8>, 'directorName' | 'metadata' | 'metaHooks' | 'actors' | 'asScript' | 'AsActor'> => ({
+		get directorName() {
+			return directorName;
+		},
+		get metadata() {
+			return Object.freeze([...metadata]);
+		},
+		get metaHooks() {
+			return Object.freeze([...hooks]);
+		},
+		get actors() {
+			return Object.freeze([...stagedActors]);
+		},
+		get asScript() {
+			const base = toActorScript as ActorScriptWithTest<C8>;
+			return Object.assign(base, { test: testDirectorWithRecorder });
+		},
+		get AsActor() {
+			const base = stageActor<C8>(directorName, toActorScript, ...metadata);
+			return Object.assign(base, { test: testDirectorWithRecorder });
+		},
+	});
 
 	// --------------------
 	// MUTABLE DIRECTOR BUILDER
 	// --------------------
-	function makeDirector<CurIn extends object = object, CurOut = unknown>(): Director<C8, CurIn, CurOut> {
+	const makeDirector = <CurIn extends object = object, CurOut = unknown>(): Director<C8, CurIn, CurOut> => {
 		const appendActors = (...actors: Partial<StagedActor<C8>>[]): Director<C8, CurIn, CurOut> => {
 			stagedActors.push(...(actors as StagedActor<C8>[]));
 			return makeDirector<CurIn, CurOut>();
@@ -269,18 +232,18 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 			prependActors,
 			init,
 		});
-	}
+	};
 
 	function makeInitializedDirector<CurIn extends object, CurOut>(): InitializedDirector<C8, CurIn, CurOut> {
-		function appendActors(...actors: Partial<StagedActor<C8>>[]): InitializedDirector<C8, CurIn, CurOut> {
+		const appendActors = (...actors: Partial<StagedActor<C8>>[]): InitializedDirector<C8, CurIn, CurOut> => {
 			stagedActors.push(...(actors as StagedActor<C8>[]));
 			return makeInitializedDirector<CurIn, CurOut>();
-		}
+		};
 
-		function prependActors(...actors: Partial<StagedActor<C8>>[]): InitializedDirector<C8, CurIn, CurOut> {
+		const prependActors = (...actors: Partial<StagedActor<C8>>[]): InitializedDirector<C8, CurIn, CurOut> => {
 			stagedActors.unshift(...(actors as StagedActor<C8>[]));
 			return makeInitializedDirector<CurIn, CurOut>();
-		}
+		};
 
 		function fin<NewOut>(outputMapperFn: OutputMapper<C8, NewOut>): Executable<CurIn, NewOut, C8> {
 			if (_outputMapper !== undefined) {
@@ -308,36 +271,23 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 	// FINALIZE: Create a callable Executable from the Director
 	// --------------------
 	function makeExecutable<CurIn extends object, CurOut>(): Executable<CurIn, CurOut, C8> {
-		function applyProxies(c8: C8, recorder?: Recorder) {
+		const applyProxies = (c8: C8, recorder?: Recorder) => {
 			if (!recorder?.proxyHandlers) return;
 			for (const [key, handler] of Object.entries(recorder.proxyHandlers)) {
 				if (c8[key as keyof C8] !== undefined && c8[key as keyof C8] instanceof CoreBlueprint) {
 					c8[key as keyof C8] = new Proxy(c8[key as keyof C8] as object, handler) as C8[keyof C8];
 				}
 			}
-		}
+		};
 
 		const callDefinition = async (input?: CurIn): Promise<CurOut> => {
 			const { conduit, recorder } = await inputMapper(input);
+			vacuum.add({ c8: conduit, recorder, input, isTest: false });
 			applyProxies(conduit, recorder);
-			void conduit.utils.handleEvent('onEnter', {
-				c8: conduit,
-				event: 'onEnter',
-				input,
-				metadata,
-				recorder,
-				directorName,
-			});
+			void conduit.utils.handleEvent('onEnter', vacuum.payload);
 			const output = await runDirectorOutput<CurOut>(conduit, recorder, outputMapper, toActorScript);
-			void conduit.utils.handleEvent('onExit', {
-				c8: conduit,
-				event: 'onExit',
-				input,
-				metadata,
-				output,
-				recorder,
-				directorName,
-			});
+			vacuum.add({ c8: conduit, output });
+			void conduit.utils.handleEvent('onExit', vacuum.payload);
 			return output;
 		};
 
@@ -365,27 +315,13 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 				if (!recorder) {
 					return Promise.reject(new Error('Director: Integration testing requires a Recorder'));
 				}
+
+				vacuum.add({ c8: conduit, recorder, input: inputMock });
 				applyProxies(conduit, recorder);
-				void conduit.utils.handleEvent('onEnter', {
-					c8: conduit,
-					event: 'onEnter',
-					input: inputMock,
-					isTest: true,
-					metadata,
-					recorder,
-					directorName,
-				});
+				void conduit.utils.handleEvent('onEnter', vacuum.payload);
 				const output = await runDirectorOutput<CurOut>(conduit, recorder, outputMapper, testDirectorWithRecorder, true);
-				void conduit.utils.handleEvent('onExit', {
-					c8: conduit,
-					event: 'onExit',
-					input: inputMock,
-					isTest: true,
-					metadata,
-					output,
-					recorder,
-					directorName,
-				});
+				vacuum.add({ c8: conduit, output });
+				void conduit.utils.handleEvent('onExit', vacuum.payload);
 				return output;
 			};
 		}

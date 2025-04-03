@@ -52,53 +52,55 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 		this.#closed = true;
 	}
 
-	async handleEvent(event: keyof FullLifecycleBlueprint<C8>, payload: LifecyclePayload<C8>): Promise<void> {
+	async handleEvent(event: keyof FullLifecycleBlueprint<C8>, payload: Partial<LifecyclePayload<C8>>): Promise<void> {
 		const recorder = payload.recorder;
+		payload.event = event;
+		const payloadCopy = { ...payload } as LifecyclePayload<C8>;
 		for (const [key, layer] of this._allLifecycleBlueprintLayers()) {
 			try {
 				switch (event) {
 					case 'onEnter':
-						if (layer.onEnter) await layer.onEnter(payload, recorder);
+						if (layer.onEnter) await layer.onEnter(payloadCopy, recorder);
 						break;
 					case 'onExit':
-						if (layer.onExit) await layer.onExit(payload, recorder);
+						if (layer.onExit) await layer.onExit(payloadCopy, recorder);
 						break;
 
 					case 'onDirectorEnter':
-						if (layer.onDirectorEnter) await layer.onDirectorEnter(payload, recorder);
+						if (layer.onDirectorEnter) await layer.onDirectorEnter(payloadCopy, recorder);
 						break;
 					case 'onDirectorExit':
-						if (layer.onDirectorExit) await layer.onDirectorExit(payload, recorder);
+						if (layer.onDirectorExit) await layer.onDirectorExit(payloadCopy, recorder);
 						break;
 
 					case 'onActorEnter':
-						if (layer.onActorEnter) await layer.onActorEnter(payload, recorder);
+						if (layer.onActorEnter) await layer.onActorEnter(payloadCopy, recorder);
 						break;
 					case 'onActorExit':
-						if (layer.onActorExit) await layer.onActorExit(payload, recorder);
+						if (layer.onActorExit) await layer.onActorExit(payloadCopy, recorder);
 						break;
 					case 'onActorError':
-						if (layer.onActorError) await layer.onActorError(payload, recorder);
+						if (layer.onActorError) await layer.onActorError(payloadCopy, recorder);
 						break;
 
 					case 'onActorAssertStart':
-						if (layer.onActorAssertStart) await layer.onActorAssertStart(payload, recorder);
+						if (layer.onActorAssertStart) await layer.onActorAssertStart(payloadCopy, recorder);
 						break;
 					case 'onActorAssertSuccess':
-						if (layer.onActorAssertSuccess) await layer.onActorAssertSuccess(payload, recorder);
+						if (layer.onActorAssertSuccess) await layer.onActorAssertSuccess(payloadCopy, recorder);
 						break;
 					case 'onActorAssertFail':
-						if (layer.onActorAssertFail) await layer.onActorAssertFail(payload, recorder);
+						if (layer.onActorAssertFail) await layer.onActorAssertFail(payloadCopy, recorder);
 						break;
 
 					case 'onDirectorAssertStart':
-						if (layer.onDirectorAssertStart) await layer.onDirectorAssertStart(payload, recorder);
+						if (layer.onDirectorAssertStart) await layer.onDirectorAssertStart(payloadCopy, recorder);
 						break;
 					case 'onDirectorAssertSuccess':
-						if (layer.onDirectorAssertSuccess) await layer.onDirectorAssertSuccess(payload, recorder);
+						if (layer.onDirectorAssertSuccess) await layer.onDirectorAssertSuccess(payloadCopy, recorder);
 						break;
 					case 'onDirectorAssertFail':
-						if (layer.onDirectorAssertFail) await layer.onDirectorAssertFail(payload, recorder);
+						if (layer.onDirectorAssertFail) await layer.onDirectorAssertFail(payloadCopy, recorder);
 						break;
 
 					default:
