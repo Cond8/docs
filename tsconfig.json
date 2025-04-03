@@ -8,6 +8,8 @@
 		"lib": ["es2021"],
     /* Specify what JSX code is generated. */
 		"jsx": "react-jsx",
+		"jsxImportSource": "preact",
+
 
     /* Specify what module code is generated. */
 		"module": "es2022",
