@@ -1,5 +1,6 @@
 // src/conduits/AppConduit.ts
 import { CoreRedprint, StrictKVBlueprintSync, StrictObjectKVService } from '../_core';
+import { createVHXActors } from '../actors/vhx';
 
 export class AppConduit extends CoreRedprint {
     public locals = new StrictObjectKVService('locals');
@@ -8,3 +9,5 @@ export class AppConduit extends CoreRedprint {
 			super(body);
 		}
 }
+
+export const VHXActors = createVHXActors<AppConduit>()

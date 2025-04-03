@@ -9,9 +9,13 @@
     "start": "wrangler dev",
     "cf-typegen": "wrangler types"
   },
+  "dependencies": {
+    "jest-diff": "^29.7.0",
+    "preact": "^10.26.4",
+    "preact-render-to-string": "^6.5.13"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250403.0",
-    "jest-diff": "^29.7.0",
     "typescript": "^5.5.2",
     "wrangler": "^4.7.0"
   }

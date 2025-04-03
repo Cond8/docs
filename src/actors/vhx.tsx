@@ -1,13 +1,13 @@
 // src/actors/vhx.tsx
-import { C8RO, createRole } from '@cond8/core';
 import { h, JSX, VNode } from 'preact';
 import { render } from 'preact-render-to-string';
-import { VhxRedprint } from '../index.js';
+import { C8RO, createRole } from '../_core';
+import { VHXRedprint } from '../redprints/VHXRedprint';
 
-type JSXElementOrFn<T = JSX.Element> = T | ((c8: C8RO<VhxRedprint>) => T);
-type StringOrFn = string | ((c8: C8RO<VhxRedprint>) => string);
+type JSXElementOrFn<T = JSX.Element> = T | ((c8: C8RO<VHXRedprint>) => T);
+type StringOrFn = string | ((c8: C8RO<VHXRedprint>) => string);
 
-export const createVHXActors = <C8 extends VhxRedprint>() => {
+export const createVHXActors = <C8 extends VHXRedprint>() => {
 	const Title = (titleOrFn: StringOrFn) =>
 		createRole<C8>(
 			'VHXActors.Title',
