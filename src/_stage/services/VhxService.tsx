@@ -1,6 +1,6 @@
-// packages/blueprints/vhx-ui/src/Services/VhxService.tsx
+// src/_stage/services/VhxService.tsx
 import { JSX } from 'preact';
-import { StrictObjectKVService } from '../_core';
+import { StrictObjectKVService } from '../../_core';
 
 export class VHXService extends StrictObjectKVService<
   string,

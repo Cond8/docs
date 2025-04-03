@@ -1,4 +1,5 @@
-import { CoreRedprint } from "../_core";
+// src/_stage/redprints/VHXRedprint.ts
+import { CoreRedprint } from "../../_core";
 import { VHXService } from '../services/VhxService';
 
 export interface VHXRedprintImpl extends CoreRedprint {

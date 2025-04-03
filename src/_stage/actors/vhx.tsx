@@ -1,7 +1,7 @@
-// src/actors/vhx.tsx
+// src/_stage/actors/vhx.tsx
 import { h, JSX, VNode } from 'preact';
 import { render } from 'preact-render-to-string';
-import { C8RO, createRole } from '../_core';
+import { C8RO, createRole } from '../../_core';
 import { VHXRedprint } from '../redprints/VHXRedprint';
 
 type JSXElementOrFn<T = JSX.Element> = T | ((c8: C8RO<VHXRedprint>) => T);
