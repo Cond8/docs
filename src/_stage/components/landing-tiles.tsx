@@ -68,27 +68,22 @@ export const TileSection = () => (
       md:grid-cols-3 md:grid-rows-[repeat(12,minmax(0,1fr))]
     "
 	>
-		{/* Top Left */}
 		<div className="md:col-start-1 md:row-start-1 md:row-span-6">
 			<Tile idx={0} />
 		</div>
 
-		{/* DSLM */}
 		<div className="md:col-start-2 md:col-span-2 md:row-start-1 md:row-span-5">
 			<Tile idx={1} />
 		</div>
 
-		{/* Bottom Left */}
 		<div className="md:col-start-1 md:row-start-7 md:row-span-6">
 			<Tile idx={2} />
 		</div>
 
-		{/* Explore */}
 		<div className="md:col-start-2 md:row-start-6 md:row-span-7">
 			<Tile idx={3} />
 		</div>
 
-		{/* Philosophy */}
 		<div className="md:col-start-3 md:row-start-6 md:row-span-7">
 			<Tile idx={4} />
 		</div>

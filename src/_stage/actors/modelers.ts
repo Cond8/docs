@@ -24,12 +24,15 @@ export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
 					const mdx = c8.var(getKey) as string;
 					const compiled = await compile(mdx, {
 						outputFormat: 'function-body',
+						jsx: true,
+						jsxRuntime: 'automatic',
+						jsxImportSource: 'preact',
+						development: true,
 					});
 					const { default: MDXContentElement } = await run(compiled, {
 						Fragment,
 						jsx: h,
 						jsxs: h,
-						baseUrl: import.meta.url + '/src',
 					});
 
 					c8.var(setKey, MDXContentElement);

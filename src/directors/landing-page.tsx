@@ -22,7 +22,6 @@ LandingPageDirector(
 		<div className="bg-card text-card-foreground relative">
 			<div className="absolute inset-0 bg-[url('/landing-bg.png')] bg-cover bg-center opacity-30" />
 			<div className="relative z-10">
-				{/* Full-screen container for topbar and main */}
 				<div className="h-screen flex flex-col">
 					<Topbar landingPage />
 
@@ -66,7 +65,6 @@ LandingPageDirector(
 					</div>
 				</div>
 
-				{/* Footer appears below the full-screen container */}
 				<Footer />
 			</div>
 		</div>,
