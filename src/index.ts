@@ -1,6 +1,6 @@
 // src/index.ts
 import { DurableObject } from 'cloudflare:workers';
-import LandingPageDirector from './directors/landing-page'
+import LandingPageDirector from './directors/landing-page';
 
 export class MyDurableObject extends DurableObject {
 	/**
@@ -27,8 +27,9 @@ export class MyDurableObject extends DurableObject {
 }
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-
-		const html = await LandingPageDirector({ request, env, ctx});
-		return new Response(html);
+		const html = await LandingPageDirector({ request, env, ctx });
+		return new Response(html, {
+			headers: { 'Content-Type': 'text/html; charset=utf-8' },
+		});
 	},
 } satisfies ExportedHandler<Env>;

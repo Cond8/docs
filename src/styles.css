@@ -162,7 +162,7 @@
 
 @font-face {
   font-family: 'Alumni Sans';
-  src: url('/public/fonts/Alumni_Sans/AlumniSans-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Alumni_Sans/AlumniSans-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -170,7 +170,7 @@
 
 @font-face {
   font-family: 'Alumni Sans';
-  src: url('/public/fonts/Alumni_Sans/AlumniSans-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Alumni_Sans/AlumniSans-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
@@ -178,7 +178,7 @@
 
 @font-face {
   font-family: 'Crimson Pro';
-  src: url('/public/fonts/Crimson_Pro/CrimsonPro-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Crimson_Pro/CrimsonPro-VariableFont_wght.ttf') format('truetype');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -186,7 +186,7 @@
 
 @font-face {
   font-family: 'Crimson Pro';
-  src: url('/public/fonts/Crimson_Pro/CrimsonPro-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Crimson_Pro/CrimsonPro-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 200 900;
   font-style: italic;
   font-display: swap;
@@ -194,14 +194,14 @@
 
 @font-face {
   font-family: 'Geist';
-  src: url('/public/fonts/Geist/Geist-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Geist/Geist-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Geist Mono';
-  src: url('/public/fonts/Geist_Mono/GeistMono-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Geist_Mono/GeistMono-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-display: swap;
 }
