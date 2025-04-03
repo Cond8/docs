@@ -10,13 +10,23 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "jest-diff": "^29.7.0",
-    "preact": "^10.26.4",
-    "preact-render-to-string": "^6.5.13"
+	"class-variance-authority": "^0.7.1",
+	"clsx": "^2.1.1",
+	"jest-diff": "^29.7.0",
+	"preact": "^10.26.4",
+	"preact-render-to-string": "^6.5.13",
+	"tailwind-merge": "^3.1.0",
+	"mdx": "^0.3.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250403.0",
-    "typescript": "^5.5.2",
-    "wrangler": "^4.7.0"
+	"@cloudflare/workers-types": "^4.20250403.0",
+	"@types/mdx": "^2.0.13",
+	"prettier": "^3.5.3",
+	"prettier-plugin-organize-imports": "^4.1.0",
+	"prettier-plugin-packagejson": "^2.5.10",
+	"tailwindcss": "^4.0.17",
+	"tailwindcss-animate": "^1.0.7",
+	"typescript": "^5.5.2",
+	"wrangler": "^4.7.0"
   }
 }

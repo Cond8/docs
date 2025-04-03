@@ -1,5 +1,6 @@
 // src/_stage/components/mdx-components.tsx
-import { MDXComponents } from '@cond8/home';
+
+import { MDXComponents } from 'mdx/types';
 
 export const mdxComponents: MDXComponents = {
   h1: props => (

@@ -77,4 +77,4 @@ LandingPageDirector(
 	VHXActors.WrapHtml,
 )
 
-export default LandingPageDirector.fin(c8 => c8.var('html'));
+export default LandingPageDirector.fin(c8 => c8.var('html') as string);
