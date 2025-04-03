@@ -1,35 +1,34 @@
 // src/index.ts
 import { DurableObject } from 'cloudflare:workers';
+import { Hono } from 'hono';
 import LandingPageDirector from './directors/landing-page';
 
 export class MyDurableObject extends DurableObject {
-	/**
-	 * The constructor is invoked once upon creation of the Durable Object, i.e. the first call to
-	 * 	DurableObjectStub::get for a given identifier (no-op constructors can be omitted)
-	 *
-	 * @param ctx - The interface for interacting with Durable Object state
-	 * @param env - The interface to reference bindings declared in wrangler.jsonc
-	 */
 	constructor(ctx: DurableObjectState, env: Env) {
 		super(ctx, env);
 	}
 
-	/**
-	 * The Durable Object exposes an RPC method sayHello which will be invoked when when a Durable
-	 *  Object instance receives a request from a Worker via the same method invocation on the stub
-	 *
-	 * @param name - The name provided to a Durable Object instance from a Worker
-	 * @returns The greeting to be sent back to the Worker
-	 */
 	async sayHello(name: string): Promise<string> {
 		return `Hello, ${name}!`;
 	}
 }
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		const html = await LandingPageDirector({ request, env, ctx });
-		return new Response(html, {
-			headers: { 'Content-Type': 'text/html; charset=utf-8' },
-		});
-	},
-} satisfies ExportedHandler<Env>;
+
+// ---- App Setup ----
+
+type Env = {
+	MY_DURABLE_OBJECT: DurableObjectNamespace<MyDurableObject>;
+};
+
+const app = new Hono<{ Bindings: Env }>();
+
+// 🏠 Landing Page route
+app.get('/', async c => {
+	const html = await LandingPageDirector(c);
+	return c.html(html);
+});
+
+// ❌ 404 fallback
+app.notFound(c => c.text('Not Found', 404));
+
+// 🚀 Export
+export default app;
