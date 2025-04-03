@@ -19,27 +19,21 @@ export function serializeError(error: unknown): string {
 		message = String(error);
 	}
 
-	// Generate extra payload + recording sections
+	// Extra sections for C8Error payload and recording
 	let extraSections = '';
 	if (error instanceof C8Error) {
 		const payload = error.payload;
 		const recording = error.recording;
 
+		// Generate sections for each payload property using a helper
 		let payloadSections = '';
 		for (const key in payload) {
-			let value = payload[key];
-			if (value instanceof CoreRedprint) {
-				value = value.utils.readonly;
-				delete value.var;
+			if (payload[key] !== undefined) {
+				payloadSections += generatePayloadSection(key, payload[key]);
 			}
-			payloadSections += dedent`
-        <section class="payload">
-          <h2>${escapeHtml(key)}</h2>
-          <pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>
-        </section>
-      `;
 		}
 
+		// Generate sections for recording entries (see previous snippet)
 		let recordingSection = '';
 		if (Array.isArray(recording)) {
 			recordingSection = recording
@@ -63,7 +57,6 @@ export function serializeError(error: unknown): string {
                       </div>
                     `;
 									}
-
 									return `
                     <div class="cell">
                       <pre>${escapeHtml(JSON.stringify(item, null, 2))}</pre>
@@ -85,7 +78,7 @@ export function serializeError(error: unknown): string {
 				.join('\n');
 		}
 
-		extraSections = recordingSection + payloadSections;
+		extraSections = payloadSections + recordingSection;
 	}
 
 	return dedent`
@@ -136,14 +129,17 @@ export function serializeError(error: unknown): string {
       padding: 1rem;
     }
 
+    /* Default error sections */
     section:not(.payload):not(.recording) pre {
       border-left: 4px solid var(--accent);
     }
 
+    /* Payload sections */
     section.payload pre {
       border-left: 4px solid var(--payload);
     }
 
+    /* Recording sections */
     section.recording pre {
       border-left: 4px solid var(--recording);
     }
@@ -163,20 +159,22 @@ export function serializeError(error: unknown): string {
       margin-top: 0.5rem;
     }
 
-    section.recording .grid {
+    /* Styles for the grid in metadata */
+    .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
       margin-top: 1rem;
     }
 
-    section.recording .cell {
+    .cell {
       border: 1px solid var(--dim);
       background: #1c1c1c;
       padding: 1rem;
       overflow-x: auto;
     }
 
+    /* Scrollable stack trace for errors */
     .stack-scroll {
       max-height: 200px;
       overflow: auto;
@@ -184,6 +182,30 @@ export function serializeError(error: unknown): string {
       background: #1c1c1c;
       padding: 0.5rem;
       border: 1px solid var(--dim);
+    }
+
+    /* Styling for tables (used in the c8 section) */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    table, th, td {
+      border: 1px solid var(--dim);
+    }
+
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    .scrollbox {
+      max-height: 300px;
+      overflow: auto;
+      background: #1c1c1c;
+      border: 1px solid var(--dim);
+      margin-top: 0.5rem;
     }
   </style>
 </head>
@@ -215,6 +237,149 @@ export function serializeError(error: unknown): string {
 </html>`;
 }
 
+/**
+ * Generates a custom HTML section for each key in the payload.
+ */
+function generatePayloadSection(key: string, value: unknown): string {
+	switch (key) {
+		case 'c8':
+			if (value instanceof CoreRedprint) {
+				const readonlyObj = value.utils.readonly;
+
+				if (typeof readonlyObj === 'object' && readonlyObj !== null && !Array.isArray(readonlyObj)) {
+					const rows = Object.entries(readonlyObj)
+						.map(([outerKey, innerValue]) => {
+							if (typeof innerValue !== 'object' || innerValue === null || Array.isArray(innerValue)) {
+								// Not a nested record — show raw value
+								return `
+              <tr>
+                <td>${escapeHtml(outerKey)}</td>
+                <td>${escapeHtml(JSON.stringify(innerValue, null, 2))}</td>
+              </tr>
+            `;
+							}
+
+							const innerRows = Object.entries(innerValue)
+								.map(
+									([innerKey, val]) => `
+                <tr>
+                  <td>${escapeHtml(innerKey)}</td>
+                  <td>${escapeHtml(JSON.stringify(val, null, 2))}</td>
+                </tr>
+              `,
+								)
+								.join('');
+
+							return `
+                <tr>
+                  <td>${escapeHtml(outerKey)}</td>
+                  <td>
+                    <div class="scrollbox">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${innerRows}
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              `;
+						})
+						.join('');
+
+					return dedent`
+        <section class="payload">
+          <h2>${escapeHtml(key)}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </section>
+      `;
+				}
+			}
+
+			// Fallback: simple <pre> dump
+			return dedent`
+    <section class="payload">
+      <h2>${escapeHtml(key)}</h2>
+      <pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>
+    </section>
+  `;
+
+		case 'error':
+			if (value instanceof Error) {
+				return dedent`
+          <section class="payload">
+            <h2>Error</h2>
+            <div><strong>Name:</strong> ${escapeHtml(value.name)}</div>
+            <div><strong>Message:</strong> ${escapeHtml(value.message)}</div>
+            <div>
+              <strong>Stack:</strong>
+              <div class="stack-scroll">
+                <pre>${escapeHtml(value.stack ?? '')}</pre>
+              </div>
+            </div>
+          </section>
+        `;
+			}
+			return dedent`
+        <section class="payload">
+          <h2>${escapeHtml(key)}</h2>
+          <pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>
+        </section>
+      `;
+		case 'metadata':
+			if (Array.isArray(value)) {
+				const items = value
+					.map(
+						item => `
+            <div class="cell">
+              <pre>${escapeHtml(JSON.stringify(item, null, 2))}</pre>
+            </div>
+          `,
+					)
+					.join('');
+				return dedent`
+          <section class="payload">
+            <h2>Metadata</h2>
+            <div class="grid">${items}</div>
+          </section>
+        `;
+			}
+			return dedent`
+        <section class="payload">
+          <h2>${escapeHtml(key)}</h2>
+          <pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>
+        </section>
+      `;
+		// For all other keys, output the JSON representation
+		default:
+			return dedent`
+        <section class="payload">
+          <h2>${escapeHtml(key)}</h2>
+          <pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>
+        </section>
+      `;
+	}
+}
+
+/**
+ * Escapes HTML special characters.
+ */
 function escapeHtml(input?: string): string {
 	return input?.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') || '';
 }
