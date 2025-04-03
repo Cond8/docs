@@ -1,7 +1,12 @@
-import { createDirector } from '../Cond8';
+// src/directors/landing-page.tsx
+import { createDirector } from '../_core';
 import { AppConduit } from '../conduits/AppConduit';
 
-const landingPageDirector = createDirector('landing-page director').init(input => ({
+const LandingPageDirector = createDirector('landing-page director').init(input => ({
 	conduit: new AppConduit(input),
 
 }))
+
+LandingPageDirector(
+
+)
