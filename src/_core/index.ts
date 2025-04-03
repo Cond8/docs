@@ -17,5 +17,6 @@ export * from './Metadata/filter-meta-hooks.js';
 export * from './Metadata/hooks.js';
 export * from './Recorder/C8ProxyHandler.js';
 export * from './Recorder/create-recorder.js';
+export { LifecyclePayload } from './Recorder/Vacuum';
 export * from './utils/fn-promise-like.js';
 export * from './utils/fn-stringify.js';

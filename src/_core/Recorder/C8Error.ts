@@ -1,6 +1,6 @@
-import { LifecyclePayload } from '../CoreDomain/Blueprints/LifecycleBlueprint';
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint';
 import { RecorderEntry } from './create-recorder';
+import { LifecyclePayload } from './Vacuum';
 
 export class C8Error<C8 extends CoreRedprint> extends Error {
 	constructor(

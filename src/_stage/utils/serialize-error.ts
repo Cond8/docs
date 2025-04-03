@@ -1,3 +1,7 @@
+import dedent from 'dedent';
+import { CoreRedprint } from '../../_core';
+import { C8Error } from '../../_core/Recorder/C8Error';
+
 export function serializeError(error: unknown): string {
 	let name = 'Error';
 	let message = 'Unknown error';
@@ -15,7 +19,76 @@ export function serializeError(error: unknown): string {
 		message = String(error);
 	}
 
-	return `
+	// Generate extra payload + recording sections
+	let extraSections = '';
+	if (error instanceof C8Error) {
+		const payload = error.payload;
+		const recording = error.recording;
+
+		let payloadSections = '';
+		for (const key in payload) {
+			let value = payload[key];
+			if (value instanceof CoreRedprint) {
+				value = value.utils.readonly;
+				delete value.var;
+			}
+			payloadSections += dedent`
+        <section class="payload">
+          <h2>${escapeHtml(key)}</h2>
+          <pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>
+        </section>
+      `;
+		}
+
+		let recordingSection = '';
+		if (Array.isArray(recording)) {
+			recordingSection = recording
+				.map((entry, i) => {
+					const { ms, filter, metadata } = entry;
+
+					const metadataGrid = Array.isArray(metadata)
+						? `<div class="grid">${metadata
+								.map(item => {
+									if (item instanceof Error) {
+										return `
+                      <div class="cell">
+                        <h3>Error: ${escapeHtml(item.name)}</h3>
+                        <div><strong>Message:</strong> ${escapeHtml(item.message)}</div>
+                        <div>
+                          <strong>Stack:</strong>
+                          <div class="stack-scroll">
+                            <pre>${escapeHtml(item.stack ?? '')}</pre>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+									}
+
+									return `
+                    <div class="cell">
+                      <pre>${escapeHtml(JSON.stringify(item, null, 2))}</pre>
+                    </div>
+                  `;
+								})
+								.join('')}</div>`
+						: '';
+
+					return dedent`
+            <section class="recording">
+              <h2>Recording #${i + 1}</h2>
+              <div><strong>ms:</strong> ${ms}</div>
+              <div><strong>filter:</strong> ${escapeHtml(filter)}</div>
+              ${metadataGrid}
+            </section>
+          `;
+				})
+				.join('\n');
+		}
+
+		extraSections = recordingSection + payloadSections;
+	}
+
+	return dedent`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +103,8 @@ export function serializeError(error: unknown): string {
       --background: #0f0f0f;
       --foreground: #f8f8f8;
       --accent: #ff003c;
+      --payload: #00c851;
+      --recording: #ffeb3b;
       --dim: #999;
       --font: 'Courier New', monospace;
     }
@@ -61,6 +136,18 @@ export function serializeError(error: unknown): string {
       padding: 1rem;
     }
 
+    section:not(.payload):not(.recording) pre {
+      border-left: 4px solid var(--accent);
+    }
+
+    section.payload pre {
+      border-left: 4px solid var(--payload);
+    }
+
+    section.recording pre {
+      border-left: 4px solid var(--recording);
+    }
+
     h2 {
       font-size: 1.2rem;
       color: var(--foreground);
@@ -73,8 +160,30 @@ export function serializeError(error: unknown): string {
       overflow-x: auto;
       white-space: pre-wrap;
       word-break: break-word;
-      border-left: 4px solid var(--accent);
       margin-top: 0.5rem;
+    }
+
+    section.recording .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    section.recording .cell {
+      border: 1px solid var(--dim);
+      background: #1c1c1c;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .stack-scroll {
+      max-height: 200px;
+      overflow: auto;
+      margin-top: 0.5rem;
+      background: #1c1c1c;
+      padding: 0.5rem;
+      border: 1px solid var(--dim);
     }
   </style>
 </head>
@@ -100,10 +209,12 @@ export function serializeError(error: unknown): string {
 			: ''
 	}
 
+  ${extraSections}
+
 </body>
 </html>`;
 }
 
-function escapeHtml(input: string): string {
-	return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;/g  &gt;');
+function escapeHtml(input?: string): string {
+	return input?.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') || '';
 }

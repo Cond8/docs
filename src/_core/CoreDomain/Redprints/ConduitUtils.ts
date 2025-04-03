@@ -3,8 +3,9 @@ import { diff } from 'jest-diff';
 import { FullLifecycleBlueprint } from '../../Lifecycle/LifecycleEventHooks';
 import { C8Error } from '../../Recorder/C8Error';
 import { RecorderEntry } from '../../Recorder/create-recorder';
+import { LifecyclePayload } from '../../Recorder/Vacuum';
 import { CoreBlueprint } from '../Blueprints/CoreBlueprint.js';
-import { LifecycleBlueprint, LifecyclePayload } from '../Blueprints/LifecycleBlueprint.js';
+import { LifecycleBlueprint } from '../Blueprints/LifecycleBlueprint.js';
 import { CoreRedprint } from './CoreRedprint.js';
 
 export type ReadonlyState = {
