@@ -1,6 +1,6 @@
 // src/_core/Director/create-director.ts
+import { createActor, StagedActor } from '../Actor/create-actor.js';
 import { ActorScript, ActorScriptWithTest } from '../Actor/create-role.js';
-import { stageActor, StagedActor } from '../Actor/stage-actor.js';
 import { CoreBlueprint } from '../CoreDomain/Blueprints/CoreBlueprint.js';
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { filterMetaHooksDirector } from '../Metadata/filter-meta-hooks.js';
@@ -59,15 +59,13 @@ export interface Executable<In extends object, Out, C8 extends CoreRedprint = Co
 }
 
 export function createDirector<C8 extends CoreRedprint>(directorName: string, ...metadata: unknown[]): Director<C8> {
-	const vacuum = new Vacuum<C8>({ directorName, metadata });
-
 	let _inputMapper: ((input?: unknown) => CouldPromise<Input<C8>>) | undefined;
 	let _outputMapper: ((readonlyConduit: C8RO<C8>, recording?: RecorderEntry[]) => CouldPromise<unknown>) | undefined;
 
 	const stagedActors: StagedActor<C8>[] = [];
 	const { hooks, inputMock, assertFn } = filterMetaHooksDirector(...metadata);
 
-	vacuum.add({ hooks, input: inputMock, assertFn: fnStringify(assertFn) });
+	const vacuum = new Vacuum<C8>({ directorName, metadata, hooks, input: inputMock, assertFn: fnStringify(assertFn) });
 
 	const inputMapper = (input?: unknown): CouldPromise<Input<C8>> => {
 		if (_inputMapper === undefined) {
@@ -112,13 +110,11 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 				void outputC8.utils.handleEvent('onDirectorAssertSuccess', vacuum.payload);
 			} catch (error) {
 				const normalizedError = error instanceof Error ? error : new Error(JSON.stringify(error));
-
-				vacuum.add({ error: normalizedError });
-
-				void outputC8.utils.handleEvent('onDirectorAssertFail', vacuum.payload);
+				recorder?.('SCENE ASSERT ERROR', normalizedError);
+				void outputC8.utils.handleEvent('onDirectorAssertFail', vacuum.add({ error: normalizedError }));
 
 				if (isTest) {
-					return Promise.reject(normalizedError);
+					throw outputC8.utils.close(vacuum.payload, normalizedError, recorder?.recording);
 				}
 			}
 		}
@@ -130,9 +126,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 	// TEST RUNNER
 	// --------------------
 	const testDirectorWithRecorder = async (inputC8: C8, recorder: Recorder): Promise<C8> => {
-		vacuum.add({ c8: inputC8, isTest: true });
-
-		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.payload);
+		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.add({ c8: inputC8, isTest: true }));
 
 		const outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
 			const c8 = await prevC8Promise;
@@ -144,9 +138,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 			return actor(c8, recorder);
 		}, Promise.resolve(inputC8));
 
-		vacuum.add({ c8: outputC8 });
-
-		void outputC8.utils.handleEvent('onDirectorExit', vacuum.payload);
+		void outputC8.utils.handleEvent('onDirectorExit', vacuum.add({ c8: outputC8 }));
 
 		return outputC8;
 	};
@@ -155,9 +147,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 	// ACTOR SCRIPT & DIRECTOR RUNTIME
 	// --------------------
 	const toActorScript: ActorScript<C8> = async (inputC8: C8, recorder?: Recorder) => {
-		vacuum.add({ c8: inputC8, isTest: false });
-
-		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.payload);
+		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.add({ c8: inputC8, isTest: false }));
 
 		const outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
 			const c8 = await prevC8Promise;
@@ -165,9 +155,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 			return actor(c8, recorder);
 		}, Promise.resolve(inputC8));
 
-		vacuum.add({ c8: outputC8 });
-
-		void outputC8.utils.handleEvent('onDirectorExit', vacuum.payload);
+		void outputC8.utils.handleEvent('onDirectorExit', vacuum.add({ c8: outputC8 }));
 
 		return outputC8;
 	};
@@ -193,7 +181,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 			return Object.assign(base, { test: testDirectorWithRecorder });
 		},
 		get AsActor() {
-			const base = stageActor<C8>(directorName, toActorScript, ...metadata);
+			const base = createActor<C8>(directorName, toActorScript, ...metadata);
 			return Object.assign(base, { test: testDirectorWithRecorder });
 		},
 	});
@@ -282,12 +270,10 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 
 		const callDefinition = async (input?: CurIn): Promise<CurOut> => {
 			const { conduit, recorder } = await inputMapper(input);
-			vacuum.add({ c8: conduit, recorder, input, isTest: false });
 			applyProxies(conduit, recorder);
-			void conduit.utils.handleEvent('onEnter', vacuum.payload);
+			void conduit.utils.handleEvent('onEnter', vacuum.add({ c8: conduit, recorder, input, isTest: false }));
 			const output = await runDirectorOutput<CurOut>(conduit, recorder, outputMapper, toActorScript);
-			vacuum.add({ c8: conduit, output });
-			void conduit.utils.handleEvent('onExit', vacuum.payload);
+			void conduit.utils.handleEvent('onExit', vacuum.add({ c8: conduit, output }));
 			return output;
 		};
 
@@ -316,12 +302,10 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 					return Promise.reject(new Error('Director: Integration testing requires a Recorder'));
 				}
 
-				vacuum.add({ c8: conduit, recorder, input: inputMock });
 				applyProxies(conduit, recorder);
-				void conduit.utils.handleEvent('onEnter', vacuum.payload);
+				void conduit.utils.handleEvent('onEnter', vacuum.add({ c8: conduit, recorder, input: inputMock }));
 				const output = await runDirectorOutput<CurOut>(conduit, recorder, outputMapper, testDirectorWithRecorder, true);
-				vacuum.add({ c8: conduit, output });
-				void conduit.utils.handleEvent('onExit', vacuum.payload);
+				void conduit.utils.handleEvent('onExit', vacuum.add({ c8: conduit, output }));
 				return output;
 			};
 		}

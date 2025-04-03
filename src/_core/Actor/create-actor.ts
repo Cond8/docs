@@ -2,6 +2,7 @@
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { filterMetaHooksActor } from '../Metadata/filter-meta-hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';
+import { Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
 import { ActorScript, ActorScriptWithTest } from './create-role.js';
@@ -13,110 +14,61 @@ export type StagedActor<C8 extends Partial<CoreRedprint>> = {
 
 export type ActorTest<C8 extends CoreRedprint> = (recorder: Recorder, c8Mock?: C8) => CouldPromise<C8>;
 
-export const stageActor = <C8 extends CoreRedprint>(
+export const createActor = <C8 extends CoreRedprint>(
 	actorName: string,
 	actorScript: ActorScript<C8> | ActorScriptWithTest<C8>,
 	...metadata: unknown[]
 ): StagedActor<C8> => {
 	const { inputMock, assertFn } = filterMetaHooksActor<C8>(...metadata);
+	const vacuum = new Vacuum<C8>({
+		input: inputMock,
+		assertFn: fnStringify(assertFn),
+		actorName,
+		metadata,
+		actorFn: fnStringify(actorScript),
+	});
 
 	const runActorScript = async (inputC8: C8, recorder: Recorder | undefined, isTest: boolean): Promise<C8> => {
-		await inputC8.utils.handleEvent('onActorEnter', {
-			event: 'onActorEnter',
-			isTest,
-			actorName,
-			c8: inputC8,
-			recorder,
-			metadata,
-			actorFn: fnStringify(actorScript),
-		});
+		void inputC8.utils.handleEvent('onActorEnter', vacuum.payload);
 
-		const outputC8 = inputC8;
 		try {
-			await actorScript(inputC8, recorder);
+			const outputC8 = await actorScript(inputC8, recorder);
+			void outputC8.utils.handleEvent('onActorExit', vacuum.add({ c8: outputC8 }));
+
+			return outputC8;
 		} catch (error) {
 			const normalizedError = error instanceof Error ? error : new Error(JSON.stringify(error));
+			recorder?.('ACTOR ERROR', normalizedError);
+			void inputC8.utils.handleEvent('onActorError', vacuum.add({ error: normalizedError }));
 
-			await outputC8.utils.handleEvent('onActorError', {
-				event: 'onActorError',
-				isTest,
-				actorName,
-				c8: outputC8,
-				recorder,
-				error: normalizedError,
-				metadata,
-				actorFn: fnStringify(actorScript),
-			});
-
-			if (isTest) {
-				throw normalizedError;
-			} else {
-				inputC8.utils.close();
-				throw normalizedError;
-			}
+			throw inputC8.utils.close(vacuum.payload, normalizedError, recorder?.recording);
 		}
-
-		await outputC8.utils.handleEvent('onActorExit', {
-			event: 'onActorExit',
-			isTest,
-			actorName,
-			c8: outputC8,
-			recorder,
-			metadata,
-			actorFn: fnStringify(actorScript),
-		});
-
-		return outputC8;
 	};
 
 	const runAssertions = async (c8: C8, recorder: Recorder | undefined, isTest: boolean): Promise<void> => {
 		if (!assertFn) return;
 
-		await c8.utils.handleEvent('onActorAssertStart', {
-			actorName,
-			assertFn: fnStringify(assertFn),
-			c8,
-			event: 'onActorAssertStart',
-			isTest,
-			metadata,
-			recorder,
-		});
+		void c8.utils.handleEvent('onActorAssertStart', vacuum.payload);
 
 		try {
 			assertFn(c8);
-
-			await c8.utils.handleEvent('onActorAssertSuccess', {
-				actorName,
-				assertFn: fnStringify(assertFn),
-				c8,
-				event: 'onActorAssertSuccess',
-				isTest,
-				metadata,
-				recorder,
-			});
+			void c8.utils.handleEvent('onActorAssertSuccess', vacuum.payload);
 		} catch (error) {
 			const normalizedError = error instanceof Error ? error : new Error(JSON.stringify(error));
-
-			await c8.utils.handleEvent('onActorAssertFail', {
-				actorName,
-				assertFn: fnStringify(assertFn),
-				c8,
-				error: normalizedError,
-				event: 'onActorAssertFail',
-				isTest,
-				metadata,
-				recorder,
-			});
+			recorder?.('ACTOR ASSERT ERROR', normalizedError);
+			void c8.utils.handleEvent('onActorAssertFail', vacuum.add({ error: normalizedError }));
 
 			if (isTest) {
-				throw normalizedError;
+				throw c8.utils.close(vacuum.payload, normalizedError, recorder?.recording);
 			}
 		}
 	};
 
 	const actorFn = async (inputC8: C8, recorder?: Recorder) => {
+		vacuum.add({ c8: inputC8, isTest: false, recorder });
 		const outputC8 = await runActorScript(inputC8, recorder, false);
-		await runAssertions(outputC8, recorder, false);
+		vacuum.add({ c8: outputC8 });
+		void runAssertions(outputC8, recorder, false);
 		return outputC8;
 	};
 
@@ -135,8 +87,11 @@ export const stageActor = <C8 extends CoreRedprint>(
 	}
 
 	const testUnit: ActorTest<C8> = async (recorder: Recorder, givenC8?: C8) => {
+		vacuum.add({ isTest: true, recorder });
 		const inputC8 = ensure(givenC8 ?? inputMock);
+		vacuum.add({ c8: inputC8 });
 		const outputC8 = await runActorScript(inputC8, recorder, true);
+		vacuum.add({ c8: outputC8 });
 		await runAssertions(outputC8, recorder, true);
 		return outputC8;
 	};

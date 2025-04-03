@@ -8,10 +8,11 @@ export class Vacuum<C8 extends CoreRedprint> {
 		return this._collected as LifecyclePayload<C8>;
 	}
 
-	add(collection: Partial<LifecyclePayload>) {
+	add(collection: Partial<LifecyclePayload>): LifecyclePayload<C8> {
 		this._collected = {
 			...this._collected,
 			...collection,
 		};
+		return this.payload;
 	}
 }

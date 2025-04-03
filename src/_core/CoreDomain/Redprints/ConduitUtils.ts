@@ -1,6 +1,8 @@
 // src/_core/CoreDomain/Redprints/ConduitUtils.ts
 import { diff } from 'jest-diff';
 import { FullLifecycleBlueprint } from '../../Lifecycle/LifecycleEventHooks';
+import { C8Error } from '../../Recorder/C8Error';
+import { RecorderEntry } from '../../Recorder/create-recorder';
 import { CoreBlueprint } from '../Blueprints/CoreBlueprint.js';
 import { LifecycleBlueprint, LifecyclePayload } from '../Blueprints/LifecycleBlueprint.js';
 import { CoreRedprint } from './CoreRedprint.js';
@@ -45,11 +47,13 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 		return result ?? '[No changes in diff]';
 	}
 
-	close(): void {
+	close(payload: LifecyclePayload<C8>, error?: Error, recording?: RecorderEntry[]): C8Error<C8> | void {
 		for (const [, layer] of this._allBlueprintLayers()) {
 			layer.close();
 		}
 		this.#closed = true;
+		if (!error) return;
+		return new C8Error<C8>(error, payload, recording);
 	}
 
 	async handleEvent(event: keyof FullLifecycleBlueprint<C8>, payload: Partial<LifecyclePayload<C8>>): Promise<void> {

@@ -1,11 +1,11 @@
 // src/_core/index.ts
+export * from './Actor/create-actor.js';
 export * from './Actor/create-role.js';
-export * from './Actor/stage-actor.js';
 export * from './CoreDomain/Blueprints/CoreBlueprint.js';
 export * from './CoreDomain/Blueprints/LifecycleBlueprint.js';
-export * from './CoreDomain/Blueprints/StrictKVBlueprint.js'
 export * from './CoreDomain/Blueprints/StrictKVBlueprint-Async.js';
 export * from './CoreDomain/Blueprints/StrictKVBlueprint-Sync.js';
+export * from './CoreDomain/Blueprints/StrictKVBlueprint.js';
 export * from './CoreDomain/lib/actors.js';
 export * from './CoreDomain/lib/roles.js';
 export * from './CoreDomain/Redprints/ConduitUtils.js';
