@@ -1,12 +1,12 @@
 import { Context } from 'hono';
 import { z } from 'zod';
-import { createDirector } from '../_core';
+import { createDirector, createRecorder } from '../_core';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { DocsSidebar } from '../_stage/components/docs-sidebar';
 import { Footer } from '../_stage/components/footer';
-import { mdxComponents } from '../_stage/components/mdx-components';
+import { mdComponents } from '../_stage/components/md-components';
 import { Topbar } from '../_stage/components/topbar';
-import { AppConduit, FetcherActors, GuardActors, ModelerActors, StylingActors, VHXActors } from '../_stage/conduits/AppConduit';
+import { AppConduit, FetcherActors, GuardActors, ModelerActors, VHXActors } from '../_stage/conduits/AppConduit';
 
 const slugToTitle = (slug: string): string =>
 	slug
@@ -19,6 +19,7 @@ const slugToTitle = (slug: string): string =>
 const DocsPages = createDirector<AppConduit>('docs-page director', '').init<Context>(c => {
 	return {
 		conduit: new AppConduit(c),
+		recorder: createRecorder(),
 	};
 });
 
@@ -53,12 +54,10 @@ DocsPages(
 		</div>,
 	),
 
-	FetcherActors.File.Get('param slug', slug => `http://localhost:8787/files/docs/${slug}.mdx`).Set('MDX'),
-	ModelerActors.MDX.Get('MDX').MDXContentElement.Set('MDX'),
-	StylingActors.MDXContentElement.Get('MDX').Do(mdxComponents).Set('MDX'),
-
-	VHXActors.Slot('content', c8 => c8.var('MDX')),
-	VHXActors.WrapHtml,
+	FetcherActors.File.Get('param slug', slug => `http://localhost:8787/files/docs/${slug}.md`).Set('markdown'),
+	ModelerActors.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
+	VHXActors.Slot('content', c8 => c8.var('markdown jsx')),
+	VHXActors.WrapHtml.Set('html'),
 );
 
 export default DocsPages.fin<string>(c8 => c8.var('html'));

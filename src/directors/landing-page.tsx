@@ -69,7 +69,7 @@ LandingPageDirector(
 			</div>
 		</div>,
 	),
-	VHXActors.WrapHtml,
+	VHXActors.WrapHtml.Set('html'),
 );
 
 export default LandingPageDirector.fin(c8 => c8.var('html') as string);

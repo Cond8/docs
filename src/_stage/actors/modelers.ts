@@ -1,7 +1,11 @@
-import { compile, run } from '@mdx-js/mdx';
 import { Context } from 'hono';
-import { Fragment, h } from 'preact';
-import { CoreRedprint } from '../../_core';
+import { JSX } from 'preact';
+import remarkParse from 'remark-parse';
+import { unified } from 'unified';
+import { CoreRedprint, createRole } from '../../_core';
+import { Components } from '../components/md-components';
+import remarkSlots from '../utils/markdown/remark-slots';
+import { transformToJSX } from '../utils/markdown/transform-to-jsx';
 
 export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
 	const String = {
@@ -17,33 +21,35 @@ export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
 		}),
 	};
 
-	const MDX = {
+	const MD = {
 		Get: (getKey: string) => ({
-			MDXContentElement: {
-				Set: (setKey: string) => async (c8: C8) => {
-					const mdx = c8.var(getKey) as string;
-					const compiled = await compile(mdx, {
-						outputFormat: 'function-body',
-						jsx: true,
-						jsxRuntime: 'automatic',
-						jsxImportSource: 'preact',
-						development: true,
-					});
-					const { default: MDXContentElement } = await run(compiled, {
-						Fragment,
-						jsx: h,
-						jsxs: h,
-					});
+			Do: (mdComponents: Components) => ({
+				Set: (setKey: string) =>
+					createRole<C8>(
+						'From MD to JSX',
+						'this is supposed to change markdownString into MDAST and then into JSX',
+						'the remark slots plugin is used to parse custom slots',
+					)(async c8 => {
+						const markdownString =
+							'# Welcome to My Site\nThis is a **bold** paragraph with some *italic* text.\n\n## Subsection\n- Item 1\n- Item 2\n\n> A blockquote here';
 
-					c8.var(setKey, MDXContentElement);
-					return c8;
-				},
-			},
+						const file = await unified()
+							.use(remarkParse) // Markdown → MDAST
+							.use(remarkSlots) // MDAST → MDAST (custom slot parsing)
+							.use(transformToJSX(mdComponents)) // MDAST → JSX (your custom renderer)
+							.process(markdownString);
+
+						const markdownJsx = file.result as JSX.Element;
+
+						c8.var(setKey, markdownJsx);
+						return c8;
+					}),
+			}),
 		}),
 	};
 
 	return {
 		String,
-		MDX,
+		MD,
 	};
 };

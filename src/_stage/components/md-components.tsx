@@ -1,7 +1,13 @@
 // src/_stage/components/mdx-components.tsx
-import { MDXComponents } from 'mdx/types';
+import { JSX } from 'preact';
 
-export const mdxComponents: MDXComponents = {
+type IntrinsicTag = keyof JSX.IntrinsicElements;
+
+export type Components = Partial<
+	Record<IntrinsicTag, (props: Record<string, any> & { children?: JSX.Element | JSX.Element[] }) => JSX.Element>
+>;
+
+export const mdComponents: Components = {
 	h1: props => <h1 className="font-title text-5xl lg:text-6xl tracking-tight my-6 lg:my-10" {...props} />,
 	h2: props => <h2 className="font-subtitle text-4xl lg:text-5xl tracking-tight mt-12 mb-6 border-b-4 border-accent pb-2" {...props} />,
 	h3: props => <h3 className="text-2xl font-bold tracking-wide mt-16 mb-6 text-secondary" {...props} />,

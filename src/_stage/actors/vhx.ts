@@ -3,7 +3,7 @@ import { JSX } from 'preact';
 import { C8RO, CoreRedprint } from '../../_core';
 import { VHXService } from '../services/VhxService';
 
-export type VHXRedprint<T = object> = CoreRedprint<T> & {
+export type VHXRedprint<T extends object = object> = CoreRedprint<T> & {
 	vhx: VHXService;
 };
 
@@ -48,11 +48,13 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		return c8;
 	};
 
-	const WrapHtml = (c8: C8) => {
-		const result = c8.vhx.wrapWithHtml();
+	const WrapHtml = {
+		Set: (setKey: string) => (c8: C8) => {
+			const result = c8.vhx.wrapWithHtml();
 
-		c8.var('html', `<!DOCTYPE html>${result}`);
-		return c8;
+			c8.var(setKey, `<!DOCTYPE html>${result}`);
+			return c8;
+		},
 	};
 
 	return {

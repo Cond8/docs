@@ -4,7 +4,7 @@ import { StrictKVBlueprintSync } from '../Blueprints/StrictKVBlueprint-Sync.js';
 import { StrictKVBlueprint } from '../Blueprints/StrictKVBlueprint.js';
 import { ConduitUtils } from './ConduitUtils.js';
 
-export abstract class CoreRedprint<T> {
+export abstract class CoreRedprint<T extends object = object> {
 	public readonly utils: ConduitUtils<this>;
 
 	public abstract locals: StrictKVBlueprintSync;
