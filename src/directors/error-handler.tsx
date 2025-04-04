@@ -5,6 +5,7 @@ import { DefaultHeaders } from '../_stage/components/default-headers';
 import { ErrorHeader } from '../_stage/components/error-header';
 import { ErrorHero } from '../_stage/components/error-hero';
 import { ErrorPayload } from '../_stage/components/error-payload';
+import { RecordingBlock } from '../_stage/components/recording-block';
 import { DocsConduit } from '../_stage/conduits/DocsConduit';
 import { ErrorActors, ErrorConduit } from '../_stage/conduits/ErrorConduit';
 import { ErrorBodyParser } from './error-directors/body-parser';
@@ -49,6 +50,7 @@ ErrorHandlerDirector(
 	),
 
 	ErrorActors.VHX.Slot('Error', c8 => <ErrorHero error={c8.var('error')} />),
+	ErrorActors.VHX.Slot('Recording', c8 => <RecordingBlock recording={c8.var('recording')} />),
 	ErrorActors.VHX.Slot('Payload', c8 => <ErrorPayload payload={c8.var('payload')} />),
 	ErrorActors.VHX.Finalize.Set('html'),
 );
