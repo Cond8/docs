@@ -1,8 +1,8 @@
 // src/_core/Recorder/Vacuum.ts
 import { CoreRedprint } from '../CoreDomain';
-import { FullLifecycleBlueprint } from '../Lifecycle/LifecycleEventHooks';
 import { MetaHook } from '../Metadata/hooks';
-import { Recorder } from './create-recorder';
+import { Recorder } from '../Recorder/create-recorder';
+import { FullLifecycleBlueprint } from './LifecycleEventHooks';
 
 export interface LifecyclePayload<C8 extends CoreRedprint = CoreRedprint> {
 	event: keyof FullLifecycleBlueprint<C8>;

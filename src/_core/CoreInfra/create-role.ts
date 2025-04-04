@@ -1,8 +1,8 @@
 // src/_core/Actor/create-role.ts
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
+import { LifecyclePayload } from '../Lifecycle/Vacuum';
 import { MetaHook } from '../Metadata/hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';
-import { LifecyclePayload } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { createActor, StagedActor } from './create-actor.js';
 

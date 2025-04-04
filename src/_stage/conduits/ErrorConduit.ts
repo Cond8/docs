@@ -1,18 +1,20 @@
 // src/_stage/conduits/AppConduit.ts
 import { CoreRedprint, StrictObjectKVService } from '../../_core';
 import { C8Error } from '../../_core/Recorder/C8Error';
+import { createModelerActors } from '../actors/modelers';
 import { VHXRedprint } from '../actors/vhx';
-import { LifeCycleService } from '../services/LifeCycleService';
 import { VHXService } from '../services/VhxService';
-import { AppConduit } from './AppConduit';
+import { DocsConduit } from './DocsConduit';
 
-export class ErrorConduit extends CoreRedprint<C8Error<AppConduit>> implements VHXRedprint<C8Error<AppConduit>> {
+export class ErrorConduit extends CoreRedprint<C8Error<DocsConduit>> implements VHXRedprint<C8Error<DocsConduit>> {
 	public locals = new StrictObjectKVService('locals');
 	public vhx = new VHXService('vhx');
 
-	private lifeCycle = new LifeCycleService('lifeCycle');
-
-	constructor(error: C8Error<AppConduit>) {
+	constructor(error: C8Error<DocsConduit>) {
 		super(error);
 	}
 }
+
+export const ErrorActors = {
+	Modeler: createModelerActors<ErrorConduit>(),
+};

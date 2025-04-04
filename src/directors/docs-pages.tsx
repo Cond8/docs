@@ -7,7 +7,7 @@ import { DocsSidebar } from '../_stage/components/docs-sidebar';
 import { Footer } from '../_stage/components/footer';
 import { mdComponents } from '../_stage/components/md-components';
 import { Topbar } from '../_stage/components/topbar';
-import { AppConduit, FetcherActors, GuardActors, ModelerActors, VHXActors } from '../_stage/conduits/AppConduit';
+import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
 const slugToTitle = (slug: string): string =>
 	slug
@@ -17,23 +17,22 @@ const slugToTitle = (slug: string): string =>
 		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
 
-const DocsPages = createDirector<AppConduit>('docs-page director', '').init<Context>(c => {
+const DocsPages = createDirector<DocsConduit>('docs-page director', '').init<Context>(c => {
 	return {
-		conduit: new AppConduit(c),
+		conduit: new DocsConduit(c),
 		recorder: createRecorder(),
 	};
 });
 
 DocsPages(
-	GuardActors.Params.Get({ slug: z.string().default('what-is-cond8') }).Set(n => `param ${n}`),
-	ModelerActors.String.Get('param slug').Do(slugToTitle).Set('title'),
-	VHXActors.Title.Get('title', title => `Cond8 Docs - ${title}`),
-	VHXActors.Header(<DefaultHeaders />),
-	FetcherActors.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
-	ModelerActors.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
-	VHXActors.Slot('content', c8 => c8.var('markdown jsx')),
-
-	VHXActors.Template(
+	DocsActors.Guard.Params.Check({ slug: z.string().default('what-is-cond8') }).SetEntries((n, v) => [`param ${n}`, v]),
+	DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
+	DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
+	DocsActors.Fetcher.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
+	DocsActors.Modeler.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
+	DocsActors.VHX.Slot('content', c8 => c8.var('markdown jsx')),
+	DocsActors.VHX.Header(<DefaultHeaders />),
+	DocsActors.VHX.Template(
 		<div className="min-h-screen flex flex-col">
 			<div
 				className="
@@ -58,7 +57,7 @@ DocsPages(
 		</div>,
 	),
 
-	VHXActors.Finalize.Set('html'),
+	DocsActors.VHX.Finalize.Set('html'),
 );
 
 export default DocsPages.fin<string>(c8 => c8.var('html'));

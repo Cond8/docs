@@ -1,7 +1,7 @@
 // src/_core/Recorder/C8Error.ts
 import { CoreRedprint } from '../CoreDomain';
+import { LifecyclePayload } from '../Lifecycle/Vacuum';
 import { RecorderEntry } from './create-recorder';
-import { LifecyclePayload } from './Vacuum';
 
 export class C8Error<C8 extends CoreRedprint> extends Error {
 	constructor(

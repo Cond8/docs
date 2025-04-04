@@ -1,8 +1,8 @@
 // src/_core/Lifecycle/LifecycleEventHooks.ts
 import { CoreRedprint } from '../CoreDomain';
 import { Recorder } from '../Recorder/create-recorder';
-import { LifecyclePayload } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
+import { LifecyclePayload } from './Vacuum';
 
 export abstract class FullLifecycleBlueprint<C8 extends CoreRedprint = CoreRedprint>
 	implements

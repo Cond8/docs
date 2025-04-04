@@ -1,9 +1,9 @@
 // src/_core/Director/create-director.ts
 import { CoreBlueprint, CoreRedprint } from '../CoreDomain';
+import { LifecyclePayload, Vacuum } from '../Lifecycle/Vacuum';
 import { filterMetaHooksDirector } from '../Metadata/filter-meta-hooks.js';
 import { MetaHook } from '../Metadata/hooks.js';
 import { Recorder, RecorderEntry } from '../Recorder/create-recorder.js';
-import { LifecyclePayload, Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
 import { createActor, StagedActor } from './create-actor.js';

@@ -1,8 +1,8 @@
 // src/_core/Actor/create-actor.ts
 import { CoreRedprint } from '../CoreDomain';
+import { LifecyclePayload, Vacuum } from '../Lifecycle/Vacuum';
 import { filterMetaHooksActor } from '../Metadata/filter-meta-hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';
-import { LifecyclePayload, Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
 import { ActorScript, ActorScriptWithTest } from './create-role.js';

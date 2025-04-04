@@ -1,5 +1,4 @@
 // src/_stage/actors/modelers.ts
-import { Context } from 'hono';
 import { JSX } from 'preact';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
@@ -8,7 +7,7 @@ import { Components } from '../components/md-components';
 import remarkSlots from '../utils/markdown/remark-slots';
 import { transformToJSX } from '../utils/markdown/transform-to-jsx';
 
-export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
+export const createModelerActors = <C8 extends CoreRedprint>() => {
 	const String = {
 		Get: (getKey: string) => ({
 			Do: (action: (str: string) => string) => ({
@@ -48,8 +47,10 @@ export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
 		}),
 	};
 
-	return {
+	const Default = (callback: (c8: C8) => C8) => (c8: C8) => callback(c8);
+
+	return Object.assign(Default, {
 		String,
 		MD,
-	};
+	});
 };

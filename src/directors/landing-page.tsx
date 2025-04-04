@@ -5,20 +5,20 @@ import { DefaultHeaders } from '../_stage/components/default-headers';
 import { Footer } from '../_stage/components/footer';
 import { TileSection } from '../_stage/components/landing-tiles';
 import { Topbar } from '../_stage/components/topbar';
-import { AppConduit, VHXActors } from '../_stage/conduits/AppConduit';
+import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
-const LandingPageDirector = createDirector<AppConduit>(
+const LandingPageDirector = createDirector<DocsConduit>(
 	'landing-page director',
 	'a static landing page director',
 	'uses landing-tiles.tsx',
 ).init<Context>(c => ({
-	conduit: new AppConduit(c),
+	conduit: new DocsConduit(c),
 }));
 
 LandingPageDirector(
-	VHXActors.Title('Cond8 Docs'),
-	VHXActors.Header(<DefaultHeaders />),
-	VHXActors.Template(
+	DocsActors.VHX.Title('Cond8 Docs'),
+	DocsActors.VHX.Header(<DefaultHeaders />),
+	DocsActors.VHX.Template(
 		<div className="bg-card text-card-foreground relative">
 			<div className="absolute inset-0 bg-[url('/landing-bg.png')] bg-cover bg-center opacity-30" />
 			<div className="relative z-10">
@@ -69,7 +69,7 @@ LandingPageDirector(
 			</div>
 		</div>,
 	),
-	VHXActors.Finalize.Set('html'),
+	DocsActors.VHX.Finalize.Set('html'),
 );
 
 export default LandingPageDirector.fin(c8 => c8.var('html') as string);
