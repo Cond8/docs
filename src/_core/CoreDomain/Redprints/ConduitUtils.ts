@@ -10,6 +10,7 @@ import { CoreRedprint } from './CoreRedprint.js';
 
 export type ReadonlyState = {
 	var: CoreRedprint['var'];
+	plain: object;
 	[key: string]: unknown;
 };
 
@@ -28,10 +29,13 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 		for (const [key, layer] of this._allBlueprintLayers()) {
 			readonly[key] = layer.readonly;
 		}
-		return {
+		return Object.freeze({
 			var: this.c8.var.bind(this.c8),
+			get plain() {
+				return readonly;
+			},
 			...readonly,
-		};
+		});
 	}
 
 	stringify(): string {

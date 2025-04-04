@@ -10,6 +10,7 @@ import { createActor, StagedActor } from './create-actor.js';
 import { ActorScript, ActorScriptWithTest } from './create-role.js';
 
 export type C8RO<C8 extends CoreRedprint> = C8['utils']['readonly'];
+export type C8ROPlain<C8 extends CoreRedprint> = C8['utils']['readonly']['plain'];
 
 export interface Input<C8 extends CoreRedprint> {
 	conduit: C8;
