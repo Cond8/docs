@@ -15,19 +15,13 @@ export abstract class CoreRedprint<T extends object = object> {
 		this.utils = new ConduitUtils(this);
 	}
 
-	// public var<V>(key: PropertyKey, value?: V): V | undefined {
-	// 	if (value === undefined) {
-	// 		return this.locals.get(key) as V;
-	// 	}
-	// 	this.locals.set(key, value);
-	// }
-
 	get var() {
 		const defaultVar = <V>(key: PropertyKey, value?: V): V => {
 			if (value === undefined) {
 				return this.locals.get(key) as V;
 			}
 			this.locals.set(key, value);
+			return value;
 		};
 
 		const checkedVar = <V>(check: (val: unknown) => val is V, typeName: string) => {
@@ -43,6 +37,7 @@ export abstract class CoreRedprint<T extends object = object> {
 					throw new Error(`Cannot set ${String(key)}: expected ${typeName}, got ${typeof value}`);
 				}
 				this.locals.set(key, value);
+				return value;
 			};
 		};
 

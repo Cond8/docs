@@ -31,7 +31,7 @@ export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
 						'this is supposed to change markdownString into MDAST and then into JSX',
 						'the remark slots plugin is used to parse custom slots',
 					)(async (c8, recorder) => {
-						const markdownString = c8.var(getKey) as string;
+						const markdownString = c8.var.string(getKey);
 
 						const file = await unified()
 							.use(remarkParse) // Markdown → MDAST

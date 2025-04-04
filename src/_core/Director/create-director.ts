@@ -149,11 +149,19 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 	const toActorScript: ActorScript<C8> = async (inputC8: C8, recorder?: Recorder) => {
 		void inputC8.utils.handleEvent('onDirectorEnter', vacuum.add({ c8: inputC8, isTest: false }));
 
-		const outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
-			const c8 = await prevC8Promise;
-			if (c8.utils.isClosed) return c8;
-			return actor(c8, recorder, vacuum.payload);
-		}, Promise.resolve(inputC8));
+		let outputC8;
+
+		try {
+			outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
+				const c8 = await prevC8Promise;
+				if (c8.utils.isClosed) return c8;
+				return actor(c8, recorder, vacuum.payload);
+			}, Promise.resolve(inputC8));
+		} catch (error) {
+			const normalizedError = error instanceof Error ? error : new Error(JSON.stringify(error));
+
+			throw inputC8.utils.close(vacuum.payload, {} as LifecyclePayload<C8>, normalizedError, recorder?.recording);
+		}
 
 		void outputC8.utils.handleEvent('onDirectorExit', vacuum.add({ c8: outputC8 }));
 

@@ -1,5 +1,6 @@
 // src/_stage/utils/markdown/transform-to-jsx.ts
 import { Fragment, h, JSX } from 'preact';
+import type { Plugin } from 'unified';
 import type { Node } from 'unist';
 import { VFile } from 'vfile';
 import { Components } from '../../components/md-components';
@@ -50,5 +51,5 @@ export function transformToJSX(mdComponents: Components) {
 		return renderNode(tree);
 	};
 
-	return transformer;
+	return transformer as unknown as Plugin<void[], Node, JSX.Element>;
 }

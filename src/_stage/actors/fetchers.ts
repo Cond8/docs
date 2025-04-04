@@ -12,7 +12,14 @@ export const createFetcherActors = <C8 extends CoreRedprint<Context>>() => {
 
 				const assetPath = pathResolver(slug); // e.g. './files/docs/my-post.md'
 
-				const res = await c8.body.env.ASSETS.fetch(new Request(assetPath));
+				let res;
+
+				try {
+					res = await c8.body.env.ASSETS.fetch(new Request(assetPath));
+				} catch (error) {
+					console.log('error caught in fetcher');
+					throw error;
+				}
 
 				if (!res.ok) {
 					throw new Error(`Failed to fetch asset '${assetPath}': ${res.status} ${res.statusText}`);

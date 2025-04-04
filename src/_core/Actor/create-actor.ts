@@ -37,6 +37,7 @@ export const createActor = <C8 extends CoreRedprint>(
 
 		try {
 			const outputC8 = await actorScript(inputC8, recorder);
+
 			void outputC8.utils.handleEvent('onActorExit', vacuum.add({ c8: outputC8 }));
 
 			return outputC8;
