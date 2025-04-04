@@ -27,9 +27,12 @@ const DocsPages = createDirector<AppConduit>('docs-page director', '').init<Cont
 DocsPages(
 	GuardActors.Params.Get({ slug: z.string().default('what-is-cond8') }).Set(n => `param ${n}`),
 	ModelerActors.String.Get('param slug').Do(slugToTitle).Set('title'),
-
 	VHXActors.Title.Get('title', title => `Cond8 Docs - ${title}`),
 	VHXActors.Header(<DefaultHeaders />),
+	FetcherActors.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
+	ModelerActors.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
+	VHXActors.Slot('content', c8 => c8.var('markdown jsx')),
+
 	VHXActors.Template(
 		<div className="min-h-screen flex flex-col">
 			<div
@@ -55,10 +58,7 @@ DocsPages(
 		</div>,
 	),
 
-	FetcherActors.File.Get('param slug', slug => `http://localhost:8787/files/docs/${slug}.md`).Set('markdown'),
-	ModelerActors.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
-	VHXActors.Slot('content', c8 => c8.var('markdown jsx')),
-	VHXActors.WrapHtml.Set('html'),
+	VHXActors.Finalize.Set('html'),
 );
 
 export default DocsPages.fin<string>(c8 => c8.var('html'));

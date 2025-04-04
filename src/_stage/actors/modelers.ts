@@ -13,9 +13,9 @@ export const createModelerActors = <C8 extends CoreRedprint<Context>>() => {
 		Get: (getKey: string) => ({
 			Do: (action: (str: string) => string) => ({
 				Set: (setKey: string) => (c8: C8) => {
-					const value = c8.var(getKey) as string;
+					const value = c8.var.string(getKey);
 					const result = action(value);
-					c8.var(setKey, result);
+					c8.var.string(setKey, result);
 					return c8;
 				},
 			}),

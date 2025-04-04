@@ -93,30 +93,28 @@ export default HelloDirector.fin(c8 => c8.var('html'));
 
 Domain-Specific Small Language Models (DSLMs) are compact language models specially fine-tuned to interact precisely with the specific services provided by the Cond8 Engine. Cond8 relies on two complementary types of DSLMs, each trained for a distinct purpose: creative director prompt writing, and precise, restrictive actor script writing.
 
-### Directors and the Diffusion DSLM (Holistic Director Writer)
+1. **Diffusion DSLM – The Dreamer**
+    - **Job**: Visually sketch and maintain Cond8 Directors as structured, image-like compositions. Rather than worrying about exact syntax or precise logic, the Dreamer treats each Director as a cohesive visual structure, like a blueprint or pixel art, clearly bounded by initialization (`init`) at the top and finalization (`fin`) at the bottom.
+    - **Style**: Loose, intuitive, and creative. It excels at rapidly visualizing pipelines and imagining new roles or actors—even those that don't yet exist. The Dreamer doesn’t require token-by-token precision; instead, it ensures that the overall visual integrity and structure remain coherent across hundreds of Directors simultaneously.
+    - **Why Visual?**: Viewing Directors as images leverages the natural strengths of Diffusion models, enabling efficient maintenance and exploration of large-scale, structured codebases without overwhelming VRAM constraints.
 
-- **High-Level Orchestration**
-The Diffusion DSLM views your problem holistically. It determines how many Actors (and nested Directors, if needed) to create and how they fit together, essentially sketching a *big-picture* solution.
+2. **Autoregressive DSLM – The Carpenter**
+    - **Job**: Precisely implement each Actor within Directors. Takes the visually sketched "dreams" and translates them into executable, correct code. It rigorously validates syntax, ensures type correctness, and guarantees that every Actor compiles, passes tests, and integrates cleanly into the Cond8 infrastructure.
+    - **Style**: Methodical, strict, and precise. If the Dreamer envisions something creative like `StoreActors.Compactify('SecretKey')`, the Carpenter ensures this Actor is accurately implemented, throwing errors immediately if anything doesn't match specifications.
+    - **Why Autoregressive?**: The Carpenter’s autoregressive nature enforces strict correctness, bridging the gap between imaginative visual structures and robust, production-ready code.
 
-- **Creative Freedoms**
-This DSLM doesn't have to worry about strict correctness. It can imagine new structures or objects on the fly, even if they don’t exist yet. For example, it might write something like `HomeActors.Get.VHX('mdx foo').Do(MDXComponents).Set('vhx bar')`, referencing a `VHX` object that isn’t defined anywhere.
+---
 
-- **Automatic Scaffolding**
-Cond8’s CLI examines the creative instructions from the Diffusion DSLM and generates any missing scaffolding to support them. If `VHX` is meant to be a UI component but doesn’t exist, the CLI automatically sets up a placeholder in the `actors` object. This way, the next DSLM has a proper foundation for precise implementation.
+**Synergy between Dreamer and Carpenter**:
 
-- **Loose Constraints**
-Because the Diffusion DSLM is meant to be imaginative, slight errors or “hallucinations” are acceptable. The system catches and corrects them later, during the Actor-writing phase.
+By having the Diffusion DSLM handle the visual, structural integrity of large codebases (like images), and the Autoregressive DSLM meticulously ensuring correctness at the actor implementation level, Cond8 achieves a powerful combination of creativity and reliability:
 
-### Actors and the Autoregressive DSLM (Precision Actor Writer)
+- **Dreamer (Diffusion)**: Efficiently manages hundreds of Directors visually.
+- **Carpenter (Autoregressive)**: Guarantees correctness and precision within each Director.
 
-- **Step-by-Step Implementation**
-Once the Diffusion DSLM has outlined each Actor’s responsibilities, the Autoregressive DSLM takes over, generating code that adheres strictly to Cond8’s **GET → DO → SET** pattern. This ensures each Actor’s inputs, transformations, and outputs are clearly defined.
+Together, they ensure that Cond8 remains flexible, innovative, and robust.
 
-- **Early Error Detection**
-By design, the Autoregressive DSLM throws errors at the earliest sign of a mismatch or undefined reference. If something doesn’t align with the director’s plan, Cond8 can retry or regenerate until the Actor passes all checks.
-
-- **Declarative, Yet Procedural**
-Although the Autoregressive DSLM’s output is sometimes called “procedural,” it’s still largely declarative in style: you simply specify what each Actor *gets*, how it *does* its work, and what it *sets*. The details of error handling and iteration are taken care of by Cond8’s runtime engine.
+---
 
 ### What about Prompting?
 
