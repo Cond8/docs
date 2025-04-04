@@ -1,9 +1,10 @@
 // src/index.ts
 import { DurableObject } from 'cloudflare:workers';
 import { Hono } from 'hono';
-import { serializeError } from './_stage/error-handling/serialize-error';
+import { C8Error } from './_core/Recorder/C8Error';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
 import DocsPages from './directors/docs-pages';
+import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
 
 export class MyDurableObject extends DurableObject {
@@ -46,7 +47,7 @@ app.get('/docs/:slug', async c => {
 app.notFound(c => c.text('Not Found', 404));
 
 app.onError((err, c) => {
-	const html = serializeError(err);
+	const html = ErrorHandlerDirector(err as C8Error<any>);
 	return c.html(html, 500, {
 		'Content-Type': 'text/html; charset=utf-8',
 	});

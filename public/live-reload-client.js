@@ -1,4 +1,4 @@
-// public/dev/auto-reload.js
+// public/live-reload-client.js
 'use client';
 
 let socket;

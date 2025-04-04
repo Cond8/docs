@@ -44,8 +44,8 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 		this.set(`slot:${key}`, content);
 	}
 
-	getSlot(key: string): JSX.Element {
-		return this.get(`slot:${key}`, new Error(`VHX: Slot "${key}" has not been filled`)) as JSX.Element;
+	getSlot(key: string): JSX.Element | null {
+		return (this.optional(`slot:${key}`) ?? null) as JSX.Element | null;
 	}
 
 	hasSlot(key: string): boolean {
@@ -83,13 +83,27 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 
 			if (typeof node.type === 'string' && node.type.toLowerCase() === 'slot') {
 				const name = node.props?.name;
+				const dataProps = node.props?.['data-props'];
+
 				if (typeof name !== 'string') {
 					throw new Error('VHX: <slot> must have a "name" attribute.');
 				}
-				if (!this.hasSlot(name)) {
-					throw new Error(`VHX: Slot "${name}" has not been filled.`);
+
+				const slot = this.getSlot(name) as JSX.Element | ((props?: any) => JSX.Element);
+
+				if (!slot) {
+					return null;
 				}
-				return this.getSlot(name);
+
+				if (typeof slot === 'function') {
+					return slot(dataProps ?? {});
+				}
+
+				if (!this.isValidVNode(slot)) {
+					throw new Error(`VHX: Slot "${name}" must be a VNode or a function that returns one.`);
+				}
+
+				return slot;
 			}
 
 			const newChildren = walk(node.props?.children);
@@ -97,5 +111,9 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 		};
 
 		return walk(this.getTemplate());
+	}
+
+	private isValidVNode(x: unknown): x is JSX.Element {
+		return typeof x === 'object' && x !== null && 'type' in x && 'props' in x;
 	}
 }

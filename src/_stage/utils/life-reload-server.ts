@@ -1,3 +1,4 @@
+// src/_stage/utils/life-reload-server.ts
 export const LifeReloadServer = () => {
 	// Create a new WebSocketPair
 	const { 0: client, 1: server } = new WebSocketPair();

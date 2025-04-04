@@ -1,4 +1,4 @@
-// src/_stage/conduits/AppConduit.ts
+// src/_stage/conduits/DocsConduit.ts
 import { Context } from 'hono';
 import { CoreRedprint, StrictObjectKVService } from '../../_core';
 import { createFetcherActors } from '../actors/fetchers';

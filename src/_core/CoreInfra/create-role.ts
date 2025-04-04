@@ -1,4 +1,4 @@
-// src/_core/Actor/create-role.ts
+// src/_core/CoreInfra/create-role.ts
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { LifecyclePayload } from '../Lifecycle/Vacuum';
 import { MetaHook } from '../Metadata/hooks.js';

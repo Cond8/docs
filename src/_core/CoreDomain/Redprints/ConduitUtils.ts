@@ -9,9 +9,17 @@ import { LifecycleBlueprint } from '../Blueprints/LifecycleBlueprint.js';
 import { CoreRedprint } from './CoreRedprint.js';
 
 export type ReadonlyState = {
-	var: CoreRedprint['var'];
+	var: VarUtilsType;
 	plain: object;
 	[key: string]: unknown;
+};
+
+export type VarUtilsType = {
+	<V>(key: PropertyKey, value?: V): V;
+	string: (key: PropertyKey, value?: string) => string;
+	number: (key: PropertyKey, value?: number) => number;
+	boolean: (key: PropertyKey, value?: boolean) => boolean;
+	functional: (key: PropertyKey, value?: (...args: unknown[]) => unknown) => (...args: unknown[]) => unknown;
 };
 
 export class ConduitUtils<C8 extends CoreRedprint> {
@@ -30,7 +38,7 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 			readonly[key] = layer.readonly;
 		}
 		return Object.freeze({
-			var: this.c8.var.bind(this.c8),
+			var: this.var.bind(this),
 			get plain() {
 				return readonly;
 			},
@@ -139,5 +147,44 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 				yield [key, layer as unknown as FullLifecycleBlueprint<C8>];
 			}
 		}
+	}
+
+	get var(): VarUtilsType {
+		const defaultVar = <V>(key: PropertyKey, value?: V): V => {
+			if (value === undefined) {
+				return this.c8.locals.get(key) as V;
+			}
+			this.c8.locals.set(key, value);
+			return value;
+		};
+
+		const checkedVar =
+			<V>(check: (val: unknown) => val is V, typeName: string) =>
+			(key: PropertyKey, value?: V): V => {
+				if (value === undefined) {
+					// get something
+					const current = this.c8.locals.get(key);
+					if (!check(current)) {
+						throw new Error(`Expected ${String(key)} to be a ${typeName}, but got ${typeof current}`);
+					}
+					return current;
+				}
+				// set something
+				if (!check(value)) {
+					throw new Error(`Cannot set ${String(key)}: expected ${typeName}, got ${typeof value}`);
+				}
+				this.c8.locals.set(key, value);
+				return value;
+			};
+
+		return Object.assign(defaultVar, {
+			string: checkedVar<string>((x): x is string => typeof x === 'string', 'string'),
+			number: checkedVar<number>((x): x is number => typeof x === 'number', 'number'),
+			boolean: checkedVar<boolean>((x): x is boolean => typeof x === 'boolean', 'boolean'),
+			functional: checkedVar<(...args: unknown[]) => unknown>(
+				(x): x is (...args: unknown[]) => unknown => typeof x === 'function',
+				'function',
+			),
+		});
 	}
 }

@@ -1,4 +1,4 @@
-// src/_stage/conduits/AppConduit.ts
+// src/_stage/conduits/ErrorConduit.ts
 import { CoreRedprint, StrictObjectKVService } from '../../_core';
 import { C8Error } from '../../_core/Recorder/C8Error';
 import { createModelerActors } from '../actors/modelers';
