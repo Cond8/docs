@@ -15,6 +15,7 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 
 		c8.var('recording', recording);
 		c8.var('error', error);
+		c8.var('error message', error.message);
 
 		return c8;
 	}),

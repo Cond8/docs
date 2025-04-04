@@ -2,7 +2,7 @@
 import { CoreRedprint, StrictObjectKVService } from '../../_core';
 import { C8Error } from '../../_core/Recorder/C8Error';
 import { createModelerActors } from '../actors/modelers';
-import { VHXRedprint } from '../actors/vhx';
+import { createVHXActors, VHXRedprint } from '../actors/vhx';
 import { VHXService } from '../services/VhxService';
 import { DocsConduit } from './DocsConduit';
 
@@ -17,4 +17,5 @@ export class ErrorConduit extends CoreRedprint<C8Error<DocsConduit>> implements 
 
 export const ErrorActors = {
 	Modeler: createModelerActors<ErrorConduit>(),
+	VHX: createVHXActors<ErrorConduit>(),
 };
