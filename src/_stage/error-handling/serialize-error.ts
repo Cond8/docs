@@ -1,3 +1,4 @@
+// src/_stage/error-handling/serialize-error.ts
 import dedent from 'dedent';
 import { CoreRedprint } from '../../_core';
 import { C8Error } from '../../_core/Recorder/C8Error';

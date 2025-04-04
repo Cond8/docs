@@ -1,4 +1,4 @@
-// apps/cond8-docs/public/prism/index.js
+// public/prism/index.js
 /* PrismJS 1.30.0
 https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+bash+css-extras+dart+diff+graphql+http+javadoclike+jsdoc+js-extras+json+json5+jsonp+jsstacktrace+js-templates+markdown+mongodb+powershell+jsx+tsx+sass+scss+sql+typescript+typoscript+yaml&plugins=line-numbers+autolinker+show-language+jsonp-highlight+command-line+toolbar+copy-to-clipboard+diff-highlight */
 /// <reference lib="WebWorker"/>

@@ -1,3 +1,4 @@
+// src/_stage/actors/fetchers.ts
 import { Context } from 'hono';
 import { CoreRedprint, Recorder } from '../../_core';
 

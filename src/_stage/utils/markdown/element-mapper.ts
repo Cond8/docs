@@ -1,3 +1,4 @@
+// src/_stage/utils/markdown/element-mapper.ts
 import { Fragment, h, JSX } from 'preact';
 import { Components } from '../../components/md-components';
 import { SlotNode } from './remark-slots';

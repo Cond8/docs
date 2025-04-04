@@ -1,3 +1,4 @@
+// src/_stage/actors/guards.ts
 import { Context } from 'hono';
 import { z } from 'zod';
 import { CoreRedprint } from '../../_core';

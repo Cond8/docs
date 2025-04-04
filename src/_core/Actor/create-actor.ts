@@ -1,4 +1,4 @@
-// src/_core/Actor/stage-actor.ts
+// src/_core/Actor/create-actor.ts
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { filterMetaHooksActor } from '../Metadata/filter-meta-hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';

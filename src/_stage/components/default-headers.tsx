@@ -15,6 +15,7 @@ export const DefaultHeaders = ({ children }: DefaultAppHeadersProps) => (
 		<script src="/prism/index.js"></script>
 		{children}
 		<script src="/cond8-dev.js"></script>
+		<script src="/live-reload.js"></script>
 		<script src="https://unpkg.com/htmx.org@2.0.4"></script>
 	</>
 );

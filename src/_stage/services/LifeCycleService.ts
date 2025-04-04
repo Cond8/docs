@@ -1,3 +1,4 @@
+// src/_stage/services/LifeCycleService.ts
 import { CoreRedprint, LifecycleBlueprint, LifecyclePayload, OnActorExitHook, Recorder } from '../../_core';
 
 export class LifeCycleService<C8 extends CoreRedprint> extends LifecycleBlueprint implements OnActorExitHook {

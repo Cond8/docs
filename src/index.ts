@@ -23,6 +23,29 @@ type Env = {
 
 const app = new Hono<{ Bindings: Env }>();
 
+// WebSocket endpoint for live reload
+app.get('/live-reload', c => {
+	// Create a new WebSocketPair
+	const { 0: client, 1: server } = new WebSocketPair();
+
+	// Accept the server-side WebSocket connection.
+	server.accept();
+
+	// Optionally add event listeners on the server socket.
+	server.addEventListener('message', event => {
+		console.log('Live reload server received message:', event.data);
+	});
+
+	// For demonstration: immediately send a reload message.
+	// In practice, you’d trigger this when file changes are detected.
+	server.send('reload');
+
+	return new Response(null, {
+		status: 101,
+		webSocket: client,
+	});
+});
+
 // 🏠 Landing Page route
 app.get('/', async c => {
 	const html = await LandingPageDirector(c);

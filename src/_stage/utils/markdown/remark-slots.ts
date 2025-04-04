@@ -1,3 +1,4 @@
+// src/_stage/utils/markdown/remark-slots.ts
 import { Plugin } from 'unified';
 import type { Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';

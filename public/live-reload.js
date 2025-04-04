@@ -1,16 +1,15 @@
-/**
- * DEVELOPMENT ONLY
- */
+// public/dev/auto-reload.js
+'use client';
+
 let socket;
 let reconnecting = false;
 
 function connect() {
-	socket = new WebSocket('ws://localhost:1337');
+	// Adjust URL to point to your WebSocket endpoint
+	socket = new WebSocket(`ws://${location.host}/live-reload`);
 
 	socket.onopen = () => {
-		console.log('[Dev] Connected to reload server');
-
-		// If we just reconnected, now reload the page
+		console.log('[Dev] Connected to live-reload server');
 		if (reconnecting) {
 			console.log('[Dev] Reconnected — reloading...');
 			location.reload();
@@ -20,8 +19,6 @@ function connect() {
 	socket.onclose = () => {
 		console.warn('[Dev] Connection lost. Attempting to reconnect...');
 		reconnecting = true;
-
-		// Try reconnecting every second
 		setTimeout(connect, 1000);
 	};
 

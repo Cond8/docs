@@ -1,4 +1,4 @@
-// src/_stage/components/mdx-components.tsx
+// src/_stage/components/md-components.tsx
 import { JSX } from 'preact';
 
 type IntrinsicTag = keyof JSX.IntrinsicElements;

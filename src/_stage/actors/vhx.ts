@@ -1,4 +1,4 @@
-// src/_stage/actors/vhx.tsx
+// src/_stage/actors/vhx.ts
 import { JSX } from 'preact';
 import { C8RO, CoreRedprint } from '../../_core';
 import { VHXService } from '../services/VhxService';
