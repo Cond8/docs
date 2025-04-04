@@ -1,6 +1,6 @@
 // src/_stage/components/error-header.tsx
 export const ErrorHeader = () => (
-	<>
+	<div className="max-w-[600px] w-full">
 		{/* Header: Cond8 logo + VHX */}
 		<div className="relative inline-block w-full">
 			<div className="flex justify-between items-center">
@@ -29,5 +29,5 @@ export const ErrorHeader = () => (
 		>
 			Something Went Procedurally Wrong
 		</h2>
-	</>
+	</div>
 );
