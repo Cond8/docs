@@ -34,6 +34,14 @@ export function serializeError(error: unknown): string {
 			}
 		}
 
+		// Generate sections for each directorPayload property using a new helper
+		let directorPayloadSections = '';
+		for (const key in directorPayload) {
+			if (directorPayload[key] !== undefined) {
+				directorPayloadSections += generateDirectorPayloadSection(key, directorPayload[key]);
+			}
+		}
+
 		// Generate sections for recording entries (see previous snippet)
 		let recordingSection = '';
 		if (Array.isArray(recording)) {
@@ -79,7 +87,8 @@ export function serializeError(error: unknown): string {
 				.join('\n');
 		}
 
-		extraSections = payloadSections + recordingSection;
+		// Combine payload, directorPayload, and recording sections
+		extraSections = payloadSections + directorPayloadSections + recordingSection;
 	}
 
 	return dedent`
@@ -98,6 +107,7 @@ export function serializeError(error: unknown): string {
       --foreground: #f8f8f8;
       --accent: #ff003c;
       --payload: #00c851;
+      --director: #007bff; /* New blue color for directorPayload */
       --recording: #ffeb3b;
       --dim: #999;
       --font: 'Courier New', monospace;
@@ -131,13 +141,18 @@ export function serializeError(error: unknown): string {
     }
 
     /* Default error sections */
-    section:not(.payload):not(.recording) pre {
+    section:not(.payload):not(.director-payload):not(.recording) pre {
       border-left: 4px solid var(--accent);
     }
 
     /* Payload sections */
     section.payload pre {
       border-left: 4px solid var(--payload);
+    }
+
+    /* Director Payload sections */
+    section.director-payload pre {
+      border-left: 4px solid var(--director);
     }
 
     /* Recording sections */
@@ -376,6 +391,16 @@ function generatePayloadSection(key: string, value: unknown): string {
         </section>
       `;
 	}
+}
+
+/**
+ * Generates a custom HTML section for each key in the directorPayload.
+ * Reuses the payload section, but replaces the CSS class with "director-payload"
+ * to apply the blue color.
+ */
+function generateDirectorPayloadSection(key: string, value: unknown): string {
+	// Replace all occurrences of the "payload" class with "director-payload"
+	return generatePayloadSection(key, value).replace(/class="payload"/g, 'class="director-payload"');
 }
 
 /**
