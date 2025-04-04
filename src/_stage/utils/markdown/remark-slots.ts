@@ -1,5 +1,5 @@
 import { Plugin } from 'unified';
-import { Node, Parent } from 'unist';
+import type { Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';
 
 // Define a custom interface for our slot nodes.

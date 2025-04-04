@@ -107,7 +107,7 @@ export function serializeError(error: unknown): string {
       --foreground: #f8f8f8;
       --accent: #ff003c;
       --payload: #00c851;
-      --director: #007bff; /* New blue color for directorPayload */
+      --director: #007bff; /* Blue color for directorPayload */
       --recording: #ffeb3b;
       --dim: #999;
       --font: 'Courier New', monospace;
@@ -153,6 +153,10 @@ export function serializeError(error: unknown): string {
     /* Director Payload sections */
     section.director-payload pre {
       border-left: 4px solid var(--director);
+    }
+    /* Make director payload headings blue */
+    section.director-payload h2 {
+      color: var(--director);
     }
 
     /* Recording sections */

@@ -1,5 +1,5 @@
 import { Fragment, h, JSX } from 'preact';
-import { Node } from 'unist';
+import type { Node } from 'unist';
 import { VFile } from 'vfile';
 import { Components } from '../../components/md-components';
 import { renderNodeMap } from './element-mapper';
