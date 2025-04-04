@@ -2,13 +2,14 @@
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { MetaHook } from '../Metadata/hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';
+import { LifecyclePayload } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { createActor, StagedActor } from './create-actor.js';
 
 export type ActorScript<C8 extends CoreRedprint> = (c8: C8, recorder?: Recorder) => CouldPromise<C8>;
 
 export interface ActorScriptWithTest<C8 extends CoreRedprint> extends ActorScript<C8> {
-	test(recorder: Recorder, c8Mock: C8): CouldPromise<C8>;
+	test(recorder: Recorder, c8Mock: C8, directorPayload: LifecyclePayload<C8>): CouldPromise<C8>;
 }
 
 export type NeedsMetadata<T extends CoreRedprint> = (actorName: string, ...metadataRest: unknown[]) => StagedActor<T>;

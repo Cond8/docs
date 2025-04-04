@@ -6,7 +6,7 @@ import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { filterMetaHooksDirector } from '../Metadata/filter-meta-hooks.js';
 import { MetaHook } from '../Metadata/hooks.js';
 import { Recorder, RecorderEntry } from '../Recorder/create-recorder.js';
-import { Vacuum } from '../Recorder/Vacuum';
+import { LifecyclePayload, Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
 
@@ -114,7 +114,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 				void outputC8.utils.handleEvent('onDirectorAssertFail', vacuum.add({ error: normalizedError }));
 
 				if (isTest) {
-					throw outputC8.utils.close(vacuum.payload, normalizedError, recorder?.recording);
+					throw outputC8.utils.close(vacuum.payload, {} as LifecyclePayload<C8>, normalizedError, recorder?.recording);
 				}
 			}
 		}
@@ -133,9 +133,9 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 			if (c8.utils.isClosed) return c8;
 
 			if ('test' in actor && typeof actor.test === 'function') {
-				return actor.test(recorder, c8);
+				return actor.test(recorder, c8, vacuum.payload);
 			}
-			return actor(c8, recorder);
+			return actor(c8, recorder, vacuum.payload);
 		}, Promise.resolve(inputC8));
 
 		void outputC8.utils.handleEvent('onDirectorExit', vacuum.add({ c8: outputC8 }));
@@ -152,7 +152,7 @@ export function createDirector<C8 extends CoreRedprint>(directorName: string, ..
 		const outputC8 = await stagedActors.reduce<Promise<C8>>(async (prevC8Promise, actor) => {
 			const c8 = await prevC8Promise;
 			if (c8.utils.isClosed) return c8;
-			return actor(c8, recorder);
+			return actor(c8, recorder, vacuum.payload);
 		}, Promise.resolve(inputC8));
 
 		void outputC8.utils.handleEvent('onDirectorExit', vacuum.add({ c8: outputC8 }));

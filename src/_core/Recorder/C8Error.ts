@@ -6,6 +6,7 @@ export class C8Error<C8 extends CoreRedprint> extends Error {
 	constructor(
 		error: Error,
 		public payload: LifecyclePayload<C8>,
+		public directorPayload: LifecyclePayload<C8>,
 		public recording: RecorderEntry[] = [],
 	) {
 		super(error.message);

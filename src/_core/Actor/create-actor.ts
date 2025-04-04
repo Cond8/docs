@@ -2,17 +2,21 @@
 import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
 import { filterMetaHooksActor } from '../Metadata/filter-meta-hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';
-import { Vacuum } from '../Recorder/Vacuum';
+import { LifecyclePayload, Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
 import { ActorScript, ActorScriptWithTest } from './create-role.js';
 
-export type StagedActor<C8 extends Partial<CoreRedprint>> = {
-	(c8: C8, recorder?: Recorder): CouldPromise<C8>;
-	test?: (recorder: Recorder, c8Mock?: C8) => CouldPromise<C8>;
+export type StagedActor<C8 extends CoreRedprint> = {
+	(c8: C8, recorder: Recorder | undefined, directorPayload: LifecyclePayload<C8>): CouldPromise<C8>;
+	test?: (recorder: Recorder, c8Mock: C8 | undefined, directorPayload: LifecyclePayload<C8>) => CouldPromise<C8>;
 };
 
-export type ActorTest<C8 extends CoreRedprint> = (recorder: Recorder, c8Mock?: C8) => CouldPromise<C8>;
+export type ActorTest<C8 extends CoreRedprint> = (
+	recorder: Recorder,
+	c8Mock: C8 | undefined,
+	directorPayload: LifecyclePayload<C8>,
+) => CouldPromise<C8>;
 
 export const createActor = <C8 extends CoreRedprint>(
 	actorName: string,
@@ -28,7 +32,7 @@ export const createActor = <C8 extends CoreRedprint>(
 		actorFn: fnStringify(actorScript),
 	});
 
-	const runActorScript = async (inputC8: C8, recorder: Recorder | undefined, isTest: boolean): Promise<C8> => {
+	const runActorScript = async (inputC8: C8, recorder: Recorder | undefined, directorPayload: LifecyclePayload<C8>): Promise<C8> => {
 		void inputC8.utils.handleEvent('onActorEnter', vacuum.payload);
 
 		try {
@@ -41,11 +45,16 @@ export const createActor = <C8 extends CoreRedprint>(
 			recorder?.('ACTOR ERROR', normalizedError);
 			void inputC8.utils.handleEvent('onActorError', vacuum.add({ error: normalizedError }));
 
-			throw inputC8.utils.close(vacuum.payload, normalizedError, recorder?.recording);
+			throw inputC8.utils.close(vacuum.payload, directorPayload, normalizedError, recorder?.recording);
 		}
 	};
 
-	const runAssertions = async (c8: C8, recorder: Recorder | undefined, isTest: boolean): Promise<void> => {
+	const runAssertions = async (
+		c8: C8,
+		recorder: Recorder | undefined,
+		isTest: boolean,
+		directorPayload: LifecyclePayload<C8>,
+	): Promise<void> => {
 		if (!assertFn) return;
 
 		void c8.utils.handleEvent('onActorAssertStart', vacuum.payload);
@@ -59,16 +68,16 @@ export const createActor = <C8 extends CoreRedprint>(
 			void c8.utils.handleEvent('onActorAssertFail', vacuum.add({ error: normalizedError }));
 
 			if (isTest) {
-				throw c8.utils.close(vacuum.payload, normalizedError, recorder?.recording);
+				throw c8.utils.close(vacuum.payload, directorPayload, normalizedError, recorder?.recording);
 			}
 		}
 	};
 
-	const actorFn = async (inputC8: C8, recorder?: Recorder) => {
+	const actorFn = async (inputC8: C8, recorder: Recorder | undefined, directorPayload: LifecyclePayload<C8>) => {
 		vacuum.add({ c8: inputC8, isTest: false, recorder });
-		const outputC8 = await runActorScript(inputC8, recorder, false);
+		const outputC8 = await runActorScript(inputC8, recorder, directorPayload);
 		vacuum.add({ c8: outputC8 });
-		void runAssertions(outputC8, recorder, false);
+		void runAssertions(outputC8, recorder, false, directorPayload);
 		return outputC8;
 	};
 
@@ -79,20 +88,20 @@ export const createActor = <C8 extends CoreRedprint>(
 
 	if ('test' in actorScript) {
 		return Object.assign(actorFn, {
-			test: (recorder: Recorder, givenC8?: C8) => {
+			test: (recorder: Recorder, givenC8: C8 | undefined, directorPayload: LifecyclePayload<C8>) => {
 				const inputC8 = ensure(givenC8 ?? inputMock);
-				return actorScript.test(recorder, inputC8);
+				return actorScript.test(recorder, inputC8, directorPayload);
 			},
 		});
 	}
 
-	const testUnit: ActorTest<C8> = async (recorder: Recorder, givenC8?: C8) => {
+	const testUnit: ActorTest<C8> = async (recorder: Recorder, givenC8: C8 | undefined, directorPayload: LifecyclePayload<C8>) => {
 		vacuum.add({ isTest: true, recorder });
 		const inputC8 = ensure(givenC8 ?? inputMock);
 		vacuum.add({ c8: inputC8 });
-		const outputC8 = await runActorScript(inputC8, recorder, true);
+		const outputC8 = await runActorScript(inputC8, recorder, directorPayload);
 		vacuum.add({ c8: outputC8 });
-		await runAssertions(outputC8, recorder, true);
+		await runAssertions(outputC8, recorder, true, directorPayload);
 		return outputC8;
 	};
 

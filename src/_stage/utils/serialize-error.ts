@@ -23,6 +23,7 @@ export function serializeError(error: unknown): string {
 	let extraSections = '';
 	if (error instanceof C8Error) {
 		const payload = error.payload;
+		const directorPayload = error.directorPayload;
 		const recording = error.recording;
 
 		// Generate sections for each payload property using a helper

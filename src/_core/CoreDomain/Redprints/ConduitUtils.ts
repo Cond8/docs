@@ -48,13 +48,18 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 		return result ?? '[No changes in diff]';
 	}
 
-	close(payload: LifecyclePayload<C8>, error?: Error, recording?: RecorderEntry[]): C8Error<C8> | void {
+	close(
+		payload: LifecyclePayload<C8>,
+		directorPayload: LifecyclePayload<C8>,
+		error?: Error,
+		recording?: RecorderEntry[],
+	): C8Error<C8> | void {
 		for (const [, layer] of this._allBlueprintLayers()) {
 			layer.close();
 		}
 		this.#closed = true;
 		if (!error) return;
-		return new C8Error<C8>(error, payload, recording);
+		return new C8Error<C8>(error, payload, directorPayload, recording);
 	}
 
 	async handleEvent(event: keyof FullLifecycleBlueprint<C8>, payload: Partial<LifecyclePayload<C8>>): Promise<void> {
