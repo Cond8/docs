@@ -2,6 +2,7 @@
 import { DurableObject } from 'cloudflare:workers';
 import { Hono } from 'hono';
 import { serializeError } from './_stage/error-handling/serialize-error';
+import { LifeReloadServer } from './_stage/utils/life-reload-server';
 import DocsPages from './directors/docs-pages';
 import LandingPageDirector from './directors/landing-page';
 
@@ -24,27 +25,7 @@ type Env = {
 const app = new Hono<{ Bindings: Env }>();
 
 // WebSocket endpoint for live reload
-app.get('/live-reload', c => {
-	// Create a new WebSocketPair
-	const { 0: client, 1: server } = new WebSocketPair();
-
-	// Accept the server-side WebSocket connection.
-	server.accept();
-
-	// Optionally add event listeners on the server socket.
-	server.addEventListener('message', event => {
-		console.log('Live reload server received message:', event.data);
-	});
-
-	// For demonstration: immediately send a reload message.
-	// In practice, you’d trigger this when file changes are detected.
-	server.send('reload');
-
-	return new Response(null, {
-		status: 101,
-		webSocket: client,
-	});
-});
+app.get('/live-reload', LifeReloadServer);
 
 // 🏠 Landing Page route
 app.get('/', async c => {
