@@ -1,22 +1,12 @@
 // src/_core/index.ts
-export * from './Actor/create-actor.js';
-export * from './Actor/create-role.js';
-export * from './CoreDomain/Blueprints/CoreBlueprint.js';
-export * from './CoreDomain/Blueprints/LifecycleBlueprint.js';
-export * from './CoreDomain/Blueprints/StrictKVBlueprint-Async.js';
-export * from './CoreDomain/Blueprints/StrictKVBlueprint-Sync.js';
-export * from './CoreDomain/Blueprints/StrictKVBlueprint.js';
-export * from './CoreDomain/lib/actors.js';
-export * from './CoreDomain/lib/roles.js';
-export * from './CoreDomain/Redprints/ConduitUtils.js';
-export * from './CoreDomain/Redprints/CoreRedprint.js';
-export * from './CoreDomain/Services/StrictObjectKVService.js';
-export * from './Director/create-director.js';
+export * from './CoreDomain/index.js';
+export * from './CoreInfra/create-actor.js';
+export * from './CoreInfra/create-director.js';
+export * from './CoreInfra/create-role.js';
 export * from './Lifecycle/LifecycleEventHooks.js';
 export * from './Metadata/filter-meta-hooks.js';
 export * from './Metadata/hooks.js';
 export * from './Recorder/C8ProxyHandler.js';
 export * from './Recorder/create-recorder.js';
-export { LifecyclePayload } from './Recorder/Vacuum';
 export * from './utils/fn-promise-like.js';
 export * from './utils/fn-stringify.js';

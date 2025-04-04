@@ -1,5 +1,5 @@
 // src/_core/Recorder/Vacuum.ts
-import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint';
+import { CoreRedprint } from '../CoreDomain';
 import { FullLifecycleBlueprint } from '../Lifecycle/LifecycleEventHooks';
 import { MetaHook } from '../Metadata/hooks';
 import { Recorder } from './create-recorder';

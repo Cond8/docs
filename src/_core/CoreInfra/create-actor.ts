@@ -1,5 +1,5 @@
 // src/_core/Actor/create-actor.ts
-import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
+import { CoreRedprint } from '../CoreDomain';
 import { filterMetaHooksActor } from '../Metadata/filter-meta-hooks.js';
 import { Recorder } from '../Recorder/create-recorder.js';
 import { LifecyclePayload, Vacuum } from '../Recorder/Vacuum';

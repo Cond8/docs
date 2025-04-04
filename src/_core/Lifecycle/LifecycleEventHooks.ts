@@ -1,5 +1,5 @@
 // src/_core/Lifecycle/LifecycleEventHooks.ts
-import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
+import { CoreRedprint } from '../CoreDomain';
 import { Recorder } from '../Recorder/create-recorder';
 import { LifecyclePayload } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';

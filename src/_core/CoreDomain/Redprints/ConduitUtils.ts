@@ -9,8 +9,7 @@ import { LifecycleBlueprint } from '../Blueprints/LifecycleBlueprint.js';
 import { CoreRedprint } from './CoreRedprint.js';
 
 export type ReadonlyState = {
-	var: <T>(key: PropertyKey) => T;
-	string: (key: PropertyKey) => string;
+	var: CoreRedprint['var'];
 	[key: string]: unknown;
 };
 
@@ -30,8 +29,7 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 			readonly[key] = layer.readonly;
 		}
 		return {
-			var: <T>(key: PropertyKey): T => this.c8.var(key) as T,
-			string: (key: PropertyKey): string => String(this.c8.var(key)),
+			var: this.c8.var.bind(this.c8),
 			...readonly,
 		};
 	}

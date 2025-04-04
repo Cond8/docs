@@ -1,14 +1,13 @@
 // src/_core/Director/create-director.ts
-import { createActor, StagedActor } from '../Actor/create-actor.js';
-import { ActorScript, ActorScriptWithTest } from '../Actor/create-role.js';
-import { CoreBlueprint } from '../CoreDomain/Blueprints/CoreBlueprint.js';
-import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint.js';
+import { CoreBlueprint, CoreRedprint } from '../CoreDomain';
 import { filterMetaHooksDirector } from '../Metadata/filter-meta-hooks.js';
 import { MetaHook } from '../Metadata/hooks.js';
 import { Recorder, RecorderEntry } from '../Recorder/create-recorder.js';
 import { LifecyclePayload, Vacuum } from '../Recorder/Vacuum';
 import { CouldPromise } from '../utils/fn-promise-like.js';
 import { fnStringify } from '../utils/fn-stringify.js';
+import { createActor, StagedActor } from './create-actor.js';
+import { ActorScript, ActorScriptWithTest } from './create-role.js';
 
 export type C8RO<C8 extends CoreRedprint> = C8['utils']['readonly'];
 

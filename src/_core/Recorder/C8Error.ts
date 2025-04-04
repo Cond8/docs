@@ -1,5 +1,5 @@
 // src/_core/Recorder/C8Error.ts
-import { CoreRedprint } from '../CoreDomain/Redprints/CoreRedprint';
+import { CoreRedprint } from '../CoreDomain';
 import { RecorderEntry } from './create-recorder';
 import { LifecyclePayload } from './Vacuum';
 
