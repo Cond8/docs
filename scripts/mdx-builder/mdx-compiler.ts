@@ -1,30 +1,28 @@
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeSlug from 'rehype-slug';
-import rehypeStringify from 'rehype-stringify';
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkGfm from 'remark-gfm';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import { unified } from 'unified';
-import { VFile } from 'vfile';
+import { compile, run } from '@mdx-js/mdx';
+import { MDXContent } from 'mdx/types.js'; // optional if you want typings
+import { Fragment, h } from 'preact';
+import { render } from 'preact-render-to-string';
 
-export async function compileMDXtoHTML(mdxSource: string, options: { filepath?: string } = {}): Promise<string> {
-	const file = new VFile({ value: mdxSource, path: options.filepath });
-
+export async function compileMDXtoHTML(mdxSource: string, options: { baseUrl: string }): Promise<string> {
 	try {
-		const result = await unified()
-			.use(remarkParse) // parse markdown
-			.use(remarkGfm) // github flavored markdown
-			.use(remarkFrontmatter) // frontmatter
-			.use(remarkRehype, { allowDangerousHtml: true }) // convert to HTML AST
-			.use(rehypeSlug) // add ids to headings
-			.use(rehypeAutolinkHeadings) // add anchor links
-			.use(rehypeStringify, { allowDangerousHtml: true }) // serialize HTML
-			.process(file);
+		const compiled = await compile(mdxSource, {
+			outputFormat: 'function-body',
+			format: 'mdx',
+			jsx: true,
+		});
 
-		return String(result.value);
+		const module = await run(compiled, {
+			baseUrl: options.baseUrl,
+			jsx: h,
+			jsxs: h,
+			Fragment,
+		});
+
+		const Content = module.default as MDXContent;
+
+		return render(h('div', { class: 'prose prose-invert max-w-none' }, h(Content, {})));
 	} catch (err: any) {
-		console.error('❌ MDX to HTML compilation failed:', file.path);
+		console.error('❌ MDX to HTML compilation failed');
 		if (err?.message) console.error(err.message);
 		throw err;
 	}

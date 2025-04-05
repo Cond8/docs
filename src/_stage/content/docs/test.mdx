@@ -1,3 +1,5 @@
+import { CTA } from '../../components/call-to-action.js'
+
 # Welcome to My Site
 This is a **bold** paragraph with some *italic* text.
 
@@ -6,3 +8,12 @@ This is a **bold** paragraph with some *italic* text.
 - Item 2
 
 > A blockquote here
+
+<CTA
+  title={'Learn about Cond8 in any way you want.'}
+  description={'Press the button to learn more about Cond8.'}
+  action={{
+    label: 'Learn More',
+    onClick: () => console.log('Learn More Clicked'),
+  }}
+/>

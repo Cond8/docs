@@ -9,9 +9,10 @@ const __dirname = path.dirname(__filename);
 let subprocess: ChildProcess | null = null;
 
 function rebuild(): void {
+	console.log('🔁 Rebuilding...');
 	if (subprocess) subprocess.kill();
 	const buildPath = path.join(__dirname, 'mdx-build.ts');
-	subprocess = spawn('tsx', [buildPath], { stdio: 'inherit' });
+	subprocess = spawn('pnpm', ['exec', 'tsx', buildPath], { stdio: 'inherit', shell: true });
 
 	subprocess.on('exit', code => {
 		if (code !== 0) {
