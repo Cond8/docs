@@ -1,4 +1,3 @@
-# pnpm-lock.yaml
 lockfileVersion: '9.0'
 
 settings:
@@ -33,12 +32,18 @@ importers:
       jest-diff:
         specifier: ^29.7.0
         version: 29.7.0
+      markdown-to-jsx:
+        specifier: ^7.7.4
+        version: 7.7.4(react@19.1.0)
       mdast-util-from-markdown:
         specifier: ^2.0.2
         version: 2.0.2
       miniflare:
         specifier: ^4.20250321.2
         version: 4.20250321.2
+      preact:
+        specifier: ^10.26.4
+        version: 10.26.4
       preact-render-to-string:
         specifier: ^6.5.13
         version: 6.5.13(preact@10.26.4)
@@ -82,9 +87,6 @@ importers:
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
-      preact:
-        specifier: ^10.26.4
-        version: 10.26.4
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -1128,6 +1130,12 @@ packages:
     resolution: {integrity: sha512-o5vL7aDWatOTX8LzaS1WMoaoxIiLRQJuIKKe2wAw6IeULDHaqbiqiggmx+pKvZDb1Sj+pE46Sn1T7lCqfFtg1Q==}
     engines: {node: '>=16'}
 
+  markdown-to-jsx@7.7.4:
+    resolution: {integrity: sha512-1bSfXyBKi+EYS3YY+e0Csuxf8oZ3decdfhOav/Z7Wrk89tjudyL5FOmwZQUoy0/qVXGUl+6Q3s2SWtpDEWITfQ==}
+    engines: {node: '>= 10'}
+    peerDependencies:
+      react: '>= 0.14.0'
+
   mdast-util-from-markdown@2.0.2:
     resolution: {integrity: sha512-uZhTV/8NBuw0WHkPTrCqDOl0zVe1BIng5ZtHoDk49ME1qqcjYmmLmOf0gELgcRMxN4w2iuIeVso5/6QymSrgmA==}
 
@@ -1352,6 +1360,10 @@ packages:
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
+
+  react@19.1.0:
+    resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
+    engines: {node: '>=0.10.0'}
 
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
@@ -2458,6 +2470,10 @@ snapshots:
 
   markdown-extensions@2.0.0: {}
 
+  markdown-to-jsx@7.7.4(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+
   mdast-util-from-markdown@2.0.2:
     dependencies:
       '@types/mdast': 4.0.4
@@ -2862,6 +2878,8 @@ snapshots:
   property-information@7.0.0: {}
 
   react-is@18.3.1: {}
+
+  react@19.1.0: {}
 
   readdirp@4.1.2: {}
 

@@ -1,11 +1,7 @@
 // src/_stage/actors/modelers.ts
-import { JSX } from 'preact';
-import remarkParse from 'remark-parse';
-import { unified } from 'unified';
+import Markdown from 'markdown-to-jsx';
 import { CoreRedprint, createRole } from '../../_core';
 import { Components } from '../components/md-components';
-import remarkSlots from '../utils/markdown/remark-slots';
-import { transformToJSX } from '../utils/markdown/transform-to-jsx';
 
 export const createModelerActors = <C8 extends CoreRedprint>() => {
 	const String = {
@@ -26,19 +22,15 @@ export const createModelerActors = <C8 extends CoreRedprint>() => {
 			Do: (mdComponents: Components) => ({
 				Set: (setKey: string) =>
 					createRole<C8>(
-						'From MD to JSX',
-						'this is supposed to change markdownString into MDAST and then into JSX',
-						'the remark slots plugin is used to parse custom slots',
-					)(async (c8, recorder) => {
+						'Render Markdown to JSX',
+						'Converts a Markdown string into JSX using markdown-to-jsx.',
+					)((c8, recorder) => {
 						const markdownString = c8.var.string(getKey);
+						recorder?.('markdownString', markdownString);
 
-						const file = await unified()
-							.use(remarkParse) // Markdown → MDAST
-							.use(remarkSlots) // MDAST → MDAST (custom slot parsing)
-							.use(transformToJSX(mdComponents)) // MDAST → JSX (your custom renderer)
-							.process(markdownString);
+						const markdownJsx = <Markdown options={{ overrides: mdComponents }}>{markdownString}</Markdown>;
 
-						const markdownJsx = file.result as JSX.Element;
+						console.log(markdownJsx);
 
 						c8.var(setKey, markdownJsx);
 						return c8;

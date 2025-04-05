@@ -26,6 +26,25 @@ const DocsPages = createDirector<DocsConduit>('docs-page director', '').init<Con
 
 DocsPages(
 	DocsActors.Guard.Params.Check({ slug: z.string().default('what-is-cond8') }).SetEntries((n, v) => [`param ${n}`, v]),
+
+	(c8, recorder) => {
+		recorder?.('testing');
+		return c8;
+	},
+
+	DocsActors.Fetcher.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
+	(c8, recorder) => {
+		recorder?.('testing 2');
+		return c8;
+	},
+
+	DocsActors.Modeler.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'), // << I put this actor to the front for debugging
+
+	(c8, recorder) => {
+		recorder?.('testing 3');
+		return c8;
+	},
+
 	DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
 	DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
 	DocsActors.VHX.Header(<DefaultHeaders />),
@@ -53,9 +72,6 @@ DocsPages(
 			<Footer />
 		</div>,
 	),
-
-	DocsActors.Fetcher.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
-	DocsActors.Modeler.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
 	DocsActors.VHX.Slot('content', c8 => c8.var('markdown jsx')),
 	DocsActors.VHX.Finalize.Set('html'),
 );

@@ -116,4 +116,14 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 	private isValidVNode(x: unknown): x is JSX.Element {
 		return typeof x === 'object' && x !== null && 'type' in x && 'props' in x;
 	}
+
+	override get readonly() {
+		const keys = Object.keys(super.readonly);
+		return {
+			title: typeof this.optional('title') === 'string' ? (this.optional('title') as string) : null,
+			templateSet: this.has('template'),
+			headerSet: this.has('header'),
+			slots: Object.fromEntries(keys.filter(k => k.startsWith('slot:')).map(k => [k.slice(5), true])),
+		} as Record<string, any>;
+	}
 }

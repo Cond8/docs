@@ -83,32 +83,41 @@ function generateLLMErrorText({
 }): string {
 	let out = '';
 
-	// @Error
-	out += '@Error\n';
-	out += `Name: ${error.name}\n`;
-	out += `Message: ${error.message}\n`;
+	// @E (Error)
+	out += '@E ';
+	out += `name=${error.name}; `;
+	out += `msg=${JSON.stringify(error.message)}; `;
 	if (error.stack) {
-		out += `Stack:\n${error.stack.trim()}\n`;
+		const trimmed = error.stack
+			.split('\n')
+			.map(s => s.trim())
+			.join(' | ');
+		out += `stack=${trimmed}; `;
 	}
+	out += '\n';
 
-	// @Recording
+	// @R (Recording)
 	if (Array.isArray(recording) && recording.length > 0) {
-		out += '\n@Recording\n';
+		out += '@R ';
 		for (const rec of recording) {
-			out += `- name: ${rec.filter}\n`;
-			out += `  ms: ${rec.ms}\n`;
-			if (Array.isArray(rec.metadata)) {
-				out += `  metadata:\n`;
-				for (const item of rec.metadata) {
-					out += `    - ${JSON.stringify(item)}\n`;
-				}
+			out += `[${rec.filter}|${rec.ms}ms`;
+			if (Array.isArray(rec.metadata) && rec.metadata.length > 0) {
+				out += '|meta=';
+				out += rec.metadata.map(m => JSON.stringify(m)).join(',');
 			}
+			out += '] ';
 		}
+		out += '\n';
 	}
 
-	// @Payload
-	out += '\n@Payload\n';
-	out += JSON.stringify(payload, null, 2);
+	// @P (Payload)
+	out += '@P ';
+	try {
+		const flat = JSON.stringify(payload);
+		out += flat + '\n';
+	} catch {
+		out += '[Payload not serializable]\n';
+	}
 
 	return out;
 }
