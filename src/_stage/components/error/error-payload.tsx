@@ -1,9 +1,9 @@
 // src/_stage/components/error-payload.tsx
 import { Fragment } from 'preact/jsx-runtime';
 import { LifecyclePayload } from '../../../_core/Lifecycle/Vacuum';
-import { CodeBlock } from '../code-block';
 import { NestedObjectTable } from '../nested-object-table';
-import { ScrollBlock } from '../scroll-block';
+import { CodeBlock } from '../ui/code-block';
+import { ScrollBlock } from '../ui/scroll-block';
 import { MetadataGrid } from './error-metadata-grid';
 
 interface Props {

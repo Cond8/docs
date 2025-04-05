@@ -26,10 +26,10 @@ DocsFragment(
 		'Callout 1',
 		<CTA
 			title={'Learn about Cond8 in any way you want.'}
-			variant="tip"
+			description={'Press the button to learn more about Cond8.'}
 			action={{
 				label: 'Learn More',
-				href: '/docs',
+				onClick: () => console.log('Learn More Clicked'),
 			}}
 		/>,
 	),
@@ -37,10 +37,10 @@ DocsFragment(
 		'Callout 2',
 		<CTA
 			title={'Learn about Cond8 in any way you want.'}
-			variant="caution"
+			description={'Press the button to learn more about Cond8.'}
 			action={{
 				label: 'Learn More',
-				href: '/docs',
+				onClick: () => console.log('Learn More Clicked'),
 			}}
 		/>,
 	),
