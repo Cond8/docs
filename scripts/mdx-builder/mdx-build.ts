@@ -1,3 +1,4 @@
+// scripts/mdx-builder/mdx-build.ts
 import dedent from 'dedent';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -28,7 +29,7 @@ async function buildAllMDX(): Promise<void> {
 			const outputPath = path.join(outputDir, file.replace(/\.mdx$/, '.html'));
 
 			const mdx = await fs.readFile(sourcePath, 'utf8');
-			const html = await compileMDXtoHTML(mdx, { filepath: `${dir}/${file}` });
+			const html = await compileMDXtoHTML(mdx);
 
 			const output = dedent`
         <!-- Generated from ${dir}/${file} -->

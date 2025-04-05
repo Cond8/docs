@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.0",
+    "@mdx-js/preact": "^3.1.0",
     "@tailwindcss/cli": "^4.1.1",
     "@tailwindcss/postcss": "^4.1.1",
     "class-variance-authority": "^0.7.1",
@@ -36,7 +37,6 @@
     "@swc/core": "^1.11.16",
     "@types/mdx": "^2.0.13",
     "@types/node": "^22.14.0",
-    "@types/unist": "^3.0.3",
     "autoprefixer": "^10.4.21",
     "chokidar": "^4.0.3",
     "concurrently": "^9.1.2",

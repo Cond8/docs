@@ -1,3 +1,4 @@
+// scripts/mdx-builder/mdx-watch.ts
 import chokidar from 'chokidar';
 import { ChildProcess, spawn } from 'node:child_process';
 import path from 'node:path';

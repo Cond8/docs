@@ -1,3 +1,4 @@
+// scripts/dev.mjs
 import concurrently from 'concurrently';
 import { execSync } from 'node:child_process';
 
