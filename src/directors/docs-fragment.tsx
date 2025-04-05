@@ -23,9 +23,10 @@ DocsFragment(
 
 	DocsActors.Html.InitHtml('html'),
 	DocsActors.Html.SetSlot(
-		'Callout1',
+		'Callout 1',
 		<CTA
 			title={'Learn about Cond8 in any way you want.'}
+			variant="tip"
 			action={{
 				label: 'Learn More',
 				href: '/docs',
@@ -33,9 +34,10 @@ DocsFragment(
 		/>,
 	),
 	DocsActors.Html.SetSlot(
-		'Callout2',
+		'Callout 2',
 		<CTA
 			title={'Learn about Cond8 in any way you want.'}
+			variant="caution"
 			action={{
 				label: 'Learn More',
 				href: '/docs',
