@@ -7,31 +7,39 @@ import { compileMDXtoJSX } from './mdx-compiler';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SOURCE_DIR = path.resolve(__dirname, '../../src/content');
-const OUTPUT_DIR = path.resolve(__dirname, '../../src/content/dist');
+const CONTENT_DIRS = ['docs', 'blogs'];
+const BASE_SOURCE = path.resolve(__dirname, '../../src/content');
+const BASE_OUTPUT = path.resolve(BASE_SOURCE, 'dist');
 
 async function buildAllMDX(): Promise<void> {
-	const files = await fs.readdir(SOURCE_DIR);
-	await fs.mkdir(OUTPUT_DIR, { recursive: true });
+	await fs.mkdir(BASE_OUTPUT, { recursive: true });
 
-	for (const file of files) {
-		if (!file.endsWith('.mdx') || file.startsWith('.')) continue;
+	for (const dir of CONTENT_DIRS) {
+		const dirPath = path.join(BASE_SOURCE, dir);
+		const outputDir = path.join(BASE_OUTPUT, dir);
+		await fs.mkdir(outputDir, { recursive: true });
 
-		const sourcePath = path.join(SOURCE_DIR, file);
-		const outputPath = path.join(OUTPUT_DIR, file.replace(/\.mdx$/, '.tsx'));
+		const files = await fs.readdir(dirPath);
 
-		const mdx = await fs.readFile(sourcePath, 'utf8');
-		const jsx = await compileMDXtoJSX(mdx, { filepath: file });
+		for (const file of files) {
+			if (!file.endsWith('.mdx') || file.startsWith('.')) continue;
 
-		const output = dedent`
-      /** Generated from ${file} **/
-      export default function MDXContent(props: Record<string, unknown>) {
-        ${jsx}
-      }
-    `;
+			const sourcePath = path.join(dirPath, file);
+			const outputPath = path.join(outputDir, file.replace(/\.mdx$/, '.tsx'));
 
-		await fs.writeFile(outputPath, output, 'utf8');
-		console.log(`✅ Built: ${file}`);
+			const mdx = await fs.readFile(sourcePath, 'utf8');
+			const jsx = await compileMDXtoJSX(mdx, { filepath: `${dir}/${file}` });
+
+			const output = dedent`
+        /** Generated from ${dir}/${file} **/
+        export default function MDXContent(props: Record<string, unknown>) {
+          ${jsx}
+        }
+      `;
+
+			await fs.writeFile(outputPath, output, 'utf8');
+			console.log(`✅ Built: ${dir}/${file}`);
+		}
 	}
 }
 
