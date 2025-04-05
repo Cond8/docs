@@ -1,3 +1,4 @@
+// src/_stage/components/recording-block.tsx
 import { Fragment } from 'preact/jsx-runtime';
 import { RecorderEntry } from '../../_core';
 

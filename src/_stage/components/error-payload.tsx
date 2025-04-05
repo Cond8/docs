@@ -1,4 +1,4 @@
-// src/components/error/lifecycle-block.tsx
+// src/_stage/components/error-payload.tsx
 import { Fragment } from 'preact/jsx-runtime';
 import { LifecyclePayload } from '../../_core/Lifecycle/Vacuum';
 import { CodeBlock } from './code-block';

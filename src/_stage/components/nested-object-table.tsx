@@ -1,3 +1,4 @@
+// src/_stage/components/nested-object-table.tsx
 import { Fragment } from 'preact/jsx-runtime';
 
 export function NestedObjectTable({ object }: { object: Record<string, Record<string, unknown>> }) {

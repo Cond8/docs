@@ -9,7 +9,7 @@
     "cf-typegen": "wrangler types",
     "deploy": "wrangler deploy",
     "dev": "node scripts/dev.mjs",
-    "dev:css": "tailwindcss -i ./public/styles.css -o ./public/output.css --watch",
+    "dev:css": "tailwindcss -i ./src/styles.css -o ./public/dist/styles.css --watch",
     "dev:js": "esbuild scripts/*.ts --bundle --outdir=public/scripts --target=es2020 --watch",
     "start": "wrangler dev"
   },

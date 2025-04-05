@@ -9,16 +9,21 @@ Promise.race([document.fonts.ready, new Promise(res => setTimeout(res, 1000))]).
 });
 
 // cond8-client.js
-export function enableCopyToClipboard() {
-	document.addEventListener('click', e => {
-		const target = e.target;
-		if (target.matches('[data-copy]')) {
-			const value = target.getAttribute('data-copy');
-			if (value) {
-				navigator.clipboard.writeText(value).then(() => {
-					console.log('Copied:', value);
-				});
-			}
-		}
-	});
-}
+document.addEventListener('click', e => {
+	const button = e.target.closest('button[data-copy]');
+	if (!button) return;
+
+	const value = button.getAttribute('data-copy');
+	if (!value) return;
+
+	navigator.clipboard
+		.writeText(value)
+		.then(() => {
+			const originalText = button.textContent;
+			button.textContent = 'Copied!';
+			setTimeout(() => {
+				button.textContent = originalText;
+			}, 1000);
+		})
+		.catch(err => console.error('Clipboard copy failed:', err));
+});

@@ -1,3 +1,4 @@
+// scripts/dev.mjs
 import concurrently from 'concurrently';
 
 concurrently(
@@ -7,11 +8,11 @@ concurrently(
 			name: 'tailwind',
 			prefixColor: 'blue',
 		},
-		{
-			command: 'pnpm dev:js',
-			name: 'scripts',
-			prefixColor: 'magenta',
-		},
+		// {
+		// 	command: 'pnpm dev:js',
+		// 	name: 'scripts',
+		// 	prefixColor: 'magenta',
+		// },
 		{
 			command: 'wrangler dev --local',
 			name: 'cf-worker',

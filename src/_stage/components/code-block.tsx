@@ -1,3 +1,4 @@
+// src/_stage/components/code-block.tsx
 export function CodeBlock({ code, variant = 'default' }: { code: string; variant?: 'default' | 'error' }) {
 	const borderClass = variant === 'error' ? 'border-red-600' : 'border-gray-700';
 

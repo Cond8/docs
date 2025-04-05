@@ -1,3 +1,4 @@
+// src/_stage/components/scroll-block.tsx
 export function ScrollBlock({ value }: { value: unknown }) {
 	const content = (() => {
 		if (typeof value === 'string') return value;
