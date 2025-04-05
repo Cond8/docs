@@ -104,8 +104,8 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 				}
 
 				// Retrieve both potential slot contents
-				const jsxSlot = this.optional(`slot:${name}`);
-				const htmlSlot = this.optional(`slot:html:${name}`);
+				const jsxSlot = this.optional(`slot:${name}`) as JSX.Element | ((props?: any) => JSX.Element) | undefined;
+				const htmlSlot = this.optional(`slot:html:${name}`) as string | undefined;
 
 				// Case 1: Both JSX and HTML slots are provided.
 				if (jsxSlot && htmlSlot) {
