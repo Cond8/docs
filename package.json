@@ -13,6 +13,7 @@
     "start": "wrangler dev"
   },
   "dependencies": {
+    "@mdx-js/mdx": "^3.1.0",
     "@tailwindcss/cli": "^4.1.1",
     "@tailwindcss/postcss": "^4.1.1",
     "class-variance-authority": "^0.7.1",
@@ -24,12 +25,18 @@
     "miniflare": "^4.20250321.2",
     "preact": "^10.26.4",
     "preact-render-to-string": "^6.5.13",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.1.0",
+    "vfile": "^6.0.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250404.0",
     "@swc/core": "^1.11.16",
+    "@types/node": "^22.14.0",
     "@types/unist": "^3.0.3",
     "autoprefixer": "^10.4.21",
     "chokidar": "^4.0.3",
@@ -40,6 +47,7 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "tailwindcss": "^4.1.2",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.3",
     "typescript": "^5.5.2",
     "wrangler": "^4.7.1"
   }
