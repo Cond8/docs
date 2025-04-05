@@ -15,7 +15,8 @@ export const createFetcherActors = <C8 extends CoreRedprint<Context>>() => {
 				let res;
 
 				try {
-					res = await c8.body.env.ASSETS.fetch(new Request(assetPath));
+					const req = new Request(new URL(assetPath, 'http://dummy'));
+					res = await c8.body.env.ASSETS.fetch(req);
 				} catch (error) {
 					console.log('error caught in fetcher');
 					throw error;

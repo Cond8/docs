@@ -1,5 +1,5 @@
 // src/directors/error-directors/body-parser.ts
-import { C8ROPlain, CoreRedprint, createDirector } from '../../_core';
+import { C8ROPlain, CoreRedprint, createDirector, RecorderEntry } from '../../_core';
 import { LifecyclePayload } from '../../_core/Lifecycle/Vacuum';
 import { ErrorActors, ErrorConduit } from '../../_stage/conduits/ErrorConduit';
 
@@ -9,22 +9,18 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 	'manually written',
 )(
 	ErrorActors.Modeler(c8 => {
-		const { payload, directorPayload, recording } = c8.body;
+		const { payload: actorPayload, directorPayload, recording } = c8.body;
 		const error = c8.body as Error;
 
-		c8.var('payload array', [directorPayload, payload]);
+		const payload = mergeLifecyclePayloads(directorPayload, actorPayload);
+		const llmText = generateLLMErrorText({ error, recording, payload });
 
+		c8.var('llm text', llmText);
+
+		c8.var('payload', payload);
 		c8.var('recording', recording);
 		c8.var('error', error);
 		c8.var('error message', error.message);
-
-		return c8;
-	}),
-	ErrorActors.Modeler(c8 => {
-		const payloads = c8.var<LifecyclePayload[]>('payload array');
-		const payload = mergeLifecyclePayloads(...payloads);
-
-		c8.var('payload', payload);
 
 		return c8;
 	}),
@@ -74,4 +70,45 @@ export function mergeLifecyclePayloads<C8 extends CoreRedprint>(...payloads: Lif
 
 function mergeReadonlyC8(...readonlyList: object[]): object {
 	return Object.assign({}, ...readonlyList); // later overrides earlier
+}
+
+function generateLLMErrorText({
+	error,
+	recording,
+	payload,
+}: {
+	error: Error;
+	recording: RecorderEntry[];
+	payload: MergedLifecyclePayload<any>;
+}): string {
+	let out = '';
+
+	// @Error
+	out += '@Error\n';
+	out += `Name: ${error.name}\n`;
+	out += `Message: ${error.message}\n`;
+	if (error.stack) {
+		out += `Stack:\n${error.stack.trim()}\n`;
+	}
+
+	// @Recording
+	if (Array.isArray(recording) && recording.length > 0) {
+		out += '\n@Recording\n';
+		for (const rec of recording) {
+			out += `- name: ${rec.filter}\n`;
+			out += `  ms: ${rec.ms}\n`;
+			if (Array.isArray(rec.metadata)) {
+				out += `  metadata:\n`;
+				for (const item of rec.metadata) {
+					out += `    - ${JSON.stringify(item)}\n`;
+				}
+			}
+		}
+	}
+
+	// @Payload
+	out += '\n@Payload\n';
+	out += JSON.stringify(payload, null, 2);
+
+	return out;
 }

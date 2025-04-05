@@ -1,6 +1,7 @@
 // src/_stage/utils/markdown/remark-slots.ts
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Plugin } from 'unified';
-import type { Node, Parent } from 'unist';
+import type { Literal, Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';
 
 // Define a custom interface for our slot nodes.
@@ -10,6 +11,8 @@ export interface SlotNode extends Node {
 	props: Record<string, string>;
 	children: Node[];
 }
+
+const literal = (value: string): Literal => ({ type: 'text', value });
 
 /**
  * A Remark plugin to transform custom slot syntax into SlotNodes.
@@ -45,10 +48,7 @@ const remarkSlots: Plugin = function () {
 
 				// Add any text before the match as a regular text node.
 				if (matchStart > lastIndex) {
-					newNodes.push({
-						type: 'text',
-						data: value.slice(lastIndex, matchStart),
-					});
+					newNodes.push(literal(value.slice(lastIndex, matchStart)));
 				}
 
 				const componentName = match[1];
@@ -71,11 +71,7 @@ const remarkSlots: Plugin = function () {
 					type: 'slot',
 					name: componentName,
 					props,
-					children: [
-						// Wrap the children content in a text node.
-						// (Later, you may re-parse this string into a full MDAST if needed.)
-						{ type: 'text', data: childrenContent },
-					],
+					children: fromMarkdown(childrenContent).children,
 				};
 				newNodes.push(slotNode);
 				lastIndex = matchEnd;
@@ -83,10 +79,7 @@ const remarkSlots: Plugin = function () {
 
 			// Append any trailing text after the last match.
 			if (lastIndex < value.length) {
-				newNodes.push({
-					type: 'text',
-					data: value.slice(lastIndex),
-				});
+				newNodes.push(literal(value.slice(lastIndex)));
 			}
 
 			// Replace the original text node with the new set of nodes.

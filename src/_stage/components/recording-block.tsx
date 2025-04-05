@@ -1,13 +1,8 @@
 import { Fragment } from 'preact/jsx-runtime';
-
-interface RecordingEntry {
-	name: string;
-	ms: number;
-	metadata: unknown[];
-}
+import { RecorderEntry } from '../../_core';
 
 interface Props {
-	recording: RecordingEntry[];
+	recording: RecorderEntry[];
 }
 
 export function RecordingBlock({ recording }: Props) {
@@ -19,7 +14,7 @@ export function RecordingBlock({ recording }: Props) {
 				<Fragment key={i}>
 					<div className="border border-[var(--caution-border)] bg-[var(--card)] p-4 rounded max-h-64 overflow-auto">
 						<div className="flex justify-between items-center mb-2">
-							<h3 className="text-sm font-semibold text-[var(--caution-foreground)] uppercase tracking-wide">🎞️ {entry.name}</h3>
+							<h3 className="text-sm font-semibold text-[var(--caution-foreground)] uppercase tracking-wide">🎞️ {entry.filter}</h3>
 							<span className="text-xs text-[var(--muted-foreground)]">{entry.ms} ms</span>
 						</div>
 

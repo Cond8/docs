@@ -28,9 +28,6 @@ DocsPages(
 	DocsActors.Guard.Params.Check({ slug: z.string().default('what-is-cond8') }).SetEntries((n, v) => [`param ${n}`, v]),
 	DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
 	DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
-	DocsActors.Fetcher.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
-	DocsActors.Modeler.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
-	DocsActors.VHX.Slot('content', c8 => c8.var('markdown jsx')),
 	DocsActors.VHX.Header(<DefaultHeaders />),
 	DocsActors.VHX.Template(
 		<div className="min-h-screen flex flex-col">
@@ -57,6 +54,9 @@ DocsPages(
 		</div>,
 	),
 
+	DocsActors.Fetcher.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
+	DocsActors.Modeler.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'),
+	DocsActors.VHX.Slot('content', c8 => c8.var('markdown jsx')),
 	DocsActors.VHX.Finalize.Set('html'),
 );
 
