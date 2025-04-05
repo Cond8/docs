@@ -23,9 +23,20 @@ ErrorHandlerDirector(
 			id="error-page"
 			className="min-h-screen w-full max-w-[1024px] mx-auto px-4 py-8 font-mono text-[var(--foreground)] bg-[var(--background)]"
 		>
+			{/* Top bar with Copy button */}
+			<div className="w-full flex justify-end mb-4">
+				<button
+					data-copy="Placeholder error text to copy"
+					className="text-xs uppercase font-bold tracking-wide px-3 py-1 rounded bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition"
+				>
+					Copy Error
+				</button>
+			</div>
+
 			<div className="w-full flex justify-center">
 				<ErrorHeader />
 			</div>
+
 			{/* Grid layout for sections */}
 			<section className="space-y-10 w-full">
 				{/* Error Block */}
