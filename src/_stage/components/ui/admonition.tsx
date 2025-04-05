@@ -1,4 +1,4 @@
-// src/_stage/components/admonition.tsx
+// src/_stage/components/ui/admonition.tsx
 import { cva, type VariantProps } from 'class-variance-authority';
 import { JSX } from 'preact';
 import { cn } from '../../utils/clsx.js';

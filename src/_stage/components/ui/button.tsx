@@ -1,4 +1,4 @@
-// src/components/ui/button.tsx
+// src/_stage/components/ui/button.tsx
 import { cva, type VariantProps } from 'class-variance-authority';
 import { JSX } from 'preact';
 import { forwardRef } from 'preact/compat';

@@ -1,4 +1,4 @@
-// src/_stage/actors/modelers.ts
+// src/_stage/actors/modelers.tsx
 import { micromark } from 'micromark';
 import { CoreRedprint, createRole } from '../../_core';
 

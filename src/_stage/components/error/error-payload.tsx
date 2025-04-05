@@ -1,4 +1,4 @@
-// src/_stage/components/error-payload.tsx
+// src/_stage/components/error/error-payload.tsx
 import { Fragment } from 'preact/jsx-runtime';
 import { LifecyclePayload } from '../../../_core/Lifecycle/Vacuum';
 import { NestedObjectTable } from '../nested-object-table';

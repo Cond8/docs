@@ -1,4 +1,4 @@
-// src/_stage/components/cta.tsx
+// src/_stage/components/call-to-action.tsx
 import { cn } from '../utils/clsx.js';
 import { Button } from './ui/button';
 

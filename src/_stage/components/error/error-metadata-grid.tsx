@@ -1,4 +1,4 @@
-// src/_stage/components/error-metadata-grid.tsx
+// src/_stage/components/error/error-metadata-grid.tsx
 export function MetadataGrid({ items }: { items: unknown[] }) {
 	if (!items?.length) return null;
 

@@ -1,3 +1,4 @@
+// src/directors/docs-fragment.tsx
 import { Context } from 'hono';
 import { z } from 'zod';
 import { createDirector, createRecorder } from '../_core';

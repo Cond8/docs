@@ -1,3 +1,4 @@
+// src/_stage/actors/html.ts
 import { JSX } from 'preact';
 import { CoreRedprint } from '../../_core';
 import { HtmlSlotsService } from '../services/HtmlSlotsService';

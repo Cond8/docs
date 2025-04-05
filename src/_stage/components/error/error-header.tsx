@@ -1,4 +1,4 @@
-// src/_stage/components/error-header.tsx
+// src/_stage/components/error/error-header.tsx
 export const ErrorHeader = () => (
 	<div className="max-w-[600px] w-full">
 		{/* Header: Cond8 logo + VHX */}

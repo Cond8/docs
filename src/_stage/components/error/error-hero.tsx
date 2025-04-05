@@ -1,4 +1,4 @@
-// src/_stage/components/error-hero.tsx
+// src/_stage/components/error/error-hero.tsx
 export function ErrorHero({ error }: { error: Error }) {
 	const name = error.name || 'Error';
 	const message = error.message || 'An unknown error occurred';

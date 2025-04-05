@@ -1,3 +1,4 @@
+// src/_stage/services/HtmlSlotsService.ts
 import { JSX } from 'preact';
 import { render } from 'preact-render-to-string';
 import { StrictObjectKVService } from '../../_core';
