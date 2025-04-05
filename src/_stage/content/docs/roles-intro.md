@@ -1,3 +1,0 @@
-
-
-One thing you might have notices is that Docs is an object that has Data, Guard and Caller. Those are 3 of the 12 roles within Cond8. These are all the roles: [Cancelable](/docs?section=role-cancelable) | [Logger](/docs?section=role-logger) | [Reader](/docs?section=role-reader) | [Service Setup](/docs?section=role-service-setup) | [Database Setup](/docs?section=role-database-setup) | [Data](/docs?section=role-data) | [Repository](/docs?section=role-repository) | [Modeler](/docs?section=role-modeler) | [Caller](/docs?section=role-caller) | [Store](/docs?section=role-store) | [Auth](/docs?section=role-auth) | [Guard](/docs?section=role-guard)

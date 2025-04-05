@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const __watchDir = path.resolve(__dirname, '../../src/_stage/content');
+
+console.log(__watchDir);
 
 let subprocess: ChildProcess | null = null;
 
@@ -24,7 +27,7 @@ function rebuild(): void {
 
 console.log('👀 Watching MDX files...');
 chokidar
-	.watch(path.resolve(__dirname, '../../src/_stage/content/**/*.mdx'), {
+	.watch(__watchDir, {
 		persistent: true,
 		ignoreInitial: false,
 	})
