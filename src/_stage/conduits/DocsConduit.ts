@@ -11,6 +11,7 @@ import { VHXService } from '../services/VhxService';
 export class DocsConduit extends CoreRedprint<Context> implements VHXRedprint<Context> {
 	public locals = new StrictObjectKVService('locals');
 	public vhx = new VHXService('vhx');
+	public fetcher = new VHXService('fetcher');
 
 	private lifeCycle = new LifeCycleService('lifeCycle');
 

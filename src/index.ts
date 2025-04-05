@@ -3,6 +3,7 @@ import { DurableObject } from 'cloudflare:workers';
 import { Hono } from 'hono';
 import { C8Error } from './_core/Recorder/C8Error';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
+import DocsFragment from './directors/docs-fragment';
 import DocsPages from './directors/docs-pages';
 import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
@@ -38,6 +39,13 @@ app.get('/', async c => {
 
 app.get('/docs/:slug', async c => {
 	const html = await DocsPages(c);
+	return c.html(html, 200, {
+		'Content-Type': 'text/html; charset=utf-8',
+	});
+});
+
+app.get('fragment/docs/:slug', async c => {
+	const html = await DocsFragment(c);
 	return c.html(html, 200, {
 		'Content-Type': 'text/html; charset=utf-8',
 	});

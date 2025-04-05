@@ -5,7 +5,6 @@ import { createDirector, createRecorder } from '../_core';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { DocsSidebar } from '../_stage/components/docs-sidebar';
 import { Footer } from '../_stage/components/footer';
-import { mdComponents } from '../_stage/components/md-components';
 import { Topbar } from '../_stage/components/topbar';
 import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
@@ -26,29 +25,10 @@ const DocsPages = createDirector<DocsConduit>('docs-page director', '').init<Con
 
 DocsPages(
 	DocsActors.Guard.Params.Check({ slug: z.string().default('what-is-cond8') }).SetEntries((n, v) => [`param ${n}`, v]),
-
-	(c8, recorder) => {
-		recorder?.('testing');
-		return c8;
-	},
-
-	DocsActors.Fetcher.File.Get('param slug', slug => `/files/docs/${slug}.md`).Set('markdown'),
-	(c8, recorder) => {
-		recorder?.('testing 2');
-		return c8;
-	},
-
-	DocsActors.Modeler.MD.Get('markdown').Do(mdComponents).Set('markdown jsx'), // << I put this actor to the front for debugging
-
-	(c8, recorder) => {
-		recorder?.('testing 3');
-		return c8;
-	},
-
 	DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
 	DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
 	DocsActors.VHX.Header(<DefaultHeaders />),
-	DocsActors.VHX.Template(
+	DocsActors.VHX.Template(c8 => (
 		<div className="min-h-screen flex flex-col">
 			<div
 				className="
@@ -64,15 +44,21 @@ DocsPages(
 				<main id="landing-page" className="flex space-x-4 max-w-[1024px] w-full">
 					<DocsSidebar />
 					<div className="flex-grow max-w-[800px] w-full">
-						<slot name="content" />
+						<div
+							id="content-slot"
+							className="markdown transition-opacity"
+							hx-get={`/fragment/docs/${c8.var('param slug')}`}
+							hx-trigger="load"
+							hx-swap="innerHTML"
+							hx-on="htmx:beforeSwap: document.querySelector('#content-slot')?.classList.remove('animate-fade-in-up'); htmx:afterSwap: document.querySelector('#content-slot')?.classList.add('animate-fade-in-up')"
+						></div>
 					</div>
 				</main>
 			</div>
 
 			<Footer />
-		</div>,
-	),
-	DocsActors.VHX.Slot('content', c8 => c8.var('markdown jsx')),
+		</div>
+	)),
 	DocsActors.VHX.Finalize.Set('html'),
 );
 

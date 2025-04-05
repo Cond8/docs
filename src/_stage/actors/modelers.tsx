@@ -1,7 +1,6 @@
 // src/_stage/actors/modelers.ts
-import Markdown from 'markdown-to-jsx';
+import { micromark } from 'micromark';
 import { CoreRedprint, createRole } from '../../_core';
-import { Components } from '../components/md-components';
 
 export const createModelerActors = <C8 extends CoreRedprint>() => {
 	const String = {
@@ -19,23 +18,20 @@ export const createModelerActors = <C8 extends CoreRedprint>() => {
 
 	const MD = {
 		Get: (getKey: string) => ({
-			Do: (mdComponents: Components) => ({
-				Set: (setKey: string) =>
-					createRole<C8>(
-						'Render Markdown to JSX',
-						'Converts a Markdown string into JSX using markdown-to-jsx.',
-					)((c8, recorder) => {
-						const markdownString = c8.var.string(getKey);
-						recorder?.('markdownString', markdownString);
+			Set: (setKey: string) =>
+				createRole<C8>(
+					'Render Markdown to HTML',
+					'Converts a Markdown string into raw HTML for .markdown CSS styling.',
+				)((c8, recorder) => {
+					const markdownString = c8.var.string(getKey);
+					recorder?.('markdownString', markdownString);
 
-						const markdownJsx = <Markdown options={{ overrides: mdComponents }}>{markdownString}</Markdown>;
+					const html = micromark(markdownString);
+					recorder?.('html', html);
 
-						console.log(markdownJsx);
-
-						c8.var(setKey, markdownJsx);
-						return c8;
-					}),
-			}),
+					c8.var(setKey, html);
+					return c8;
+				}),
 		}),
 	};
 

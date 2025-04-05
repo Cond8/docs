@@ -4,6 +4,8 @@ Cond8 is, at its core, a pipeline—a sequence of functions executed one after a
 
 What makes Cond8 different isn’t polish — it’s that its core contracts with DSLMs are built into the infrastructure. If those break, the entire system fails by design. Cond8 isn’t just automation — it’s a deliberately constructed execution environment. Everything from director composition to actor behavior is formalized in code, so DSLMs don’t guess — they operate within strict, testable boundaries. That same structure also makes it easier for you, the human developer, to reason about complex systems and build software that doesn’t just work — it holds.
 
+{{ Callout1 }}
+
 ---
 
 ## HelloDirector Example
@@ -63,6 +65,8 @@ HelloDirector(
 // 6. Finalize the director and return the rendered HTML
 export default HelloDirector.fin(c8 => c8.var('html'));
 ```
+
+{{ Callout2 }}
 
 ## HelloDirector Example — FAQ
 
