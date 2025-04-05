@@ -43,15 +43,8 @@ DocsPages(
 			<div className="flex flex-grow justify-center px-4 py-8">
 				<main id="landing-page" className="flex space-x-4 max-w-[1024px] w-full">
 					<DocsSidebar />
-					<div className="flex-grow max-w-[800px] w-full">
-						<div
-							id="content-slot"
-							className="markdown transition-opacity"
-							hx-get={`/fragment/docs/${c8.var('param slug')}`}
-							hx-trigger="load"
-							hx-swap="innerHTML settle:500"
-							hx-on="htmx:beforeSwap: document.querySelector('#content-slot')?.classList.remove('animate-fade-in-up'); htmx:afterSwap: document.querySelector('#content-slot')?.classList.add('animate-fade-in-up')"
-						></div>
+					<div className="flex-grow max-w-[800px] w-full markdown">
+						<slot name="Html Content" />
 					</div>
 				</main>
 			</div>
@@ -59,6 +52,8 @@ DocsPages(
 			<Footer />
 		</div>
 	)),
+	DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('fragment'),
+	DocsActors.VHX.SetSlot.Html('Html Content', c8 => c8.var('fragment')),
 	DocsActors.VHX.Finalize.Set('html'),
 );
 

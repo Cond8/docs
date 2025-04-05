@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/public/dist" />
       <excludeFolder url="file://$MODULE_DIR$/public/prism" />
+      <excludeFolder url="file://$MODULE_DIR$/src/_stage/content/dist" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="htmx.org" level="application" />

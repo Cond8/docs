@@ -22,7 +22,7 @@ function rebuild(): void {
 
 console.log('👀 Watching MDX files...');
 chokidar
-	.watch(path.resolve(__dirname, '../../src/content/**/*.mdx'), {
+	.watch(path.resolve(__dirname, '../../src/_stage/content/**/*.mdx'), {
 		persistent: true,
 		ignoreInitial: false,
 	})

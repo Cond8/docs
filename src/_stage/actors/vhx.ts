@@ -42,9 +42,15 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		return c8;
 	};
 
-	const Slot = (name: string, elementOrFn: JSXElementOrFn) => (c8: C8) => {
+	const SetSlot = (name: string, elementOrFn: JSXElementOrFn) => (c8: C8) => {
 		const element = typeof elementOrFn === 'function' ? elementOrFn(c8.utils.readonly) : elementOrFn;
 		c8.vhx.setSlot(name, element);
+		return c8;
+	};
+
+	const SetSlotHtml = (name: string, htmlFn: (c8: C8RO<C8>) => string) => (c8: C8) => {
+		const html = htmlFn(c8.utils.readonly);
+		c8.vhx.setSlotHtml(name, html);
 		return c8;
 	};
 
@@ -61,7 +67,9 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		Title,
 		Header,
 		Template,
-		Slot,
+		SetSlot: Object.assign(SetSlot, {
+			Html: SetSlotHtml,
+		}),
 		Finalize,
 	};
 };
