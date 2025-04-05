@@ -16,6 +16,7 @@ export type ReadonlyState = {
 
 export type VarUtilsType = {
 	<V>(key: PropertyKey, value?: V): V;
+	has: (key: PropertyKey) => boolean;
 	string: (key: PropertyKey, value?: string) => string;
 	number: (key: PropertyKey, value?: number) => number;
 	boolean: (key: PropertyKey, value?: boolean) => boolean;
@@ -38,7 +39,7 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 			readonly[key] = layer.readonly;
 		}
 		return Object.freeze({
-			var: this.var.bind(this),
+			var: this.var,
 			get plain() {
 				return readonly;
 			},
@@ -178,6 +179,7 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 			};
 
 		return Object.assign(defaultVar, {
+			has: (key: PropertyKey) => this.c8.locals.has(key),
 			string: checkedVar<string>((x): x is string => typeof x === 'string', 'string'),
 			number: checkedVar<number>((x): x is number => typeof x === 'number', 'number'),
 			boolean: checkedVar<boolean>((x): x is boolean => typeof x === 'boolean', 'boolean'),

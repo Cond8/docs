@@ -1,6 +1,5 @@
 // src/directors/error-directors/body-parser.ts
-import { C8ROPlain, CoreRedprint, createDirector, RecorderEntry } from '../../_core';
-import { LifecyclePayload } from '../../_core/Lifecycle/Vacuum';
+import { C8ROPlain, CoreRedprint, createDirector, LifecyclePayload, RecorderEntry } from '../../_core';
 import { ErrorActors, ErrorConduit } from '../../_stage/conduits/ErrorConduit';
 
 export const ErrorBodyParser = createDirector<ErrorConduit>(
@@ -18,7 +17,7 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 		c8.var('llm text', llmText);
 
 		c8.var('payload', payload);
-		c8.var('recording', recording);
+		if (recording) c8.var('recording', recording);
 		c8.var('error', error);
 		c8.var('error message', error.message);
 
@@ -29,6 +28,8 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 export type MergedLifecyclePayload<C8 extends CoreRedprint> = Omit<LifecyclePayload, 'c8'> & { c8: C8ROPlain<C8> };
 
 export function mergeLifecyclePayloads<C8 extends CoreRedprint>(...payloads: LifecyclePayload<C8>[]): MergedLifecyclePayload<C8> {
+	console.log(payloads);
+
 	const merged: Partial<MergedLifecyclePayload<C8>> = {
 		hooks: [],
 		metadata: [],
@@ -37,6 +38,8 @@ export function mergeLifecyclePayloads<C8 extends CoreRedprint>(...payloads: Lif
 	const readonlyC8List: object[] = [];
 
 	for (const payload of payloads) {
+		if (!payload) continue;
+
 		// Collect readonly C8
 		if (payload.c8?.utils?.readonly?.plain) {
 			readonlyC8List.push(payload.c8.utils.readonly.plain);

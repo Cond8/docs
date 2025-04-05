@@ -18,7 +18,8 @@ export const createHtmlActors = <C8 extends HtmlRedprint>() => ({
 	get Finalize() {
 		return {
 			Set: (setKey: string) => (c8: C8) => {
-				c8.html.finalize();
+				const html = c8.html.finalize();
+				c8.var(setKey, html);
 				return c8;
 			},
 		};

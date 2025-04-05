@@ -37,10 +37,12 @@ ErrorHandlerDirector(
 				</div>
 
 				{/* Recording Section */}
-				<div className="border border-caution-border bg-background/60 p-6">
-					<h2 className="text-sm font-bold text-caution-foreground mb-2 uppercase tracking-wide">🎥 Recordings</h2>
-					<RecordingBlock recording={c8.var('recording')} />
-				</div>
+				{c8.var.has('recording') ? (
+					<div className="border border-caution-border bg-background/60 p-6">
+						<h2 className="text-sm font-bold text-caution-foreground mb-2 uppercase tracking-wide">🎥 Recordings</h2>
+						<RecordingBlock recording={c8.var('recording')} />
+					</div>
+				) : null}
 
 				{/* Payload Section */}
 				<div className="border border-note-border bg-background/60 p-6">

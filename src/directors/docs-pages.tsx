@@ -49,7 +49,7 @@ DocsPages(
 							className="markdown transition-opacity"
 							hx-get={`/fragment/docs/${c8.var('param slug')}`}
 							hx-trigger="load"
-							hx-swap="innerHTML"
+							hx-swap="innerHTML settle:500"
 							hx-on="htmx:beforeSwap: document.querySelector('#content-slot')?.classList.remove('animate-fade-in-up'); htmx:afterSwap: document.querySelector('#content-slot')?.classList.add('animate-fade-in-up')"
 						></div>
 					</div>
