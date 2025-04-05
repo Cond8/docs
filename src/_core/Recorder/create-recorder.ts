@@ -24,10 +24,12 @@ export interface ObserverEntry {
 
 export type ObserverMap = Record<string, ObserverEntry>;
 
-export const createRecorder = (
-	observers?: ObserverMap,
-	onError?: (recording: RecorderEntry[], error: Error) => CouldPromise<void>,
-): Recorder => {
+interface CreateRecorderParams {
+	observers?: ObserverMap;
+	onError?: (recording: RecorderEntry[], error: Error) => CouldPromise<void>;
+}
+
+export const createRecorder = ({ observers, onError }: CreateRecorderParams = {}): Recorder => {
 	const startTime = Date.now();
 	const recording: RecorderEntry[] = [];
 
