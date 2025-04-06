@@ -44,7 +44,9 @@ DocsPages(
 				<main id="landing-page" className="flex space-x-4 max-w-[1024px] w-full">
 					<DocsSidebar />
 					<div className="flex-grow max-w-[800px] w-full markdown">
-						<slot name="Html Content" />
+						<div id="htmx-target" hx-target="this">
+							<slot name="Html Content" />
+						</div>
 					</div>
 				</main>
 			</div>
@@ -53,6 +55,7 @@ DocsPages(
 		</div>,
 	),
 	DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('fragment'),
+	DocsActors.VHX.HtmlFragment.Get('fragment').SetSlot('Html Content'),
 	DocsActors.VHX.Finalize.Set('html'),
 );
 

@@ -48,6 +48,16 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		return c8;
 	};
 
+	const HtmlFragment = {
+		Get: (getKey: string) => ({
+			SetSlot: (slotName: string) => (c8: C8) => {
+				const value = c8.var.string(getKey);
+				c8.vhx.setHtmlSlot(slotName, value);
+				return c8;
+			},
+		}),
+	};
+
 	const Finalize = {
 		Set: (setKey: string) => (c8: C8) => {
 			const result = c8.vhx.wrapWithHtml();
@@ -62,6 +72,7 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		Header,
 		Template,
 		SetSlot,
+		HtmlFragment,
 		Finalize,
 	};
 };

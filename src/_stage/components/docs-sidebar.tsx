@@ -44,26 +44,36 @@ export const sections = [
 export const DocsSidebar = () => (
 	<div className="w-64 mt-5">
 		<nav className="flex flex-col gap-4">
-			{sections.map(section => (
-				<div key={section.title} className="mb-2">
-					<div className="font-title uppercase text-card-foreground mb-2 text-sm">{section.title}</div>
-					<ul className="font-mono list-none p-0 m-0 space-y-1">
-						{section.links.map(link => (
-							<li key={link}>
-								<a
-									href={`/docs/${link
-										.toLowerCase()
-										.replace(/[^\w\s]/g, '')
-										.replace(/\s+/g, '-')}`}
-									className="text-foreground no-underline hover:text-primary transition-colors duration-200"
-								>
-									{link}
-								</a>
-							</li>
-						))}
-					</ul>
-				</div>
-			))}
+			{sections.map(section => {
+				return (
+					<div key={section.title} className="mb-2">
+						<div className="font-title uppercase text-card-foreground mb-2 text-sm">{section.title}</div>
+						<ul className="font-mono list-none p-0 m-0 space-y-1">
+							{section.links.map(link => {
+								const slug = link
+									.toLowerCase()
+									.replace(/[^\w\s]/g, '')
+									.replace(/\s+/g, '-');
+
+								return (
+									<li key={link}>
+										<a
+											href={`/docs/${slug}`}
+											hx-get={`/partials/docs/${slug}`}
+											hx-target="#htmx-target"
+											hx-swap="innerHTML"
+											hx-push-url={`/docs/${slug}`}
+											className="text-foreground no-underline hover:text-primary transition-colors duration-200"
+										>
+											{link}
+										</a>
+									</li>
+								);
+							})}
+						</ul>
+					</div>
+				);
+			})}
 		</nav>
 	</div>
 );

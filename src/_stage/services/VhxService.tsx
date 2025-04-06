@@ -44,16 +44,8 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 		this.set(`slot:${key}`, content);
 	}
 
-	getSlot(key: string): JSX.Element | null {
-		return (this.optional(`slot:${key}`) ?? null) as JSX.Element | null;
-	}
-
-	hasSlot(key: string): boolean {
-		return this.has(`slot:${key}`);
-	}
-
-	removeSlot(key: string): void {
-		this.remove(`slot:${key}`);
+	setHtmlSlot(key: string, content: string): void {
+		this.set(`slot:html:${key}`, content);
 	}
 
 	wrapWithHtml() {
@@ -89,8 +81,12 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 					throw new Error('VHX: <slot> must have a "name" attribute.');
 				}
 
-				const jsxSlot = this.optional(`slot:${name}`) as JSX.Element | ((props?: any) => JSX.Element) | undefined;
+				const htmlSlot = this.optional(`slot:html:${name}`) as string;
+				if (htmlSlot) {
+					return h('div', { dangerouslySetInnerHTML: { __html: htmlSlot } });
+				}
 
+				const jsxSlot = this.optional(`slot:${name}`) as JSX.Element | ((dataProps: Record<string, any>) => JSX.Element);
 				if (jsxSlot) {
 					const jsxContent = typeof jsxSlot === 'function' ? jsxSlot(dataProps) : jsxSlot;
 					if (!this.isValidVNode(jsxContent)) {

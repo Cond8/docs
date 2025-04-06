@@ -44,7 +44,7 @@ app.get('/docs/:slug', async c => {
 	});
 });
 
-app.get('fragment/docs/:slug', async c => {
+app.get('partials/docs/:slug', async c => {
 	const html = await DocsFragment(c);
 	return c.html(html, 200, {
 		'Content-Type': 'text/html; charset=utf-8',
