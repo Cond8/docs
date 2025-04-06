@@ -28,7 +28,7 @@ DocsPages(
 	DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
 	DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
 	DocsActors.VHX.Header(<DefaultHeaders />),
-	DocsActors.VHX.Template(c8 => (
+	DocsActors.VHX.Template(
 		<div className="min-h-screen flex flex-col">
 			<div
 				className="
@@ -50,10 +50,9 @@ DocsPages(
 			</div>
 
 			<Footer />
-		</div>
-	)),
+		</div>,
+	),
 	DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('fragment'),
-	DocsActors.VHX.SetSlot.Html('Html Content', c8 => c8.var('fragment')),
 	DocsActors.VHX.Finalize.Set('html'),
 );
 
