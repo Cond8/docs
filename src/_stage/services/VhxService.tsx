@@ -44,29 +44,16 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 		this.set(`slot:${key}`, content);
 	}
 
-	setSlotHtml(key: string, html: string): void {
-		this.set(`slot:html:${key}`, html);
-	}
-
 	getSlot(key: string): JSX.Element | null {
 		return (this.optional(`slot:${key}`) ?? null) as JSX.Element | null;
-	}
-
-	getSlotHtml(key: string): string | null {
-		return (this.optional(`slot:html:${key}`) ?? null) as string | null;
 	}
 
 	hasSlot(key: string): boolean {
 		return this.has(`slot:${key}`);
 	}
 
-	hasSlotHtml(key: string): boolean {
-		return this.has(`slot:html:${key}`);
-	}
-
 	removeSlot(key: string): void {
 		this.remove(`slot:${key}`);
-		this.remove(`slot:html:${key}`);
 	}
 
 	wrapWithHtml() {
@@ -94,7 +81,6 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 				return node.map(walk);
 			}
 
-			// If this node is a <slot> element
 			if (typeof node.type === 'string' && node.type.toLowerCase() === 'slot') {
 				const name = node.props?.name;
 				const dataProps = node.props?.['data-props'] ?? {};
@@ -103,26 +89,8 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 					throw new Error('VHX: <slot> must have a "name" attribute.');
 				}
 
-				// Retrieve both potential slot contents
 				const jsxSlot = this.optional(`slot:${name}`) as JSX.Element | ((props?: any) => JSX.Element) | undefined;
-				const htmlSlot = this.optional(`slot:html:${name}`) as string | undefined;
 
-				// Case 1: Both JSX and HTML slots are provided.
-				if (jsxSlot && htmlSlot) {
-					const jsxContent = typeof jsxSlot === 'function' ? jsxSlot(dataProps) : jsxSlot;
-					if (!this.isValidVNode(jsxContent)) {
-						throw new Error(`VHX: Slot "${name}" must be a VNode or a function that returns one.`);
-					}
-					const htmlContent = h('div', {
-						dangerouslySetInnerHTML: { __html: htmlSlot as string },
-					});
-
-					// Combine both in a fragment-like structure.
-					// Returning an array is fine in Preact, but you might also explicitly use a Fragment.
-					return [jsxContent, htmlContent];
-				}
-
-				// Case 2: Only JSX slot provided.
 				if (jsxSlot) {
 					const jsxContent = typeof jsxSlot === 'function' ? jsxSlot(dataProps) : jsxSlot;
 					if (!this.isValidVNode(jsxContent)) {
@@ -131,18 +99,9 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 					return jsxContent;
 				}
 
-				// Case 3: Only HTML slot provided.
-				if (htmlSlot) {
-					return h('div', {
-						dangerouslySetInnerHTML: { __html: htmlSlot as string },
-					});
-				}
-
-				// Case 4: No matching slot content found.
 				return null;
 			}
 
-			// Recursively process children
 			const newChildren = walk(node.props?.children);
 			return h(node.type, { ...node.props, children: newChildren });
 		};
