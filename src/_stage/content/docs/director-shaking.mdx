@@ -8,27 +8,19 @@ Within Cond8, the role of a **Director** is that of orchestration—composing **
 
 Director Shaking is essentially a **lambda calculus optimization** applied to Cond8 Directors and Scenes. Initially, Scenes represent composable functions (Actors) chained together by a shared state (the Conduit):
 
-\[
-Scene = Actor_n \circ Actor_{n-1} \circ \dots \circ Actor_2 \circ Actor_1
-\]
+**Scene = Actor_n ∘ Actor_{n-1} ∘ ... ∘ Actor_2 ∘ Actor_1**
 
-where each actor can be viewed as a function:
+Each actor can be viewed as a function:
 
-\[
-Actor: Conduit \rightarrow Conduit
-\]
+**Actor: Conduit → Conduit**
 
 The Conduit acts as an intermediary state passing through each Actor:
 
-\[
-Actor_n(\dots Actor_2(Actor_1(Conduit))) \rightarrow Conduit'
-\]
+**Actor_n(...(Actor_2(Actor_1(Conduit)))) → FinalConduit**
 
-Director Shaking optimizes this compositional pipeline by **inlining** each Actor's computation and fully eliminating the intermediate Conduit state. The final output is thus reduced to a direct lambda expression without intermediates:
+Director Shaking optimizes this compositional pipeline by **inlining** each Actor’s computation and fully eliminating the intermediate Conduit state. The final output is thus reduced to a direct lambda expression without intermediates:
 
-\[
-Scene_{optimized}(input) = \lambda input. Actor_n(Actor_{n-1}(\dots Actor_1(input)))
-\]
+**Scene_optimized(input) = λ input → Actor_n(Actor_{n-1}(...Actor_1(input)))**
 
 ---
 
@@ -36,41 +28,35 @@ Scene_{optimized}(input) = \lambda input. Actor_n(Actor_{n-1}(\dots Actor_1(inpu
 
 This optimization relies on the fundamental principles of **lambda calculus**:
 
-- **Beta Reduction (β-reduction)**: Function application is simplified by substituting arguments directly into function bodies.
-- **Eta Reduction (η-reduction)**: Functions that merely pass arguments without modification are simplified away.
+- **Beta Reduction (β-reduction)**: Simplifies function application by substituting arguments directly into function bodies.
+- **Eta Reduction (η-reduction)**: Simplifies functions that merely pass arguments without modification.
 
 Director Shaking exploits these reductions systematically, effectively performing:
 
 1. **Composition Reduction**: Combining sequential actor functions directly into single composite functions.
-2. **Elimination of Intermediate States**: Removing temporary variables or intermediate Conduit references once their necessity is exhausted.
+2. **Elimination of Intermediate States**: Removing temporary variables or intermediate Conduit references once they’re no longer needed.
 
-This yields pure, direct computational forms, significantly reducing overhead and complexity at runtime.
+This results in pure, direct computational forms, significantly reducing runtime overhead and logic complexity.
 
 ---
 
 ## 📐 Example of Lambda Reduction
 
-Consider an initial composed Scene defined by a Director:
+Consider a composed Scene defined by a Director:
 
-\[
-Scene = actor_3 \circ actor_2 \circ actor_1
-\]
+**Scene = actor_3 ∘ actor_2 ∘ actor_1**
 
-Expanding explicitly via Conduit:
+Expanded with explicit conduit passing:
 
-\[
-Scene(conduit) = actor_3(actor_2(actor_1(conduit)))
-\]
+**Scene(conduit) = actor_3(actor_2(actor_1(conduit)))**
 
-Through Director Shaking (λ-optimization), we remove the intermediate conduit:
+Through Director Shaking (lambda optimization), the intermediate conduit is eliminated:
 
-\[
-Scene_{optimized}(input) = actor_3 \circ actor_2 \circ actor_1(input)
-\]
+**Scene_optimized(input) = actor_3(actor_2(actor_1(input)))**
 
-In practice, this means:
+In code:
 
-```typescript
+```js
 // Initial composed form (with explicit conduit)
 function Scene(conduit) {
   return actor3(actor2(actor1(conduit)));
@@ -88,9 +74,8 @@ function SceneOptimized(input) {
 
 ## 🌌 From Orchestration to Pure Computation
 
-Thus, what initially appears as orchestration—sequences of stateful Actors operating on a shared Conduit—is reduced via Director Shaking to a pure, direct computational chain. The intermediate state, serving as scaffolding during construction, is calculated away entirely at compilation time, leaving only a streamlined, lambda-calculus-reduced executable.
+What begins as orchestration—sequences of stateful Actors operating on a shared Conduit—gets reduced via Director Shaking to a pure, direct computational chain. The intermediate state, useful during development, is entirely eliminated at compile time, leaving behind only the streamlined, lambda-reduced executable.
 
-The outcome is both mathematically elegant and highly performant, encapsulating the essence of functional optimization:
+The result is both mathematically elegant and highly performant, encapsulating the essence of functional optimization:
 
 > **From abstract orchestration to pure computational simplicity.**
-

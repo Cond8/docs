@@ -2,6 +2,8 @@
 
 /* Import all fonts from the old project – now including all required families */
 @import "tailwindcss";
+@import 'katex/dist/katex.min.css';
+
 @plugin "tailwindcss-animate";
 
 /* Base variables: Colors, spacing, fonts, etc. */
