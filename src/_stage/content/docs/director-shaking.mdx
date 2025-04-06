@@ -8,19 +8,19 @@ Within Cond8, the role of a **Director** is that of orchestration—composing **
 
 Director Shaking is essentially a **lambda calculus optimization** applied to Cond8 Directors and Scenes. Initially, Scenes represent composable functions (Actors) chained together by a shared state (the Conduit):
 
-**Scene = Actor_n ∘ Actor_{n-1} ∘ ... ∘ Actor_2 ∘ Actor_1**
+**`Scene = Actor_n ∘ Actor_{n-1} ∘ ... ∘ Actor_2 ∘ Actor_1`**
 
 Each actor can be viewed as a function:
 
-**Actor: Conduit → Conduit**
+**`Actor: Conduit → Conduit`**
 
 The Conduit acts as an intermediary state passing through each Actor:
 
-**Actor_n(...(Actor_2(Actor_1(Conduit)))) → FinalConduit**
+**`Actor_n(...(Actor_2(Actor_1(Conduit)))) → FinalConduit`**
 
 Director Shaking optimizes this compositional pipeline by **inlining** each Actor’s computation and fully eliminating the intermediate Conduit state. The final output is thus reduced to a direct lambda expression without intermediates:
 
-**Scene_optimized(input) = λ input → Actor_n(Actor_{n-1}(...Actor_1(input)))**
+**`Scene_optimized(input) = λ input → Actor_n(Actor_{n-1}(...Actor_1(input)))`**
 
 ---
 
