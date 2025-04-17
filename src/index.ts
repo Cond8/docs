@@ -28,20 +28,28 @@ type Env = {
 
 const app = new Hono<{ Bindings: Env }>();
 
-// WebSocket endpoint for live reload
-app.get('/live-reload', LifeReloadServer);
-
-// OpenAI proxy routes with CORS
+// Apply CORS middleware to all routes
 app.use(
-	'/api/openai/proxy/*',
+	'*',
 	cors({
-		origin: ['https://app.cond8.dev', 'http://127.0.0.1:5173', 'http://localhost:5173'],
-		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['Content-Type'],
+		origin: [
+			'https://app.cond8.dev',
+			'https://cond8.dev',
+			'http://localhost:5173',
+			'http://127.0.0.1:5173',
+			'http://localhost:8787',
+			'http://127.0.0.1:8787',
+		],
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+		allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
 		credentials: true,
 	}),
 );
 
+// WebSocket endpoint for live reload
+app.get('/live-reload', LifeReloadServer);
+
+// OpenAI proxy routes
 app.all('/api/openai/proxy/*', OpenAIProxy);
 
 // 🏠 Landing Page route

@@ -10,12 +10,12 @@ interface CorsOptions {
 }
 
 const defaultOptions: CorsOptions = {
-	origin: ['https://app.cond8.dev', 'http://localhost:5173'],
-	methods: ['GET', 'POST', 'OPTIONS'],
-	allowedHeaders: ['Content-Type'],
+	origin: '*', // Allow all origins in development
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
 	exposedHeaders: [],
 	maxAge: 86400, // 24 hours
-	credentials: false,
+	credentials: true, // Allow credentials
 };
 
 export const cors = (options: CorsOptions = {}): MiddlewareHandler => {

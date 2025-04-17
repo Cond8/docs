@@ -275,6 +275,11 @@ export const OpenAIProxy = async (c: Context) => {
 				headers: {
 					'Content-Type': 'application/json',
 					'Transfer-Encoding': 'chunked',
+					'Access-Control-Allow-Origin': c.req.header('Origin') || '*',
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept, Origin, X-Requested-With',
+					'Access-Control-Allow-Credentials': 'true',
+					Vary: 'Origin',
 				},
 			});
 		} catch (error) {
