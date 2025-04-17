@@ -34,6 +34,7 @@ LandingPageDirector(
                       font-logo uppercase tracking-tight leading-none
                       text-[10vw] lg:text-[17.5rem]
                       [text-shadow:4px_4px_2px_black]
+                      pointer-events-none select-none
                     "
 									>
 										Cond8
