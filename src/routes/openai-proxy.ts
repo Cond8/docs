@@ -64,20 +64,42 @@ interface ListResponse {
 	models: ModelResponse[];
 }
 
+interface ModelConfig {
+	openAIModel: string;
+	displayModelName: string;
+	modelSize: number;
+	modelFamily: string;
+	modelParameterSize: string;
+	modelQuantization: string;
+}
+
+interface ModelsConfig {
+	[key: string]: ModelConfig;
+}
+
 // Configuration that could be moved to environment variables
 const CONFIG = {
-	// The actual OpenAI model to use
-	openAIModel: 'gpt-4.1-nano',
-
-	// The model name to display to clients
-	displayModelName: 'gpt-4.1-nano',
-
-	// Model metadata
-	modelSize: 4100000000,
-	modelFamily: 'gpt',
-	modelParameterSize: '4.1B',
-	modelQuantization: 'Q4_0',
-
+	models: {
+		nano: {
+			// The actual OpenAI model to use
+			openAIModel: 'gpt-4.1-nano',
+			// The model name to display to clients
+			displayModelName: 'gpt-4.1-nano',
+			// Model metadata
+			modelSize: 4100000000,
+			modelFamily: 'gpt',
+			modelParameterSize: '4.1B',
+			modelQuantization: 'Q4_0',
+		},
+		mini: {
+			openAIModel: 'gpt-4.1-mini',
+			displayModelName: 'gpt-4.1-mini',
+			modelSize: 8200000000,
+			modelFamily: 'gpt',
+			modelParameterSize: '8.2B',
+			modelQuantization: 'Q4_0',
+		},
+	} as ModelsConfig,
 	// Default settings
 	defaultTemperature: 0.7,
 	defaultMaxTokens: 1000,
@@ -94,27 +116,25 @@ const createOpenAIClient = (apiKey: string) => {
 // Create model response dynamically
 const getModelsResponse = (): ListResponse => {
 	return {
-		models: [
-			{
-				name: CONFIG.displayModelName,
-				modified_at: new Date(),
-				model: CONFIG.displayModelName,
-				size: CONFIG.modelSize,
-				digest: 'sha256:0000000000000000000000000000000000000000000000000000000000000000',
-				details: {
-					parent_model: '',
-					format: 'gguf',
-					family: CONFIG.modelFamily,
-					families: [CONFIG.modelFamily],
-					parameter_size: CONFIG.modelParameterSize,
-					quantization_level: CONFIG.modelQuantization,
-				},
+		models: Object.values(CONFIG.models).map(model => ({
+			name: model.displayModelName,
+			modified_at: new Date(),
+			model: model.displayModelName,
+			size: model.modelSize,
+			digest: 'sha256:0000000000000000000000000000000000000000000000000000000000000000',
+			details: {
+				parent_model: '',
+				format: 'gguf',
+				family: model.modelFamily,
+				families: [model.modelFamily],
+				parameter_size: model.modelParameterSize,
+				quantization_level: model.modelQuantization,
 			},
-		],
+		})),
 	};
 };
 
-export const Gpt4_1NanoProxy = async (c: Context) => {
+export const OpenAIProxy = async (c: Context) => {
 	const path = c.req.path;
 	const env = c.env;
 
@@ -155,10 +175,12 @@ export const Gpt4_1NanoProxy = async (c: Context) => {
 			// Extract options with defaults
 			const temperature = body.options?.temperature || CONFIG.defaultTemperature;
 			const maxTokens = body.options?.num_predict || CONFIG.defaultMaxTokens;
+			const modelName = body.model || 'nano'; // Default to nano if not specified
+			const modelConfig = CONFIG.models[modelName] || CONFIG.models.nano;
 
 			// Map Ollama request to OpenAI
 			const stream = await openai.chat.completions.create({
-				model: CONFIG.openAIModel,
+				model: modelConfig.openAIModel,
 				messages: body.messages || [{ role: 'user', content: body.prompt || '' }],
 				stream: true,
 				temperature,
@@ -181,7 +203,7 @@ export const Gpt4_1NanoProxy = async (c: Context) => {
 								if (path.includes('/api/chat')) {
 									// Chat endpoint format
 									const ollamaChunk: ChatResponse = {
-										model: CONFIG.displayModelName,
+										model: modelConfig.displayModelName,
 										created_at: new Date(),
 										message: {
 											role: 'assistant',
@@ -201,7 +223,7 @@ export const Gpt4_1NanoProxy = async (c: Context) => {
 								} else {
 									// Generate endpoint format
 									const generateChunk = {
-										model: CONFIG.displayModelName,
+										model: modelConfig.displayModelName,
 										created_at: new Date(),
 										response: content, // Send incremental content
 										done: false,
@@ -222,7 +244,7 @@ export const Gpt4_1NanoProxy = async (c: Context) => {
 						// Send final done message
 						if (path.includes('/api/chat')) {
 							const doneResponse: ChatResponse = {
-								model: CONFIG.displayModelName,
+								model: modelConfig.displayModelName,
 								created_at: new Date(),
 								message: {
 									role: 'assistant',
@@ -241,7 +263,7 @@ export const Gpt4_1NanoProxy = async (c: Context) => {
 							controller.enqueue(new TextEncoder().encode(JSON.stringify(doneResponse) + '\n'));
 						} else {
 							const doneGenerate = {
-								model: CONFIG.displayModelName,
+								model: modelConfig.displayModelName,
 								created_at: new Date(),
 								response: '',
 								done: true,
