@@ -140,23 +140,6 @@ export const OpenAIProxy = async (c: Context) => {
 
 	console.log('Received path:', path);
 
-	// Add CORS headers
-	c.header('Access-Control-Allow-Origin', '*');
-	c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-	c.header('Access-Control-Allow-Headers', 'Content-Type');
-
-	// Handle OPTIONS request for CORS preflight
-	if (c.req.method === 'OPTIONS') {
-		return new Response(null, {
-			status: 204,
-			headers: {
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-				'Access-Control-Allow-Headers': 'Content-Type',
-			},
-		});
-	}
-
 	// Handle models list endpoints
 	if (path.endsWith('/api/openai/proxy/api/tags') || path.endsWith('/api/openai/proxy/api/models')) {
 		console.log('Handling models list endpoint');
@@ -292,9 +275,6 @@ export const OpenAIProxy = async (c: Context) => {
 				headers: {
 					'Content-Type': 'application/json',
 					'Transfer-Encoding': 'chunked',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-					'Access-Control-Allow-Headers': 'Content-Type',
 				},
 			});
 		} catch (error) {

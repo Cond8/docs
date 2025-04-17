@@ -32,27 +32,17 @@ const app = new Hono<{ Bindings: Env }>();
 app.get('/live-reload', LifeReloadServer);
 
 // OpenAI proxy routes with CORS
-app.post(
+app.use(
 	'/api/openai/proxy/*',
 	cors({
-		origin: ['https://app.cond8.dev', 'http://localhost:5173'],
+		origin: ['https://app.cond8.dev', 'http://127.0.0.1:5173', 'http://localhost:5173'],
 		methods: ['GET', 'POST', 'OPTIONS'],
 		allowedHeaders: ['Content-Type'],
 		credentials: true,
 	}),
-	OpenAIProxy,
 );
 
-app.get(
-	'/api/openai/proxy/*',
-	cors({
-		origin: ['https://app.cond8.dev', 'http://localhost:5173'],
-		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['Content-Type'],
-		credentials: true,
-	}),
-	OpenAIProxy,
-);
+app.all('/api/openai/proxy/*', OpenAIProxy);
 
 // 🏠 Landing Page route
 app.get('/', async c => {
