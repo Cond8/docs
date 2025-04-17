@@ -26,17 +26,6 @@ export const cors = (options: CorsOptions = {}): MiddlewareHandler => {
 		const allowedOrigins = Array.isArray(config.origin) ? config.origin : [config.origin || '*'];
 		const origin = allowedOrigins.includes(requestOrigin || '') ? requestOrigin : allowedOrigins[0];
 
-		// Set CORS headers for all responses
-		c.res.headers.set('Access-Control-Allow-Origin', origin || '*');
-		c.res.headers.set('Access-Control-Allow-Methods', (config.methods || ['GET', 'POST', 'OPTIONS']).join(', '));
-		c.res.headers.set('Access-Control-Allow-Headers', (config.allowedHeaders || ['Content-Type']).join(', '));
-		c.res.headers.set('Access-Control-Expose-Headers', (config.exposedHeaders || []).join(', '));
-		c.res.headers.set('Access-Control-Max-Age', (config.maxAge || 86400).toString());
-
-		if (config.credentials) {
-			c.res.headers.set('Access-Control-Allow-Credentials', 'true');
-		}
-
 		// Handle preflight requests
 		if (c.req.method === 'OPTIONS') {
 			return new Response(null, {
@@ -50,6 +39,17 @@ export const cors = (options: CorsOptions = {}): MiddlewareHandler => {
 					...(config.credentials && { 'Access-Control-Allow-Credentials': 'true' }),
 				},
 			});
+		}
+
+		// Set CORS headers before the response is created
+		c.header('Access-Control-Allow-Origin', origin || '*');
+		c.header('Access-Control-Allow-Methods', (config.methods || ['GET', 'POST', 'OPTIONS']).join(', '));
+		c.header('Access-Control-Allow-Headers', (config.allowedHeaders || ['Content-Type']).join(', '));
+		c.header('Access-Control-Expose-Headers', (config.exposedHeaders || []).join(', '));
+		c.header('Access-Control-Max-Age', (config.maxAge || 86400).toString());
+
+		if (config.credentials) {
+			c.header('Access-Control-Allow-Credentials', 'true');
 		}
 
 		// Continue with the request
