@@ -1,3 +1,4 @@
+// src/_stage/middleware/cors.ts
 import { MiddlewareHandler } from 'hono';
 
 interface CorsOptions {

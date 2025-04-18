@@ -1,3 +1,4 @@
+// src/_stage/components/docs-sidebar.tsx
 export const sections = [
 	{
 		title: 'Introduction',

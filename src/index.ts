@@ -4,10 +4,12 @@ import { Hono } from 'hono';
 import { C8Error } from './_core/Recorder/C8Error';
 import { cors } from './_stage/middleware/cors';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
+import NotFoundDirector from './directors/404';
 import DocsFragment from './directors/docs-fragment';
 import DocsPages from './directors/docs-pages';
 import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
+import InvestorsPageDirector from './directors/sponsor-page';
 import { OpenAIProxy } from './routes/openai-proxy';
 
 export class MyDurableObject extends DurableObject {
@@ -67,15 +69,27 @@ app.get('/docs/:slug', async c => {
 	});
 });
 
-app.get('partials/docs/:slug', async c => {
+app.get('/partials/docs/:slug', async c => {
 	const html = await DocsFragment(c);
 	return c.html(html, 200, {
 		'Content-Type': 'text/html; charset=utf-8',
 	});
 });
 
+app.get('/sponsor-cond8', async c => {
+	const html = await InvestorsPageDirector(c);
+	return c.html(html, 200, {
+		'Content-Type': 'text/html; charset=utf-8',
+	});
+});
+
 // ❌ 404 fallback
-app.notFound(c => c.text('Not Found', 404));
+app.notFound(async c => {
+	const html = await NotFoundDirector(c);
+	return c.html(html, 404, {
+		'Content-Type': 'text/html; charset=utf-8',
+	});
+});
 
 app.onError((err, c) => {
 	const html = ErrorHandlerDirector(err as C8Error<any>);

@@ -1,3 +1,4 @@
+// scripts/mdx-builder/mdx-compiler.tsx
 import { compile, run } from '@mdx-js/mdx';
 import type { MDXComponents } from 'mdx/types';
 import { Fragment, h } from 'preact';
