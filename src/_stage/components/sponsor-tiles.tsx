@@ -6,31 +6,31 @@ const tiles = [
 		href: '/sponsor/github',
 		title: 'GitHub Sponsors',
 		desc: 'Back Cond8 monthly, vote on features, and get your name (or logo) in our README and site footer.',
-		size: 'md:col-start-1 md:row-start-1 md:col-span-2 md:row-span-6', // BIG
+		size: 'md:col-start-1 md:row-start-1 md:col-span-2 md:row-span-3', // BIG
 	},
 	{
 		href: 'https://www.twitch.tv/yourchannel',
 		title: 'Watch Live Builds',
 		desc: 'Join the Twitch stream, see real‑time commits, and chat about SLM infrastructure as it happens.',
-		size: 'md:col-start-3 md:row-start-1 md:col-span-2 md:row-span-4', // WIDE
+		size: 'md:col-start-3 md:row-start-1 md:col-span-2 md:row-span-2', // WIDE
 	},
 	{
 		href: '/sponsor/partner',
 		title: 'Corporate Partner',
 		desc: 'Shape the roadmap, get early drops, and integrate Cond8 workflows into your stack.',
-		size: 'md:col-start-1 md:row-start-7 md:col-span-1 md:row-span-5', // TALL NARROW
+		size: 'md:col-start-1 md:row-start-4 md:col-span-1 md:row-span-2', // TALL NARROW
 	},
 	{
 		href: '/sponsor/one‑time',
 		title: 'One‑Time Boost',
 		desc: 'Buy me a coffee (or a GPU hour) and get a shout‑out in the next stream.',
-		size: 'md:col-start-2 md:row-start-7 md:col-span-1 md:row-span-3', // SMALL
+		size: 'md:col-start-2 md:row-start-4 md:col-span-1 md:row-span-2', // SMALL
 	},
 	{
 		href: '/sponsor/integration',
 		title: 'Custom Integration',
 		desc: 'Need Cond8 embedded in your product? Let’s scope it and build together.',
-		size: 'md:col-start-3 md:row-start-5 md:col-span-2 md:row-span-7', // MEDIUM‑LARGE
+		size: 'md:col-start-3 md:row-start-3 md:col-span-2 md:row-span-3', // MEDIUM-LARGE
 	},
 ];
 
@@ -39,7 +39,7 @@ export const SponsorshipTileSection = () => (
 		className="
       w-full max-w-6xl gap-6
       grid grid-cols-1
-      md:grid-cols-4 md:grid-rows-[repeat(12,minmax(0,1fr))]
+      md:grid-cols-4 md:grid-rows-[repeat(5,minmax(0,1fr))]
     "
 	>
 		{tiles.map((t, i) => (
