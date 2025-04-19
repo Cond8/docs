@@ -3,7 +3,7 @@ import { Context } from 'hono';
 import { createDirector } from '../_core';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { Footer } from '../_stage/components/footer';
-import { TileSection } from '../_stage/components/landing-tiles';
+import { SponsorshipTileSection } from '../_stage/components/sponsor-tiles';
 import { Topbar } from '../_stage/components/topbar';
 import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
@@ -66,16 +66,15 @@ SponsorshipPageDirector(
                   my3 lg:mb-6 lg:mt-12
                 "
 							>
-								Be Part of the Future of <br />
-								Domain-Specific Language Models
+								Support the Future of Small Language Models
 							</h2>
 
 							<p className="text-center text-xl lg:text-2xl text-foreground/80 mt-6 lg:mt-8 mb-12">
-								Your support of Cond8 means supporting a new era of efficient, sustainable, and accessible AI technology that empowers
-								developers, businesses, and individuals to unlock the full potential of Locally-Hosted Small Language Models.
+								I'm building the infrastructure to make Small Language Models practical—models that live locally, think fast, and stay close
+								to the problem.
 							</p>
 
-							<TileSection />
+							<SponsorshipTileSection />
 						</main>
 					</div>
 				</div>
