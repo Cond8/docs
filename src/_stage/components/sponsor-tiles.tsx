@@ -42,6 +42,11 @@ export const SponsorshipTileSection = () => (
       md:grid-cols-4 md:grid-rows-[repeat(5,minmax(0,1fr))]
     "
 	>
+		<div className="md:col-start-1 md:row-start-1 md:col-span-2 md:row-span-3">
+			<div className="w-full h-full">
+				<iframe src="https://github.com/sponsors/Cond8/card" title="Sponsor Cond8" className="w-full h-full border-none"></iframe>
+			</div>
+		</div>
 		{tiles.map((t, i) => (
 			<div key={t.href} className={t.size}>
 				<Tile idx={i} tiles={tiles} />
