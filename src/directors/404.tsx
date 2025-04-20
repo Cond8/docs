@@ -75,7 +75,7 @@ NotFoundDirector(
 			</div>,
 		),
 		DocsActors.VHX.Finalize.Set('html'),
-		DocsActors.Cache.Set('404 html', 'html', 3600),
+		DocsActors.Cache.Set('404 html', 'html'),
 	),
 );
 
