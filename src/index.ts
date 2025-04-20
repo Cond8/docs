@@ -1,7 +1,7 @@
 // src/index.ts
-import { DurableObject } from 'cloudflare:workers';
 import { Hono } from 'hono';
 import { C8Error } from './_core/Recorder/C8Error';
+import { HtmlCacheDurableObject } from './_stage/Durables/HtmlCacheDurableObject';
 import { cors } from './_stage/middleware/cors';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
 import NotFoundDirector from './directors/404';
@@ -12,20 +12,11 @@ import LandingPageDirector from './directors/landing-page';
 import InvestorsPageDirector from './directors/sponsor-page';
 import { OpenAIProxy } from './routes/openai-proxy';
 
-export class MyDurableObject extends DurableObject {
-	constructor(ctx: DurableObjectState, env: Env) {
-		super(ctx, env);
-	}
-
-	async sayHello(name: string): Promise<string> {
-		return `Hello, ${name}!`;
-	}
-}
-
 // ---- App Setup ----
+export { HtmlCacheDurableObject };
 
 type Env = {
-	MY_DURABLE_OBJECT: DurableObjectNamespace<MyDurableObject>;
+	MY_DURABLE_OBJECT: DurableObjectNamespace<HtmlCacheDurableObject>;
 };
 
 const app = new Hono<{ Bindings: Env }>();

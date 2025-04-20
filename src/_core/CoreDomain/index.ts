@@ -1,4 +1,5 @@
 // src/_core/CoreDomain/index.ts
+export * from './Actors/support.js';
 export * from './Blueprints/CoreBlueprint.js';
 export * from './Blueprints/LifecycleBlueprint.js';
 export * from './Blueprints/StrictKVBlueprint-Async.js';
