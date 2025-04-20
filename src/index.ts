@@ -16,7 +16,7 @@ import { OpenAIProxy } from './routes/openai-proxy';
 export { HtmlCacheDurableObject };
 
 type Env = {
-	MY_DURABLE_OBJECT: DurableObjectNamespace<HtmlCacheDurableObject>;
+	CACHE: DurableObjectNamespace<HtmlCacheDurableObject>;
 };
 
 const app = new Hono<{ Bindings: Env }>();
