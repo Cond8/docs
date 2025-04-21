@@ -72,7 +72,7 @@ SponsorshipPageDirector(
 								</h2>
 
 								<p className="text-center text-xl lg:text-2xl text-foreground/80 mt-6 lg:mt-8 mb-12">
-									I'm building the infrastructure to make Small Language Models practical—models that live locally, think fast, and stay
+									We're building the infrastructure to make Small Language Models practical—models that live locally, think fast, and stay
 									close to the problem.
 								</p>
 

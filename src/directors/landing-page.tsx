@@ -60,7 +60,7 @@ LandingPageDirector(
                   my3 lg:mb-6 lg:mt-12
                 "
 								>
-									Procedural Lambda Execution Engine
+									A text-to-workflow transformer
 								</h2>
 
 								<TileSection />

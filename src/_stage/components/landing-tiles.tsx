@@ -2,9 +2,9 @@
 import { Tile } from './ui/tile';
 const tiles = [
 	{
-		href: '/docs/what-is-cond8',
-		title: 'The Core Idea',
-		desc: 'An execution engine that treats code like math. Scenes, actors, and pure composition—no frameworks, just logic.',
+		href: 'https://app.cond8.dev',
+		title: 'Go to Cond8 browser app',
+		desc: 'Demo the Cond8 browser app (pre-alpha build)',
 		size: 'md:col-start-1 md:row-start-1 md:row-span-6', // BIG
 	},
 	{
@@ -20,9 +20,9 @@ const tiles = [
 		size: 'md:col-start-1 md:row-start-7 md:row-span-6', // TALL NARROW
 	},
 	{
-		href: 'https://app.cond8.dev',
-		title: 'Go to the browser app',
-		desc: 'Demo the Cond8 browser app (Alpha build)',
+		href: '/docs/what-is-cond8',
+		title: 'The Core Idea',
+		desc: 'An execution engine that treats code like math. Scenes, actors, and pure composition—no frameworks, just logic.',
 		size: 'md:col-start-2 md:row-start-6 md:row-span-7', // MEDIUM-LARGE
 	},
 	{
