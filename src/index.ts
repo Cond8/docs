@@ -1,9 +1,13 @@
 // src/index.ts
 import { Hono } from 'hono';
+import { h } from 'preact';
+import { render } from 'preact-render-to-string';
 import { C8Error } from './_core/Recorder/C8Error';
+import { AppTextArea } from './_stage/components/BootstrapApp';
 import { HtmlCacheDurableObject } from './_stage/Durables/HtmlCacheDurableObject';
 import { cors } from './_stage/middleware/cors';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
+import { getRandomPrompt } from './_stage/utils/random-prompt';
 import NotFoundDirector from './directors/404';
 import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
@@ -45,6 +49,15 @@ app.get('/live-reload', LifeReloadServer);
 
 // OpenAI proxy routes
 app.all('/api/openai/proxy/*', OpenAIProxy);
+
+// Random prompt route
+app.get('/api/random-prompt', async c => {
+	const prompt = getRandomPrompt();
+	const html = render(h(AppTextArea, { value: prompt, title: 'What workflow should I make?' }));
+	return c.html(html, 200, {
+		'Content-Type': 'text/html; charset=utf-8',
+	});
+});
 
 // 🏠 Landing Page route
 app.get('/', async c => {
