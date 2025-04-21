@@ -8,6 +8,8 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 	'manually written',
 )(
 	ErrorActors.Modeler(c8 => {
+		// Main entry log for debugging
+		// console.log('[ErrorBodyParser] Modeler invoked');
 		const { payload: actorPayload, directorPayload, recording } = c8.body;
 		const error = c8.body as Error;
 
@@ -15,12 +17,17 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 		const llmText = generateLLMErrorText({ error, recording, payload });
 
 		c8.var('llm text', llmText);
-
 		c8.var('payload', payload);
-		if (recording) c8.var('recording', recording);
+		if (recording) {
+			c8.var('recording', recording);
+		}
 		c8.var('error', error);
 		c8.var('error message', error.message);
 
+		// Optionally, log only on error
+		if (error && error.message) {
+			console.error('[ErrorBodyParser] Error:', error.message);
+		}
 		return c8;
 	}),
 );
@@ -28,8 +35,6 @@ export const ErrorBodyParser = createDirector<ErrorConduit>(
 export type MergedLifecyclePayload<C8 extends CoreRedprint> = Omit<LifecyclePayload, 'c8'> & { c8: C8ROPlain<C8> };
 
 export function mergeLifecyclePayloads<C8 extends CoreRedprint>(...payloads: LifecyclePayload<C8>[]): MergedLifecyclePayload<C8> {
-	console.log(payloads);
-
 	const merged: Partial<MergedLifecyclePayload<C8>> = {
 		hooks: [],
 		metadata: [],
@@ -38,7 +43,9 @@ export function mergeLifecyclePayloads<C8 extends CoreRedprint>(...payloads: Lif
 	const readonlyC8List: object[] = [];
 
 	for (const payload of payloads) {
-		if (!payload) continue;
+		if (!payload) {
+			continue;
+		}
 
 		// Collect readonly C8
 		if (payload.c8?.utils?.readonly?.plain) {
@@ -46,33 +53,73 @@ export function mergeLifecyclePayloads<C8 extends CoreRedprint>(...payloads: Lif
 		}
 
 		// Shallow merge all fields (later ones override earlier ones)
-		if (payload.event !== undefined) merged.event = payload.event;
-		if (payload.isTest !== undefined) merged.isTest = payload.isTest;
+		if (payload.event !== undefined) {
+			merged.event = payload.event;
+		}
+		if (payload.isTest !== undefined) {
+			merged.isTest = payload.isTest;
+		}
 
-		if (payload.directorName !== undefined) merged.directorName = payload.directorName;
-		if (payload.actorName !== undefined) merged.actorName = payload.actorName;
+		if (payload.directorName !== undefined) {
+			merged.directorName = payload.directorName;
+		}
+		if (payload.actorName !== undefined) {
+			merged.actorName = payload.actorName;
+		}
 
-		if (payload.inputMapper !== undefined) merged.inputMapper = payload.inputMapper;
-		if (payload.outputMapper !== undefined) merged.outputMapper = payload.outputMapper;
+		if (payload.inputMapper !== undefined) {
+			merged.inputMapper = payload.inputMapper;
+		}
+		if (payload.outputMapper !== undefined) {
+			merged.outputMapper = payload.outputMapper;
+		}
 
-		if (payload.input !== undefined) merged.input = payload.input;
-		if (payload.error !== undefined) merged.error = payload.error;
-		if (payload.output !== undefined) merged.output = payload.output;
+		if (payload.input !== undefined) {
+			merged.input = payload.input;
+		}
+		if (payload.error !== undefined) {
+			merged.error = payload.error;
+		}
+		if (payload.output !== undefined) {
+			merged.output = payload.output;
+		}
 
-		if (payload.actorFn !== undefined) merged.actorFn = payload.actorFn;
-		if (payload.assertFn !== undefined) merged.assertFn = payload.assertFn;
+		if (payload.actorFn !== undefined) {
+			merged.actorFn = payload.actorFn;
+		}
+		if (payload.assertFn !== undefined) {
+			merged.assertFn = payload.assertFn;
+		}
 
-		merged.hooks!.push(...(payload.hooks ?? []));
-		merged.metadata!.push(...(payload.metadata ?? []));
+		if (payload.hooks) {
+			merged.hooks!.push(...payload.hooks);
+		}
+		if (payload.metadata) {
+			merged.metadata!.push(...payload.metadata);
+		}
 	}
 
 	merged.c8 = mergeReadonlyC8(...readonlyC8List);
-
 	return merged as MergedLifecyclePayload<C8>;
 }
 
 function mergeReadonlyC8(...readonlyList: object[]): object {
-	return Object.assign({}, ...readonlyList); // later overrides earlier
+	const result = Object.assign({}, ...readonlyList); // later overrides earlier
+	return result;
+}
+
+function safeStringify(obj: any, space?: number) {
+	const seen = new WeakSet();
+	return JSON.stringify(obj, function (key, value) {
+		if (typeof value === 'function') {
+			return `[Function: ${value.name || 'anonymous'}]`;
+		}
+		if (typeof value === 'object' && value !== null) {
+			if (seen.has(value)) return '[Circular]';
+			seen.add(value);
+		}
+		return value;
+	}, space);
 }
 
 function generateLLMErrorText({
@@ -103,6 +150,10 @@ function generateLLMErrorText({
 	if (Array.isArray(recording) && recording.length > 0) {
 		out += '@R ';
 		for (const rec of recording) {
+			// Only log if rec is malformed (for debugging)
+			if (!rec.filter || !rec.ms) {
+				console.warn('[generateLLMErrorText] Malformed recording entry:', rec);
+			}
 			out += `[${rec.filter}|${rec.ms}ms`;
 			if (Array.isArray(rec.metadata) && rec.metadata.length > 0) {
 				out += '|meta=';
@@ -116,9 +167,10 @@ function generateLLMErrorText({
 	// @P (Payload)
 	out += '@P ';
 	try {
-		const flat = JSON.stringify(payload);
+		const flat = safeStringify(payload);
 		out += flat + '\n';
-	} catch {
+	} catch (err) {
+		console.error('[generateLLMErrorText] Failed to serialize payload:', err);
 		out += '[Payload not serializable]\n';
 	}
 

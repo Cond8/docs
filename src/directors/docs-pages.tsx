@@ -57,7 +57,7 @@ DocsPages(
 			</div>,
 		),
 		DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('fragment'),
-		DocsActors.VHX.HtmlFragment.Get('fragment').SetSlot('Html Content'),
+		DocsActors.VHX.HtmlPartial.Get('fragment').SetSlot('Html Content'),
 		DocsActors.VHX.Finalize.Set('html'),
 		DocsActors.Cache.Set('param slug', slug => `${slug} html`).FromVar('html'),
 	),

@@ -1,10 +1,10 @@
 // src/directors/landing-page.tsx
 import { Context } from 'hono';
 import { createDirector } from '../_core';
+import { BootstrapApp } from '../_stage/components/BootstrapApp';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { Footer } from '../_stage/components/footer';
 import { TileSection } from '../_stage/components/landing-tiles';
-import { Newsletter } from '../_stage/components/Newsletter';
 import { Topbar } from '../_stage/components/topbar';
 import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
@@ -56,15 +56,15 @@ LandingPageDirector(
 								<h2
 									className="
                   w-full text-center font-subtitle uppercase
-                  text-lg lg:text-4xl
+                  text-lg lg:text-[2.5rem]
                   tracking-widest text-foreground/80
                   my3 lg:mb-6 lg:mt-12
                 "
 								>
-									A text-to-workflow transformer
+									Structured AI Text-to-Workflow
 								</h2>
 
-								<Newsletter title="Subscribe to the Cond8 Newsletter" />
+								<BootstrapApp title="What workflow should I make?" externalUrl="https://app.cond8.dev" paramName="prompt" />
 
 								<TileSection />
 							</main>

@@ -1,10 +1,10 @@
 // scripts/mdx-builder/mdx-components.tsx
 
 import { MDXComponents } from 'mdx/types';
-import { CTA } from '../../src/_stage/components/CTA';
-import { ResourceCard } from '../../src/_stage/components/ResourceCard';
-import { Quote } from '../../src/_stage/components/Quote';
 import BlendedImage from '../../src/_stage/components/BlendedImage';
+import { CTA } from '../../src/_stage/components/CTA';
+import { Quote } from '../../src/_stage/components/Quote';
+import { ResourceCard } from '../../src/_stage/components/ResourceCard';
 
 export const mdxComponents: MDXComponents = {
 	BlendedImage,

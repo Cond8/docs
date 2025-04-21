@@ -5,19 +5,19 @@ import { HtmlCacheDurableObject } from './_stage/Durables/HtmlCacheDurableObject
 import { cors } from './_stage/middleware/cors';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
 import NotFoundDirector from './directors/404';
-import DocsPages from './directors/docs-pages';
-import DocsFragment from './directors/docs-partial';
 import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
+import RegisterNewsletterDirector from './directors/newsletter-subscribe';
 import InvestorsPageDirector from './directors/sponsor-page';
+import DocsRoute from './routes/docs';
 import { OpenAIProxy } from './routes/openai-proxy';
-import RegisterNewsletterDirector from './directors/register-newsletter';
 
 // ---- App Setup ----
 export { HtmlCacheDurableObject };
 
 type Env = {
 	CACHE: DurableObjectNamespace<HtmlCacheDurableObject>;
+	SUBSCRIBERS: KVNamespace;
 };
 
 const app = new Hono<{ Bindings: Env }>();
@@ -54,19 +54,7 @@ app.get('/', async c => {
 	});
 });
 
-app.get('/docs/:slug', async c => {
-	const html = await DocsPages(c);
-	return c.html(html, 200, {
-		'Content-Type': 'text/html; charset=utf-8',
-	});
-});
-
-app.get('/partials/docs/:slug', async c => {
-	const html = await DocsFragment(c);
-	return c.html(html, 200, {
-		'Content-Type': 'text/html; charset=utf-8',
-	});
-});
+app.route('/docs', DocsRoute);
 
 app.get('/sponsor-cond8', async c => {
 	const html = await InvestorsPageDirector(c);
@@ -75,7 +63,7 @@ app.get('/sponsor-cond8', async c => {
 	});
 });
 
-app.post('/register-newsletter', async c => {
+app.post('/newsletter/subscribe', async c => {
 	const html = await RegisterNewsletterDirector(c);
 	return c.html(html, 200, {
 		'Content-Type': 'text/html; charset=utf-8',

@@ -48,7 +48,7 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		return c8;
 	};
 
-	const HtmlFragment = {
+	const HtmlPartial = {
 		Get: (getKey: string) => ({
 			SetSlot: (slotName: string) => (c8: C8) => {
 				const value = c8.var.string(getKey);
@@ -67,12 +67,22 @@ export const createVHXActors = <C8 extends VHXRedprint>() => {
 		},
 	};
 
+	const Partialize = {
+		Set: (setKey: string) => (c8: C8) => {
+			const result = c8.vhx.partialHtml();
+
+			c8.var(setKey, result);
+			return c8;
+		},
+	};
+
 	return {
 		Title,
 		Header,
 		Template,
 		SetSlot,
-		HtmlFragment,
+		HtmlPartial,
 		Finalize,
+		Partialize,
 	};
 };

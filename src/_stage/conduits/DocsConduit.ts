@@ -6,6 +6,7 @@ import { createCacheActors } from '../actors/cache';
 import { createFetcherActors } from '../actors/fetchers';
 import { createGuardActors } from '../actors/guards';
 import { createModelerActors } from '../actors/modelers';
+import { createRepoActors } from '../actors/repo';
 import { createVHXActors, VHXRedprint } from '../actors/vhx';
 import { HtmlCacheRemoteClient } from '../services/HtmlCacheService';
 import { LifeCycleService } from '../services/LifeCycleService';
@@ -34,4 +35,5 @@ export const DocsActors = {
 	Guard: createGuardActors<DocsConduit>(),
 	Modeler: createModelerActors<DocsConduit>(),
 	Fetcher: createFetcherActors<DocsConduit>(),
+	Repo: createRepoActors<DocsConduit>(),
 };

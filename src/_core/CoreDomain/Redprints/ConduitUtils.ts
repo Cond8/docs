@@ -33,7 +33,7 @@ export class ConduitUtils<C8 extends CoreRedprint> {
 		return this.#closed;
 	}
 
-	get readonly(): ReadonlyState {
+	get readonly(): ReadonlyState & Record<string, object> {
 		const readonly: Record<string, unknown> = {};
 		for (const [key, layer] of this._allBlueprintLayers()) {
 			readonly[key] = layer.readonly;

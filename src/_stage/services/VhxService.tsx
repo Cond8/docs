@@ -65,6 +65,11 @@ export class VHXService extends StrictObjectKVService<string, string | JSX.Eleme
 		);
 	}
 
+	partialHtml() {
+		const replacedTemplate = this.replaceSlots();
+		return render(<>{replacedTemplate}</>);
+	}
+
 	private replaceSlots(): VNode | VNode[] {
 		const walk = (node: any): any => {
 			if (node == null || typeof node !== 'object') return node;

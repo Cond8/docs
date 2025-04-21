@@ -27,6 +27,14 @@
 		},
 	],
 
+	"kv_namespaces": [
+		{
+			"binding": "SUBSCRIBERS",
+			"id": "your-kv-id",
+			"preview_id": "your-preview-kv-id",
+		},
+	],
+
 	"observability": {
 		"enabled": true,
 	},

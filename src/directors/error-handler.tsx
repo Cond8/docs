@@ -57,6 +57,5 @@ ErrorHandlerDirector(
 );
 
 export default ErrorHandlerDirector.fin<string>(c8 => {
-	console.log(c8.var);
 	return c8.var('html');
 });
