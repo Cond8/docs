@@ -24,7 +24,7 @@ NewsletterSubscribeDirector(
 	DocsActors.Guard.Body.Check({ email: z.string().email() })
 		.SetEntries((n, v) => [`body ${n}`, v])
 		.Catch(DocsActors.VHX.Template(<NewsletterFailure />)),
-	DocsActors.Support.If(c8 => !c8.vhx.templateSet).Then(
+	DocsActors.Support.If(c8 => !(c8.vhx as any).templateSet).Then(
 		DocsActors.Repo.NewsletterRegistration.From('body email'),
 		DocsActors.Support.If(c8 => c8.var.string('newsletter_status') === 'success').Then(DocsActors.VHX.Template(<NewsletterSuccess />)),
 	),
