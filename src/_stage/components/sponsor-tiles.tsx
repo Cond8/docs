@@ -1,4 +1,4 @@
-// src/_stage/components/sponsorship-tiles.tsx
+// src/_stage/components/sponsor-tiles.tsx
 import { Tile } from './ui/tile';
 
 const tiles = [

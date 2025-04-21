@@ -1,3 +1,4 @@
+// src/_stage/components/ui/input.tsx
 import { JSX } from 'preact';
 import { cn } from '../../utils/clsx.js';
 

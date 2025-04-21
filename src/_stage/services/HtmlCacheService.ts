@@ -1,3 +1,4 @@
+// src/_stage/services/HtmlCacheService.ts
 import { StrictKVBlueprintAsync } from '../../_core';
 
 export class HtmlCacheRemoteClient extends StrictKVBlueprintAsync<string, string> {

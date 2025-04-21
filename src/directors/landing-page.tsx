@@ -23,7 +23,7 @@ LandingPageDirector(
 		DocsActors.VHX.Header(<DefaultHeaders />),
 		DocsActors.VHX.Template(
 			<div className="bg-card text-card-foreground relative">
-				<div className="absolute inset-0 bg-[url('/landing-bg.png')] bg-cover bg-center opacity-30" />
+				<div className="absolute inset-0 bg-[url('/images/bg/landing-bg.png')] bg-cover bg-center opacity-30" />
 				<div className="relative z-10">
 					<div className="h-screen flex flex-col">
 						<Topbar landingPage />

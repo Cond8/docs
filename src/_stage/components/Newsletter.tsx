@@ -1,3 +1,4 @@
+// src/_stage/components/Newsletter.tsx
 import { JSX } from 'preact';
 import { cn } from '../utils/clsx.js';
 import { Button } from './ui/button';
@@ -29,22 +30,15 @@ export function Newsletter({ title, description, className }: NewsletterProps): 
 				className="flex flex-col sm:flex-row gap-2 w-full"
 				action="/newsletter/subscribe"
 				method="POST"
-				// @ts-ignore
 				hx-post="/newsletter/subscribe"
 				hx-target="#newsletter-cta"
 				hx-swap="outerHTML"
 			>
-				<Input
-					type="email"
-					name="email"
-					placeholder="Enter your email"
-					required
-				/>
+				<Input type="email" name="email" placeholder="Enter your email" required />
 				<Button variant="brutalist" size="input" type="submit">
 					Subscribe
 				</Button>
 			</form>
 		</div>
 	);
-
 }

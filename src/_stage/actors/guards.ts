@@ -21,7 +21,27 @@ export const createGuardActors = <C8 extends CoreRedprint<Context>>() => {
 		}),
 	};
 
+	const Body = {
+		Check: (schemaRecord: Record<string, z.KeySchema>) => ({
+			SetEntries:
+				<V>(callback: (key: string, value: V) => [string, V]) =>
+				async (c8: C8) => {
+					const json = await c8.body.req.json();
+					return Object.entries(schemaRecord).reduce((c8, [key, schema]) => {
+						const bodyValue = json[key];
+						const result = schema.safeParse(bodyValue);
+						if (!result.success) {
+							throw new Error(`Invalid body value: ${key} - ${result.error.message}`);
+						}
+						c8.var(...callback(key, result.data as V));
+						return c8;
+					}, c8);
+				},
+		}),
+	};
+
 	return {
 		Params,
+		Body,
 	};
 };

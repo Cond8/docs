@@ -11,6 +11,7 @@ import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
 import InvestorsPageDirector from './directors/sponsor-page';
 import { OpenAIProxy } from './routes/openai-proxy';
+import RegisterNewsletterDirector from './directors/register-newsletter';
 
 // ---- App Setup ----
 export { HtmlCacheDurableObject };
@@ -69,6 +70,13 @@ app.get('/partials/docs/:slug', async c => {
 
 app.get('/sponsor-cond8', async c => {
 	const html = await InvestorsPageDirector(c);
+	return c.html(html, 200, {
+		'Content-Type': 'text/html; charset=utf-8',
+	});
+});
+
+app.post('/register-newsletter', async c => {
+	const html = await RegisterNewsletterDirector(c);
 	return c.html(html, 200, {
 		'Content-Type': 'text/html; charset=utf-8',
 	});

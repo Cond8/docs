@@ -1,3 +1,4 @@
+// src/_stage/components/ui/tile.tsx
 export interface TileProps {
 	idx: number;
 	tiles: {

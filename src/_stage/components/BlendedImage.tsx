@@ -1,3 +1,4 @@
+// src/_stage/components/BlendedImage.tsx
 import { FunctionalComponent } from 'preact';
 import { JSX } from 'preact/jsx-runtime';
 

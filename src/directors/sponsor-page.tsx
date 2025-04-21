@@ -1,4 +1,4 @@
-// src/directors/sponsorship-page.tsx
+// src/directors/sponsor-page.tsx
 import { Context } from 'hono';
 import { createDirector } from '../_core';
 import { DefaultHeaders } from '../_stage/components/default-headers';
@@ -22,9 +22,9 @@ SponsorshipPageDirector(
 		DocsActors.VHX.Header(<DefaultHeaders />),
 		DocsActors.VHX.Template(
 			<div className="bg-card text-card-foreground relative">
-				<div className="absolute inset-0 bg-[url('/sponsor-cond8-bg.png')] bg-cover bg-center opacity-30" />
+				<div className="absolute inset-0 bg-[url('/images/bg/sponsor-cond8-bg.png')] bg-cover bg-center opacity-30" />
 				<div className="relative z-10">
-					<div className="h-full flex flex-col">
+					<div className="min-h-screen flex flex-col">
 						<Topbar sponsorPage />
 
 						<div className="flex flex-grow items-center justify-center px-4">
@@ -75,7 +75,13 @@ SponsorshipPageDirector(
 									We're building the infrastructure to make Small Language Models practical—models that live locally, think fast, and stay
 									close to the problem.
 								</p>
+							</main>
+						</div>
+					</div>
 
+					<div className="min-h-screen flex flex-col">
+						<div className="flex flex-grow items-center justify-center px-4">
+							<main id="sponsorship-page-tiles" className="max-w-[800px] w-full">
 								<SponsorshipTileSection />
 							</main>
 						</div>
