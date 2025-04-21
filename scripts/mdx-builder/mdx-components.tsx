@@ -4,8 +4,10 @@ import { MDXComponents } from 'mdx/types';
 import { CTA } from '../../src/_stage/components/CTA';
 import { ResourceCard } from '../../src/_stage/components/ResourceCard';
 import { Quote } from '../../src/_stage/components/Quote';
+import BlendedImage from '../../src/_stage/components/BlendedImage';
 
 export const mdxComponents: MDXComponents = {
+	BlendedImage,
 	CTA,
 	ResourceCard,
 	h1: props => <h1 className="font-title text-5xl lg:text-6xl tracking-tight my-6 lg:my-10" {...props} />,

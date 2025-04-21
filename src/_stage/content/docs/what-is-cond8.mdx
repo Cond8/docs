@@ -2,6 +2,8 @@
 
 **Cond8** is a framework for building AI-generated workflows that are reliable, testable, and step-by-step.
 
+<BlendedImage src="/images/what-is-cond8.png" alt="What is Cond8?" />
+
 Pronounced **Conduit** — with a nod to the French word for _eight_ — Cond8 works like a pipeline: a sequence of small, composable steps. Each step is called an **Actor**, and a full workflow is called a **Director**. Every Actor follows a strict contract: it gets something, does something, and sets the result.
 
 Because it's linear, Cond8 can model any problem with a clear input and output — no matter how complex — by breaking it down into simple, deterministic steps. This structure makes Cond8 easy to reason about, safe for LLMs to write, and perfect for automatic recovery when something fails. Whether you're orchestrating a backend, building tools, or guiding local models, Cond8 turns your problem into a workflow that holds.
@@ -12,22 +14,14 @@ Cond8 doesn’t prevent LLMs from hallucinating — it **embraces** it. If a mod
 
 This turns guesswork into forward motion. Every Actor still runs inside a formalized, testable pipeline where success is explicit and failure is visible — but the system is designed to correct itself, step by step, until even a hallucination becomes code that holds. The same structure that disciplines the model also helps you build software you can trust.
 
----
-
-## Want to see Cond8 in action?
-
-Curious what Cond8 can actually do? 
-
 <ResourceCard
-  href="/docs/hello-director-example"
-  title="See a Cond8 Example"
-  description="Explore a real, working example of a Cond8 workflow and see how easy it is to build reliable, testable AI pipelines."
-  icon="🚀"
+	href="https://github.com/cond8/docs"
+	title="This Docs is Powered by Cond8"
+	description="This documentation site was built manually using Cond8 itself. Cond8 isn't just for AI-generated code—it's a robust, flexible framework for building real-world software by hand, too. If you're reading this, you're already seeing Cond8 in action!"
+	icon="🚀"
 />
 
-> **Fun fact:** This documentation site was built manually using Cond8 itself. That means Cond8 isn't just for AI-generated code—it's a robust, flexible framework for building real-world software by hand, too. If you're reading this, you're already seeing Cond8 in action!
-
----
+<BlendedImage src="/images/conduit.png" alt="The Conduit" />
 
 ## Core Restrictions
 
@@ -52,3 +46,11 @@ If strict isn't the right fit, you can always extend from `EmptyBlueprint` or de
 Roles can be summarized simply as **prompt infrastructure**. When creating Directors, you might sometimes need to write intentional scaffolding—even if it feels verbose or redundant—to help clearly and declaratively describe your logic. This structured scaffolding guides the Director-writing DSLM, allowing it to craft more creative and meaningful Actor prompts.
 
 Whatever the Director writer DSLM specifies, the imperative Actor-writer DSLM must respect and follow closely. Actor prompts are always structured clearly as _Get → Do → Set_. A little hallucination from the Director writer DSLM is acceptable because Cond8’s CLI can automatically generate any necessary scaffolding code to bring imagined or hallucinated Actors into reality. Once scaffolded, the imperative DSLM takes over and meticulously implements the Actor’s actual logic—bringing the Director to life.
+
+<BlendedImage src="/images/get-do-set.png" alt="Get → Do → Set" />
+
+<CTA
+	title="Try Cond8 Now!"
+	description="Experience the power of Small Language Models and build software you can trust. Get started in minutes."
+	action={{ label: 'Get Started', href: 'https://app.cond8.dev' }}
+/>
