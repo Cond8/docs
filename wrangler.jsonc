@@ -4,6 +4,8 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2025-04-03",
 
+	"account_id": "cf772d0960afaac63a91ba755590e524",
+
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "./public",
@@ -18,7 +20,6 @@
 		],
 	},
 
-	// 👇 Add this section
 	"migrations": [
 		{
 			"tag": "v1",
