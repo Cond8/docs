@@ -5,8 +5,8 @@ import { HtmlCacheDurableObject } from './_stage/Durables/HtmlCacheDurableObject
 import { cors } from './_stage/middleware/cors';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';
 import NotFoundDirector from './directors/404';
-import DocsFragment from './directors/docs-fragment';
 import DocsPages from './directors/docs-pages';
+import DocsFragment from './directors/docs-partial';
 import ErrorHandlerDirector from './directors/error-handler';
 import LandingPageDirector from './directors/landing-page';
 import InvestorsPageDirector from './directors/sponsor-page';

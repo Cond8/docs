@@ -2,10 +2,8 @@
 import { cn } from '../utils/clsx.js';
 
 const links = [
-	{ url: '/domains', title: 'Domains' },
-	{ url: '/blueprints', title: 'Blueprints', rightSeparator: true },
-	{ url: '/directors', title: 'Directors' },
-	{ url: '/actors', title: 'Actors', rightSeparator: true },
+	{ url: 'https://app.cond8.dev', title: 'Browser App', rightSeparator: true },
+
 	{ url: '/docs', title: 'Docs' },
 	{ url: '/blogs', title: 'Blogs' },
 ];

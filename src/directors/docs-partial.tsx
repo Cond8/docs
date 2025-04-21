@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { createDirector, createRecorder } from '../_core';
 import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
-const DocsFragment = createDirector<DocsConduit>('Docs Fragment Director').init<Context>(input => ({
+const DocsPartial = createDirector<DocsConduit>('Docs Fragment Director').init<Context>(input => ({
 	conduit: new DocsConduit(input),
 	recorder: createRecorder({
 		onError: (recording, error) => {
@@ -16,9 +16,9 @@ const DocsFragment = createDirector<DocsConduit>('Docs Fragment Director').init<
 	}),
 }));
 
-DocsFragment(
+DocsPartial(
 	DocsActors.Guard.Params.Check({ slug: z.string().default('what-is-cond8') }).SetEntries((n, v) => [`param ${n}`, v]),
 	DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('html'),
 );
 
-export default DocsFragment.fin<string>(c8 => c8.var('html'));
+export default DocsPartial.fin<string>(c8 => c8.var('html'));
