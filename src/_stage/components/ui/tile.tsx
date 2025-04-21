@@ -16,7 +16,7 @@ export const Tile = ({ idx, tiles }: TileProps) => {
 			href={href}
 			className="
         group h-full w-full flex flex-col justify-between
-        border border-foreground
+        border border-border
         p-5 sm:p-6
         bg-background/70 hover:bg-background/90
         transition-all duration-200

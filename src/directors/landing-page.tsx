@@ -55,11 +55,11 @@ LandingPageDirector(
 
 								<h2
 									className="
-                  w-full text-center font-subtitle uppercase
-                  text-lg lg:text-[2.5rem]
-                  tracking-widest text-foreground/80
-                  my3 lg:mb-6 lg:mt-12
-                "
+                    w-full text-center font-subtitle uppercase
+                    text-lg lg:text-[2.5rem]
+                    tracking-widest text-foreground/80
+                    my3 lg:mb-6 lg:mt-12
+                  "
 								>
 									Structured AI Text-to-Workflow
 								</h2>
