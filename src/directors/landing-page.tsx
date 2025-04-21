@@ -17,8 +17,7 @@ const LandingPageDirector = createDirector<DocsConduit>(
 
 LandingPageDirector(
 	DocsActors.Cache.Get('landing-page html').Set('html'),
-	DocsActors.Support.If(
-		c8 => !c8.var.has('html'),
+	DocsActors.Support.If(c8 => !c8.var.has('html')).Then(
 		DocsActors.VHX.Title('Cond8 Docs'),
 		DocsActors.VHX.Header(<DefaultHeaders />),
 		DocsActors.VHX.Template(
@@ -74,7 +73,7 @@ LandingPageDirector(
 			</div>,
 		),
 		DocsActors.VHX.Finalize.Set('html'),
-		DocsActors.Cache.Set('landing-page html', 'html'),
+		DocsActors.Cache.Set('landing-page html').FromVar('html'),
 	),
 );
 

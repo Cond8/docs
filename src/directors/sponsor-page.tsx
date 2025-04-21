@@ -17,8 +17,7 @@ const SponsorshipPageDirector = createDirector<DocsConduit>(
 
 SponsorshipPageDirector(
 	DocsActors.Cache.Get('sponsorship-page html').Set('html'),
-	DocsActors.Support.If(
-		c8 => !c8.var.has('html'),
+	DocsActors.Support.If(c8 => !c8.var.has('html')).Then(
 		DocsActors.VHX.Title('Sponsor Cond8'),
 		DocsActors.VHX.Header(<DefaultHeaders />),
 		DocsActors.VHX.Template(
@@ -87,7 +86,7 @@ SponsorshipPageDirector(
 			</div>,
 		),
 		DocsActors.VHX.Finalize.Set('html'),
-		DocsActors.Cache.Set('sponsorship-page html', 'html'),
+		DocsActors.Cache.Set('sponsorship-page html').FromVar('html'),
 	),
 );
 

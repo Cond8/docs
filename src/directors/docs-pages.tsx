@@ -25,38 +25,42 @@ const DocsPages = createDirector<DocsConduit>('docs-page director', '').init<Con
 
 DocsPages(
 	DocsActors.Guard.Params.Check({ slug: z.string().default('what-is-cond8') }).SetEntries((n, v) => [`param ${n}`, v]),
-	DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
-	DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
-	DocsActors.VHX.Header(<DefaultHeaders />),
-	DocsActors.VHX.Template(
-		<div className="min-h-screen flex flex-col">
-			<div
-				className="
+	DocsActors.Cache.Get('param slug', slug => `${slug} html`).Set('html'),
+	DocsActors.Support.If(c8 => !c8.var.has('html')).Then(
+		DocsActors.Modeler.String.Get('param slug').Do(slugToTitle).Set('title'),
+		DocsActors.VHX.Title.Get('title', title => `Cond8 Docs - ${title}`),
+		DocsActors.VHX.Header(<DefaultHeaders />),
+		DocsActors.VHX.Template(
+			<div className="min-h-screen flex flex-col">
+				<div
+					className="
           sticky top-0 z-50 bg-background/80
           border-b border-foreground
           backdrop-blur
         "
-			>
-				<Topbar urlSelected="/docs" />
-			</div>
+				>
+					<Topbar urlSelected="/docs" />
+				</div>
 
-			<div className="flex flex-grow justify-center px-4 py-8">
-				<main id="landing-page" className="flex space-x-4 max-w-[1024px] w-full">
-					<DocsSidebar />
-					<div className="flex-grow max-w-[800px] w-full markdown">
-						<div id="htmx-target" hx-target="this">
-							<slot name="Html Content" />
+				<div className="flex flex-grow justify-center px-4 py-8">
+					<main id="landing-page" className="flex space-x-4 max-w-[1024px] w-full">
+						<DocsSidebar />
+						<div className="flex-grow max-w-[800px] w-full markdown">
+							<div id="htmx-target" hx-target="this">
+								<slot name="Html Content" />
+							</div>
 						</div>
-					</div>
-				</main>
-			</div>
+					</main>
+				</div>
 
-			<Footer />
-		</div>,
+				<Footer />
+			</div>,
+		),
+		DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('fragment'),
+		DocsActors.VHX.HtmlFragment.Get('fragment').SetSlot('Html Content'),
+		DocsActors.VHX.Finalize.Set('html'),
+		DocsActors.Cache.Set('param slug', slug => `${slug} html`).FromVar('html'),
 	),
-	DocsActors.Fetcher.File.Get('param slug', slug => `/dist/content/docs/${slug}.html`).Set('fragment'),
-	DocsActors.VHX.HtmlFragment.Get('fragment').SetSlot('Html Content'),
-	DocsActors.VHX.Finalize.Set('html'),
 );
 
 export default DocsPages.fin<string>(c8 => c8.var('html'));

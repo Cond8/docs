@@ -12,8 +12,7 @@ const NotFoundDirector = createDirector<DocsConduit>('404 director', 'a static 4
 
 NotFoundDirector(
 	DocsActors.Cache.Get('404 html').Set('html'),
-	DocsActors.Support.If(
-		c8 => !c8.var.has('html'),
+	DocsActors.Support.If(c8 => !c8.var.has('html')).Then(
 		DocsActors.VHX.Title('Page Not Found — Cond8 Docs'),
 		DocsActors.VHX.Header(<DefaultHeaders />),
 		DocsActors.VHX.Template(
@@ -75,7 +74,7 @@ NotFoundDirector(
 			</div>,
 		),
 		DocsActors.VHX.Finalize.Set('html'),
-		DocsActors.Cache.Set('404 html', 'html'),
+		DocsActors.Cache.Set('404 html').FromVar('html'),
 	),
 );
 
