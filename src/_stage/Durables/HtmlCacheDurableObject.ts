@@ -3,44 +3,43 @@ import { DurableObject } from 'cloudflare:workers';
 export class HtmlCacheDurableObject extends DurableObject {
 	constructor(
 		private state: DurableObjectState,
-		env: Env,
+		env: unknown,
 	) {
 		super(state, env);
 	}
 
-	private getCacheKey(url: string) {
-		return `html:${url}`;
+	// More semantic key prefixing for future extensibility
+	private makeStorageKey(name: string) {
+		return `html:${name}`;
 	}
+
 	async fetch(request: Request): Promise<Response> {
-		const url = new URL(request.url);
-		const key = url.searchParams.get('key');
+		const { pathname, searchParams } = new URL(request.url);
+		const name = searchParams.get('name');
 
-		if (!key) {
-			return new Response('Missing key', { status: 400 });
+		if (!name) {
+			return new Response('[HtmlCache] Missing "name" query param', { status: 400 });
 		}
 
-		const cacheKey = this.getCacheKey(key);
+		const key = this.makeStorageKey(name);
 
-		switch (url.pathname) {
-			case '/get': {
-				const cached = await this.state.storage.get<string>(cacheKey);
-				if (cached) {
-					return new Response(cached, {
-						status: 200,
-						headers: { 'Content-Type': 'text/html; charset=utf-8' },
-					});
-				}
-				return new Response('Not found', { status: 404 });
+		if (pathname === '/cache/get') {
+			const cachedHtml = await this.state.storage.get<string>(key);
+			if (cachedHtml) {
+				return new Response(cachedHtml, {
+					status: 200,
+					headers: { 'Content-Type': 'text/html; charset=utf-8' },
+				});
 			}
-
-			case '/put': {
-				const body = await request.text();
-				await this.state.storage.put(cacheKey, body);
-				return new Response('Stored', { status: 200 });
-			}
-
-			default:
-				return new Response('Not found', { status: 404 });
+			return new Response('[HtmlCache] Not found', { status: 404 });
 		}
+
+		if (pathname === '/cache/put') {
+			const html = await request.text();
+			await this.state.storage.put(key, html);
+			return new Response('[HtmlCache] Stored', { status: 200 });
+		}
+
+		return new Response(`[HtmlCache] Unknown endpoint: ${pathname}`, { status: 404 });
 	}
 }
