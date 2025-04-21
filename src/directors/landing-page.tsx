@@ -4,6 +4,7 @@ import { createDirector } from '../_core';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { Footer } from '../_stage/components/footer';
 import { TileSection } from '../_stage/components/landing-tiles';
+import { Newsletter } from '../_stage/components/Newsletter';
 import { Topbar } from '../_stage/components/topbar';
 import { DocsActors, DocsConduit } from '../_stage/conduits/DocsConduit';
 
@@ -62,6 +63,8 @@ LandingPageDirector(
 								>
 									A text-to-workflow transformer
 								</h2>
+
+								<Newsletter title="Subscribe to the Cond8 Newsletter" />
 
 								<TileSection />
 							</main>
