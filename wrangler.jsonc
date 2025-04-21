@@ -12,11 +12,19 @@
 	"durable_objects": {
 		"bindings": [
 			{
-				"class_name": "HtmlCacheDurableObject",
 				"name": "CACHE",
+				"class_name": "HtmlCacheDurableObject",
 			},
 		],
 	},
+
+	// 👇 Add this section
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_classes": ["HtmlCacheDurableObject"],
+		},
+	],
 
 	"observability": {
 		"enabled": true,
