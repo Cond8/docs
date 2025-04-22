@@ -1,7 +1,7 @@
 // src/directors/landing-page.tsx
 import { Context } from 'hono';
 import { createDirector } from '../_core';
-import { BootstrapApp } from '../_stage/components/BootstrapApp';
+import { StartAppForm } from '../_stage/components/StartAppForm';
 import { DefaultHeaders } from '../_stage/components/default-headers';
 import { Footer } from '../_stage/components/footer';
 import { TileSection } from '../_stage/components/landing-tiles';
@@ -64,7 +64,7 @@ LandingPageDirector(
 									Structured AI Text-to-Workflow
 								</h2>
 
-								<BootstrapApp title="What workflow should I make?" externalUrl="https://app.cond8.dev" paramName="prompt" />
+								<StartAppForm />
 
 								<TileSection />
 							</main>

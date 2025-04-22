@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import { C8Error } from './_core/Recorder/C8Error';
-import { AppTextArea } from './_stage/components/BootstrapApp';
+import { AppTextArea } from './_stage/components/StartAppForm';
 import { HtmlCacheDurableObject } from './_stage/Durables/HtmlCacheDurableObject';
 import { cors } from './_stage/middleware/cors';
 import { LifeReloadServer } from './_stage/utils/life-reload-server';

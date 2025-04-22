@@ -6,11 +6,11 @@
 
 Pronounced **Conduit** — with a nod to the French word for _eight_ — Cond8 works like a pipeline: a sequence of small, composable steps. Each step is called an **Actor**, and a full workflow is called a **Director**. Every Actor follows a strict contract: it gets something, does something, and sets the result.
 
-Because it's linear, Cond8 can model any problem with a clear input and output — no matter how complex — by breaking it down into simple, deterministic steps. This structure makes Cond8 easy to reason about, safe for LLMs to write, and perfect for automatic recovery when something fails. Whether you're orchestrating a backend, building tools, or guiding local models, Cond8 turns your problem into a workflow that holds.
+Because it's linear, Cond8 can model any problem with a clear input and output — no matter how complex — by breaking it down into simple, deterministic steps. This structure makes Cond8 easy to reason about, safe for SLMs to write, and perfect for automatic recovery when something fails. Whether you're orchestrating a backend, building tools, or guiding local models, Cond8 turns your problem into a workflow that holds.
 
 What makes Cond8 different isn’t polish — it’s structure. Its core contracts with small language models are embedded directly into the execution environment. And if one of those contracts breaks, the system doesn’t quietly fail — it **pushes back** and forces a retry.
 
-Cond8 doesn’t prevent LLMs from hallucinating — it **embraces** it. If a model invents a function that doesn’t exist, Cond8 treats that as a new workflow to scaffold. Hallucinated Actors become recursive stubs, validated in isolation until they work.
+Cond8 doesn’t prevent SLMs from hallucinating — it **embraces** it. If a model invents a function that doesn’t exist, Cond8 treats that as a new workflow to scaffold. Hallucinated Actors become recursive stubs, validated in isolation until they work.
 
 This turns guesswork into forward motion. Every Actor still runs inside a formalized, testable pipeline where success is explicit and failure is visible — but the system is designed to correct itself, step by step, until even a hallucination becomes code that holds. The same structure that disciplines the model also helps you build software you can trust.
 
@@ -29,7 +29,9 @@ These core restrictions are made for the Small Language Model to write code in a
 
 ### 1. **Directors (The Pipeline)**
 
-The first core restriction prevents DSLMs from attempting to generate an entire codebase at once. Instead, DSLMs write a linear pipeline: a clearly defined series of input/output transformations. Although simple in structure, pipelines turn out to be remarkably expressive. Each Director becomes a powerful, declarative interface for computation—easy to reason about, easy to test, and easy to maintain.
+The pipeline in Cond8 is something I call a **Procedural Lambda Execution Engine**. This means each step in the Director is like a small, self-contained lambda (function) executed in sequence, forming a clear, testable, and composable workflow.
+
+The first core restriction prevents SLMs from attempting to generate an entire codebase at once. Instead, SLMs write a linear pipeline: a clearly defined series of input/output transformations. Although simple in structure, pipelines turn out to be remarkably expressive. Each Director becomes a powerful, declarative interface for computation—easy to reason about, easy to test, and easy to maintain.
 
 ### 2. **The Virtual Conduit**
 
@@ -37,15 +39,15 @@ The Conduit is the central hub of every Director. Actors aren't allowed to commu
 
 Internally, a Conduit consists of **layers of services**, ranging from straightforward local key-value storage to complex asynchronous communication. Each layer is defined by a **Blueprint**, an abstract class you can extend and customize as needed.
 
-For example, the `StrictKVBlueprint` provides standard key-value methods like `get`, `set`, `remove`, and `has`. However, because it’s **strict**, accessing or modifying undefined keys immediately throws an error. This strictness helps quickly catch hallucinations made by the imperative DSLM, forcing it to stick closely to the defined logic. Director writers can dream freely, but Actors must be precise.
+For example, the `StrictKVBlueprint` provides standard key-value methods like `get`, `set`, `remove`, and `has`. However, because it’s **strict**, accessing or modifying undefined keys immediately throws an error. This strictness helps quickly catch hallucinations made by the SLM, forcing it to stick closely to the defined logic. Director writers can dream freely, but Actors must be precise.
 
-If strict isn't the right fit, you can always extend from `EmptyBlueprint` or define your own completely custom Blueprint—Cond8 provides structure without limiting flexibility.
+It's called the **virtual** Conduit because, in principle, the entire structure can be calculated away using lambda calculus. After optimization, the conduit itself disappears, allowing actors to communicate directly—ultimately reducing the workflow to its minimal technical footprint.
 
 ### 3. **Roles**
 
-Roles can be summarized simply as **prompt infrastructure**. When creating Directors, you might sometimes need to write intentional scaffolding—even if it feels verbose or redundant—to help clearly and declaratively describe your logic. This structured scaffolding guides the Director-writing DSLM, allowing it to craft more creative and meaningful Actor prompts.
+Roles can be summarized simply as **prompt infrastructure**. When creating Directors, you should scaffold your code in a way that the declarative code itself looks like a prompt—clear, intentional, and readable by both humans and SLMs. This means structuring your logic so that its intention is obvious, making it easy for the SLM to generate creative and meaningful Actor prompts from the declarative structure.
 
-Whatever the Director writer DSLM specifies, the imperative Actor-writer DSLM must respect and follow closely. Actor prompts are always structured clearly as _Get → Do → Set_. A little hallucination from the Director writer DSLM is acceptable because Cond8’s CLI can automatically generate any necessary scaffolding code to bring imagined or hallucinated Actors into reality. Once scaffolded, the imperative DSLM takes over and meticulously implements the Actor’s actual logic—bringing the Director to life.
+Whatever the Director writer SLM specifies, the Actor-writer SLM must respect and follow closely. Actor prompts are always structured clearly as _Get → Do → Set_. A little hallucination from the Director writer SLM is acceptable because Cond8’s CLI can automatically generate any necessary scaffolding code to bring imagined or hallucinated Actors into reality. Once scaffolded, the SLM takes over and meticulously implements the Actor’s actual logic—bringing the Director to life.
 
 <BlendedImage src="/images/get-do-set.png" alt="Get → Do → Set" />
 

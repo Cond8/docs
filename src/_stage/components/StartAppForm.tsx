@@ -29,7 +29,7 @@ export function AppTextArea({ value }: { value: string }) {
 	);
 }
 
-export function BootstrapApp({ className }: BootstrapAppProps): JSX.Element {
+export function StartAppForm({ className }: BootstrapAppProps): JSX.Element {
 	const baseContainer = `
     my-8
     transition-all duration-200

@@ -31,8 +31,8 @@ export function ResourceCard({ href, title, description, icon, className }: Reso
 					</span>
 				)}
 				<div className="flex-1 min-w-0">
-					<div className="font-bold text-lg text-accent hover:underline truncate">{title}</div>
-					<div className="text-muted-foreground text-base mt-1 truncate">{description}</div>
+					<div className="font-bold text-lg text-accent hover:underline">{title}</div>
+					<div className="text-muted-foreground text-base mt-1">{description}</div>
 				</div>
 				<span className="ml-2 text-muted-foreground opacity-80 group-hover:opacity-100" aria-label="Opens in new tab">
 					<ExternalLink size={22} />
