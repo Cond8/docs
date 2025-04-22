@@ -29,9 +29,9 @@
 
 	"kv_namespaces": [
 		{
-			"binding": "SUBSCRIBERS",
-			"id": "your-kv-id",
-			"preview_id": "your-preview-kv-id",
+			"binding": "NEWSLETTER_SUBSCRIBERS",
+			"id": "542d6476a58f429ea8dbac986a960c13",
+			"preview_id": "542d6476a58f429ea8dbac986a960c13",
 		},
 	],
 

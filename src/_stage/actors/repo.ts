@@ -7,8 +7,8 @@ export const createRepoActors = <C8 extends DocsConduit>() => {
 			const key = `subscriber:${email}`;
 
 			try {
-				if (!c8.body.env || !c8.body.env.SUBSCRIBERS) {
-					console.error('SUBSCRIBERS KV namespace is not defined in environment variables.');
+				if (!c8.body.env || !c8.body.env.NEWSLETTER_SUBSCRIBERS) {
+					console.error('NEWSLETTER_SUBSCRIBERS KV namespace is not defined in environment variables.');
 					c8.var('newsletter_status', 'error');
 					return c8;
 				}
