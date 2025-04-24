@@ -13,9 +13,9 @@ export const createRepoActors = <C8 extends DocsConduit>() => {
 					return c8;
 				}
 
-				const existing = await c8.body.env.SUBSCRIBERS.get(key);
+				const existing = await c8.body.env.NEWSLETTER_SUBSCRIBERS.get(key);
 				if (!existing) {
-					await c8.body.env.SUBSCRIBERS.put(key, JSON.stringify({ email, timestamp: new Date().toISOString() }));
+					await c8.body.env.NEWSLETTER_SUBSCRIBERS.put(key, JSON.stringify({ email, timestamp: new Date().toISOString() }));
 				}
 				c8.var('newsletter_status', 'success');
 			} catch (err) {
